@@ -1,0 +1,2 @@
+*/3 * * * * /bin/usr/python /homes/chen2485/tippecanews/rss.py > output.txt
+
