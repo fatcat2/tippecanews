@@ -31,7 +31,4 @@ for link in xml_links:
 
 
 conn.commit()
-
-
-
 conn.close()
