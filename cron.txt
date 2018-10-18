@@ -1,2 +1,2 @@
-*/3 * * * * /bin/usr/python2.7 /homes/chen2485/tippecanews/rss.py > output.txt
+*/3 * * * * /usr/bin/python2.7 /homes/chen2485/tippecanews/rss.py > output.txt
 
