@@ -12,12 +12,16 @@ for link in xml_links:
 	d = feedparser.parse(link)
 	try:
 		for x in d.entries:
+<<<<<<< HEAD
 			print x
+=======
+>>>>>>> master
 			c.execute("select * from purdue_news where title=?", (x.title,))
 			listo = c.fetchall()
 			if(len(listo) != 1):
 				print x.title
 				payload = {
+<<<<<<< HEAD
 					"attachments": [
 						{
 							"fallback": "Tippecanews!",
@@ -28,6 +32,10 @@ for link in xml_links:
 						}
 					]
 				}
+=======
+						'text': x.title
+					}
+>>>>>>> master
 				requests.post("https://hooks.slack.com/services/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", json=payload)
 
 			c.execute("insert or ignore into purdue_news(title, link, published, summary) values(? ,? ,? ,?)", (x.title, x.link, x.published, x.summary))
