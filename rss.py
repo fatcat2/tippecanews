@@ -4,7 +4,7 @@ import requests
 from unidecode import unidecode
 
 
-conn = sqlite3.connect("test.db")
+conn = sqlite3.connect("homes/chen2485/tippecanews/test.db")
 c = conn.cursor()
 
 xml_links = ["http://www.purdue.edu/newsroom/rss/academics.xml",
