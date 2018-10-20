@@ -45,7 +45,7 @@ for link in xml_links:
 					]
 				}
 				# print payload
-				r = requests.post("https://hooks.slack.com/services/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", json=payload)
+				r = requests.post("", json=payload)
 				print r
 				c.execute("insert or ignore into purdue_news(title, link, published, summary) values(? ,? ,? ,?)", (x.title, x.link, x.published, x.summary))
 		pass

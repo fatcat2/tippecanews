@@ -22,4 +22,4 @@ payload = {
         }
     ]
 }
-requests.post("https://hooks.slack.com/services/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", json=payload)
+requests.post("", json=payload)
