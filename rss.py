@@ -1,37 +1,56 @@
 import feedparser
 import sqlite3
 import requests
+from unidecode import unidecode
 
 
 conn = sqlite3.connect("test.db")
 c = conn.cursor()
 
-xml_links = ["http://www.purdue.edu/newsroom/rss/academics.xml", "http://www.purdue.edu/newsroom/rss/AdvNews.xml", "http://www.purdue.edu/newsroom/rss/AgriNews.xml"]
+xml_links = ["http://www.purdue.edu/newsroom/rss/academics.xml",
+			"http://www.purdue.edu/newsroom/rss/AdvNews.xml",
+			"http://www.purdue.edu/newsroom/rss/AgriNews.xml",
+			"http://www.purdue.edu/newsroom/rss/BizNews.xml",
+			"http://www.purdue.edu/newsroom/rss/community.xml",
+			"http://www.purdue.edu/newsroom/rss/general.xml",
+			"http://www.purdue.edu/newsroom/rss/EdCareerNews.xml",
+			"http://www.purdue.edu/newsroom/rss/EventNews.xml",
+			"http://www.purdue.edu/newsroom/rss/faculty_staff.xml",
+			"http://www.purdue.edu/newsroom/rss/FeaturedNews.xml",
+			"http://www.purdue.edu/newsroom/rss/StudentNews.xml",
+			"http://www.purdue.edu/newsroom/rss/ResearchNews.xml",
+			"http://www.purdue.edu/newsroom/rss/outreach.xml"
+			]
 
 for link in xml_links:
+	print link
 	d = feedparser.parse(link)
 	try:
 		for x in d.entries:
-			c.execute("select * from purdue_news where title=?", (x.title,))
+			c.execute("select * from purdue_news where title=? limit 3", (x.title,))
 			listo = c.fetchall()
-			if(len(listo) != 1):
-				print x.title
+			# print listo
+			if(len(listo) == 0):
 				payload = {
 					"attachments": [
 						{
-							"fallback": "Tippecanews!",
+							"fallback": x.title,
 							"color": "#36a64f",
-							"title": "Slack API Documentation",
-							"text": "Optional text that appears within the attachment",
-							"image_url": "https://akns-images.eonline.com/eol_images/Entire_Site/2018917/rs_634x826-181017125108-634-asap-rocky-esquire-101718.jpg"
+							"author_name": x.published,
+							"title": x.title,
+							"title_link": x.link,
+							"footer": "tippecanews by ryan chen",
+							"footer_icon": "https://github.com/fatcat2/tippecanews/raw/master/DSC_6043.jpg"
 						}
 					]
 				}
-				requests.post("https://hooks.slack.com/services/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", json=payload)
-
-			c.execute("insert or ignore into purdue_news(title, link, published, summary) values(? ,? ,? ,?)", (x.title, x.link, x.published, x.summary))
+				# print payload
+				r = requests.post("https://hooks.slack.com/services/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", json=payload)
+				print r
+				c.execute("insert or ignore into purdue_news(title, link, published, summary) values(? ,? ,? ,?)", (x.title, x.link, x.published, x.summary))
 		pass
-	except:
+	except Exception as e:
+		print e
 		pass
 
 
