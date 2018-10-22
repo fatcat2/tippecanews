@@ -4,8 +4,12 @@ import requests
 from unidecode import unidecode
 
 
-conn = sqlite3.connect("homes/chen2485/tippecanews/test.db")
+conn = sqlite3.connect("/homes/chen2485/tippecanews/test.db")
 c = conn.cursor()
+
+f = open("/homes/chen2485/tippecanews/slack.txt", 'r')
+url = f.readlines()[0]
+print url
 
 xml_links = ["http://www.purdue.edu/newsroom/rss/academics.xml",
 			"http://www.purdue.edu/newsroom/rss/AdvNews.xml",
@@ -45,7 +49,7 @@ for link in xml_links:
 					]
 				}
 				# print payload
-				r = requests.post("", json=payload)
+				r = requests.post(url, json=payload)
 				print r
 				c.execute("insert or ignore into purdue_news(title, link, published, summary) values(? ,? ,? ,?)", (x.title, x.link, x.published, x.summary))
 		pass
