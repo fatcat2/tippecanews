@@ -1,7 +1,7 @@
 import feedparser
 import sqlite3
 import requests
-from unidecode import unidecode
+import datetime
 
 
 conn = sqlite3.connect("/homes/chen2485/tippecanews/test.db")
@@ -9,7 +9,7 @@ c = conn.cursor()
 
 f = open("/homes/chen2485/tippecanews/slack.txt", 'r')
 url = f.readlines()[0]
-print url
+# print url
 
 xml_links = ["http://www.purdue.edu/newsroom/rss/academics.xml",
 			"http://www.purdue.edu/newsroom/rss/AdvNews.xml",
@@ -27,7 +27,7 @@ xml_links = ["http://www.purdue.edu/newsroom/rss/academics.xml",
 			]
 
 for link in xml_links:
-	print link
+	# print link
 	d = feedparser.parse(link)
 	try:
 		for x in d.entries:
@@ -50,10 +50,11 @@ for link in xml_links:
 				}
 				# print payload
 				r = requests.post(url, json=payload)
-				print r
+				# print r
 				c.execute("insert or ignore into purdue_news(title, link, published, summary) values(? ,? ,? ,?)", (x.title, x.link, x.published, x.summary))
 		pass
 	except Exception as e:
+		print str(datetime.datetime.now())
 		print e
 		pass
 
