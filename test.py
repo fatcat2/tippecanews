@@ -1,25 +1,36 @@
 import requests
-import sqlite3
+import os
+import atoma
+from dotenv import load_dotenv
 
-conn = sqlite3.connect("test.db")
-c = conn.cursor()
 
-c.execute("select * from purdue_news")
-# for x in newsList:
 
-    # str = x[2] + ":\n" + x[0]
-x = c.fetchone()
-payload = {
-    "attachments": [
-        {
-            "fallback": x[0],
-            "color": "#36a64f",
-            "author_name": x[2],
-            "title": x[0],
-            "title_link": x[1],
-            "footer": "tippecanews by ryan chen",
-            "footer_icon": "https://github.com/fatcat2/tippecanews/raw/master/DSC_6043.jpg"
-        }
-    ]
-}
-requests.post("", json=payload)
+def sendSlack(title: str, link: str, date: str):
+    if "http" not in link:
+        link = "http://{}".format(link)
+
+    headers = {"Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
+    payload = {
+        "channel": os.getenv("SLACK_CHANNEL"),
+        "attachments": [
+            {
+                "fallback": title,
+                "color": "#36a64f",
+                "author_name": "Tippecanews",
+                "title": title,
+                "title_link": link,
+                "footer": "tippecanews by ryan chen",
+                "footer_icon": "https://github.com/fatcat2/tippecanews/raw/master/DSC_6043.jpg",
+            }
+        ],
+    }
+    print(payload)
+    r = requests.post(
+        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
+    )
+    r.raise_for_status()
+    print(r)
+
+load_dotenv()
+
+sendSlack("one", "two", "three")

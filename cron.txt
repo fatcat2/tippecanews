@@ -1,3 +1,0 @@
-*/20 * * * * /usr/bin/python2.7 /homes/chen2485/tippecanews/rss.py >> /homes/chen2485/tippecanews/error
-
-
