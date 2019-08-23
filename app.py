@@ -2,10 +2,10 @@ import os
 
 import atoma
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, request
 from google.cloud import firestore
 import requests
-
+import json #TODO REMOVE
 from info_getters import get_pngs, xml_urls
 
 app = Flask(__name__)
@@ -19,10 +19,40 @@ def hello_world():
     return "Hello {}!\n".format(target)
 
 @app.route("/test")
-def test_function():
-    send_slack("one", "two", "tjree")
-    return "Hello {}!\n".format(target)
+def test_me():
+    send_slack("lol", "wow", "asdf")
+    send_slack("lol", "wow", "asdf", is_pr=True)
 
+@app.route("/interactive", methods=["POST"])
+def test_funct():
+    response = json.loads(request.form.get("payload"))
+    resp_url = response["response_url"]
+    blocks = response["message"]["blocks"]
+    if blocks[0]["accessory"]["value"] == "cancel":
+        blocks[0]["accessory"]["value"] = "take"
+        blocks[0]["accessory"]["text"]["text"] = "Take me!"
+        blocks.pop(len(blocks)-1)
+    else:
+        blocks[0]["accessory"]["value"] = "cancel"
+        blocks[0]["accessory"]["text"]["text"] = "Cancel!"
+        blocks.append(
+                {
+		"type": "context",
+		"elements": [
+			{
+				"type": "mrkdwn",
+				"text": f"Taken by @{response['user']['username']}"
+			}
+		]
+	    }
+        )
+    payload = {
+        "replace_original": "true",
+        "blocks": blocks
+    }
+
+    requests.post(resp_url, json=payload)
+    return ""
 
 @app.route("/newsfetch")
 def newsfetch():
@@ -68,21 +98,49 @@ def newsfetch():
     return "Done"
 
 
-def sendSlack(title: str, link: str, date: str, is_pr: bool = False):
+def send_slack(title: str, link: str, date: str, is_pr: bool = False):
     if "http" not in link:
         link = "http://{}".format(link)
 
     headers = {"Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
     payload = {
         "channel": os.getenv("SLACK_CHANNEL"),
-        "attachments": {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "A message *with some bold text* and _some italicized text_.",
+        "text": title,
+        "blocks": [
+            {
+		"type": "section",
+		"text": {
+			"type": "mrkdwn",
+			"text": f"{title}"
+		},
             },
-        },
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"Posted on {date}"
+                    }
+                ]
+            } 
+	]
     }
+
+    if is_pr:
+        payload["blocks"][0]["text"] = {
+			"type": "mrkdwn",
+			"text": f"<{link}|{title}>"
+		}
+        payload["blocks"][0]["accessory"] = {
+			"type": "button",
+			"text": {
+				"type": "plain_text",
+				"text": "Take Me!"
+			},
+			"value": "take",
+			"action_id": "button"
+		}
+
 
     print(payload)
     r = requests.post(
