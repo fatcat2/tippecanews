@@ -3,25 +3,14 @@ import os
 import atoma
 from dotenv import load_dotenv
 from flask import Flask
-from google.cloud import firestore
+from google.cloud import firestore 
 import requests
+
+from info_getters import get_pngs, xml_urls
 
 app = Flask(__name__)
 
 load_dotenv()
-
-xml_urls = [
-    "http://www.purdue.edu/newsroom/rss/academics.xml",
-    "http://www.purdue.edu/newsroom/rss/AdvNews.xml",
-    "http://www.purdue.edu/newsroom/rss/AgriNews.xml",
-    "http://www.purdue.edu/newsroom/rss/BizNews.xml",
-    "http://www.purdue.edu/newsroom/rss/community.xml",
-    "http://www.purdue.edu/newsroom/rss/DiversityNews.xml",
-    "http://www.purdue.edu/newsroom/rss/EdCareerNews.xml",
-    "http://www.purdue.edu/newsroom/rss/EventNews.xml",
-    "http://www.purdue.edu/newsroom/rss/StudentNews.xml",
-]
-
 
 @app.route("/")
 def hello_world():
@@ -59,6 +48,22 @@ def newsfetch():
                     }
                 )
                 sendSlack(post.title, post.link, post.pub_date.strftime("(%Y/%m/%d)"))
+    png_ref = db.collection(u"png")
+    for row in get_pngs():
+        doc_id = row[0]+row[2]
+        try:
+            png_ref.add(
+                    {
+                        u"name": row[0],
+                        u"location": row[1],
+                        u"date issued": row[2],
+                    },
+                    document_id=doc_id
+            )
+            sendSlack(f"PNG issued to {row[0]} on {row[2]}. Banned from {row[1]}", "", "")
+        except Exception:
+            pass
+            
     return "Done"
 
 
@@ -66,7 +71,11 @@ def sendSlack(title: str, link: str, date: str):
     if "http" not in link:
         link = "http://{}".format(link)
 
-    headers = {"Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
+    headers = {
+        "Authorization": "Bearer {}".format(
+            os.getenv("SLACK_TOKEN")
+        )
+    }
     payload = {
         "channel": os.getenv("SLACK_CHANNEL"),
         "attachments": [
