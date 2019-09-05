@@ -7,12 +7,14 @@ import atoma
 from dotenv import load_dotenv
 from flask import Flask, request
 
-import ryan_twtr_utils
 
 from google.cloud import firestore
 import requests
 import json  # TODO REMOVE
 from info_getters import get_pngs, xml_urls
+
+# Import local modules
+from ryan_twtr_utils import ryan_twtr_utils
 
 app = Flask(__name__)
 
@@ -27,9 +29,7 @@ def hello_world():
 
 @app.route("/test")
 def test_me():
-    # send_slack("lol", "wow", "asdf")
-    send_slack("lol", "wow", "asdf", is_pr=True)
-    return "yeet"
+    return "This tests things. Please turn back."
 
 
 @app.route("/interactive", methods=["POST"])
@@ -37,7 +37,6 @@ def test_funct():
     response = json.loads(request.form.get("payload"))
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
-
 
 
     if blocks[0]["accessory"]["value"] == "cancel":
@@ -113,8 +112,8 @@ def newsfetch():
 
 
     # Twitter section
-    # r_twt = ryan_twtr_utils()
-
+    twtr_helper = ryan_twtr_utils()
+    twtr_helper.get_new_tweets()
     return "Done"
 
 
