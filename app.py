@@ -80,7 +80,7 @@ def newsfetch():
                 news_ref.add(
                     {"title": "{}".format(post.title), "link": "{}".format(post.link)}
                 )
-                sendSlack(post.title, post.link, post.pub_date.strftime("(%Y/%m/%d)"))
+                send_slack(post.title, post.link, post.pub_date.strftime("(%Y/%m/%d)"))
     png_ref = db.collection("png")
     for row in get_pngs():
         doc_id = row[0] + row[2]
