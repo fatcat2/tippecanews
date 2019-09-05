@@ -4,6 +4,8 @@
 import os
 
 import atoma
+import asyncio
+import aiohttp
 from quart import Quart, request
 from google.cloud import firestore
 import requests
