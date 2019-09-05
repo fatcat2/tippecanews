@@ -1,11 +1,17 @@
+# This is the file containing most of the logic.
+# TODO(fatcat2): organize all helper methods into separate modules
+
 import os
 
 import atoma
 from dotenv import load_dotenv
 from flask import Flask, request
+
+import ryan_twtr_utils
+
 from google.cloud import firestore
 import requests
-import json #TODO REMOVE
+import json  # TODO REMOVE
 from info_getters import get_pngs, xml_urls
 
 app = Flask(__name__)
@@ -18,41 +24,45 @@ def hello_world():
     target = os.environ.get("TARGET", "World")
     return "Hello {}!\n".format(target)
 
+
 @app.route("/test")
 def test_me():
-    send_slack("lol", "wow", "asdf")
+    # send_slack("lol", "wow", "asdf")
     send_slack("lol", "wow", "asdf", is_pr=True)
+    return "yeet"
+
 
 @app.route("/interactive", methods=["POST"])
 def test_funct():
     response = json.loads(request.form.get("payload"))
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
+
+
+
     if blocks[0]["accessory"]["value"] == "cancel":
         blocks[0]["accessory"]["value"] = "take"
         blocks[0]["accessory"]["text"]["text"] = "Take me!"
-        blocks.pop(len(blocks)-1)
+        blocks.pop(len(blocks) - 1)
     else:
         blocks[0]["accessory"]["value"] = "cancel"
         blocks[0]["accessory"]["text"]["text"] = "Cancel!"
         blocks.append(
-                {
-		"type": "context",
-		"elements": [
-			{
-				"type": "mrkdwn",
-				"text": f"Taken by @{response['user']['username']}"
-			}
-		]
-	    }
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"Taken by @{response['user']['username']}",
+                    }
+                ],
+            }
         )
-    payload = {
-        "replace_original": "true",
-        "blocks": blocks
-    }
+    payload = {"replace_original": "true", "blocks": blocks}
 
     requests.post(resp_url, json=payload)
     return ""
+
 
 @app.route("/newsfetch")
 def newsfetch():
@@ -80,7 +90,13 @@ def newsfetch():
                 news_ref.add(
                     {"title": "{}".format(post.title), "link": "{}".format(post.link)}
                 )
-                sendSlack(post.title, post.link, post.pub_date.strftime("(%Y/%m/%d)"))
+                send_slack(
+                    post.title,
+                    post.link,
+                    post.pub_date.strftime("(%Y/%m/%d)"),
+                    is_pr=True,
+                )
+    # PNG section
     png_ref = db.collection("png")
     for row in get_pngs():
         doc_id = row[0] + row[2]
@@ -95,6 +111,10 @@ def newsfetch():
         except Exception:
             pass
 
+
+    # Twitter section
+    # r_twt = ryan_twtr_utils()
+
     return "Done"
 
 
@@ -107,45 +127,28 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False):
         "channel": os.getenv("SLACK_CHANNEL"),
         "text": title,
         "blocks": [
-            {
-		"type": "section",
-		"text": {
-			"type": "mrkdwn",
-			"text": f"{title}"
-		},
-            },
+            {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
             {
                 "type": "context",
-                "elements": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"Posted on {date}"
-                    }
-                ]
-            } 
-	]
+                "elements": [{"type": "mrkdwn", "text": f"Posted on {date}"}],
+            },
+        ],
     }
 
     if is_pr:
-        payload["blocks"][0]["text"] = {
-			"type": "mrkdwn",
-			"text": f"<{link}|{title}>"
-		}
+        payload["blocks"][0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
         payload["blocks"][0]["accessory"] = {
-			"type": "button",
-			"text": {
-				"type": "plain_text",
-				"text": "Take Me!"
-			},
-			"value": "take",
-			"action_id": "button"
-		}
+            "type": "button",
+            "text": {"type": "plain_text", "text": "Take Me!"},
+            "value": "take",
+            "action_id": "button",
+        }
 
-
-    print(payload)
+    print(headers, payload)
     r = requests.post(
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
+    print(r)
     r.raise_for_status()
 
 
