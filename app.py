@@ -38,7 +38,6 @@ def test_funct():
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
 
-
     if blocks[0]["accessory"]["value"] == "cancel":
         blocks[0]["accessory"]["value"] = "take"
         blocks[0]["accessory"]["text"]["text"] = "Take me!"
@@ -109,7 +108,6 @@ def newsfetch():
             )
         except Exception:
             pass
-
 
     # Twitter section
     twtr_helper = ryan_twtr_utils()
