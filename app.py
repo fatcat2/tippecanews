@@ -1,17 +1,17 @@
 # This is the file containing most of the logic.
 # TODO(fatcat2): organize all helper methods into separate modules
 
+import asyncio
 import os
 
-import atoma
-import asyncio
 import aiohttp
+import atoma
 from quart import Quart, request
 from google.cloud import firestore
 import requests
-from info_getters import get_pngs, xml_urls
 
 # Import local modules
+from info_getters import get_pngs, xml_urls
 from ryan_twtr_utils import ryan_twtr_utils
 
 app = Quart(__name__)
