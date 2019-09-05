@@ -1,4 +1,5 @@
 import os
+from typing import List
 from dateutil import parser
 from datetime import datetime, timezone, timedelta
 import twitter
@@ -6,7 +7,7 @@ import requests
 
 
 class ryan_twtr_utils:
-    account_list = [
+    _account_list = [
         "WLFI",
         "davebangert",
         "JCOnline",
@@ -30,11 +31,13 @@ class ryan_twtr_utils:
             access_token_secret=access_token_secret,
         )
 
-    def get_past_fifteen_mins(self, account: str):
+    def _get_past_fifteen_mins(self, account: str) -> List[twitter.models.Status]:
         """Function to get tweets from the past 15 minutes
 
         :type account: str
         :param account: A string representing a Twitter user's username.
+
+        :rtype: 
 
         """
         statuses = self.api.GetUserTimeline(screen_name=account)
@@ -49,7 +52,13 @@ class ryan_twtr_utils:
         ]
         return ret_list
 
-    def send_slack_twt(self, tweet):
+    def _send_slack_twt(self, tweet: twitter.models.Status) -> None:
+        """Function to send tweets to a specified Slack channel. Requires the SLACK_TOKEN and SLACK_CHANNEL environment variables to be set.
+
+        :type tweet: twitter.models.Status
+        :param tweet: A Twitter status obtained using the python-twitter library.
+
+        """
         headers = {"Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
         payload = {
             "channel": os.getenv("SLACK_CHANNEL"),
@@ -88,7 +97,7 @@ class ryan_twtr_utils:
         print(r)
         r.raise_for_status()
 
-    def get_new_tweets(self):
-        for username in self.account_list:
-            for tweet in self.get_past_fifteen_mins(username):
-                self.send_slack_twt(tweet)
+    def _get_new_tweets(self) -> None:
+        for username in self._account_list:
+            for tweet in self._get_past_fifteen_mins(username):
+                self._send_slack_twt(tweet)
