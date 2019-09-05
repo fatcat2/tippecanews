@@ -143,11 +143,9 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False):
             "action_id": "button",
         }
 
-    print(headers, payload)
     r = requests.post(
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
-    print(r)
     r.raise_for_status()
 
 
