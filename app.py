@@ -5,7 +5,7 @@ import os
 
 import atoma
 from dotenv import load_dotenv
-from flask import Flask, request
+from quart import Quart, request
 
 
 from google.cloud import firestore
@@ -16,24 +16,21 @@ from info_getters import get_pngs, xml_urls
 # Import local modules
 from ryan_twtr_utils import ryan_twtr_utils
 
-app = Flask(__name__)
-
-load_dotenv()
-
+app = Quart(__name__)
 
 @app.route("/")
-def hello_world():
+async def hello_world():
     target = os.environ.get("TARGET", "World")
     return "Hello {}!\n".format(target)
 
 
 @app.route("/test")
-def test_me():
+async def test_me():
     return "This tests things. Please turn back."
 
 
 @app.route("/interactive", methods=["POST"])
-def test_funct():
+async def test_funct():
     response = json.loads(request.form.get("payload"))
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
@@ -63,7 +60,7 @@ def test_funct():
 
 
 @app.route("/newsfetch")
-def newsfetch():
+async def newsfetch():
     db = firestore.Client()
     news_ref = db.collection("news")
     requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
@@ -115,7 +112,7 @@ def newsfetch():
     return "Done"
 
 
-def send_slack(title: str, link: str, date: str, is_pr: bool = False):
+async def send_slack(title: str, link: str, date: str, is_pr: bool = False):
     if "http" not in link:
         link = "http://{}".format(link)
 
