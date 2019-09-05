@@ -4,13 +4,9 @@
 import os
 
 import atoma
-from dotenv import load_dotenv
 from quart import Quart, request
-
-
 from google.cloud import firestore
 import requests
-import json  # TODO REMOVE
 from info_getters import get_pngs, xml_urls
 
 # Import local modules
