@@ -66,37 +66,12 @@ async def test_funct():
 async def newsfetch():
     db = firestore.Client()
     news_ref = db.collection("news")
-    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
-    try:
-        requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
-            "HIGH:!DH:!aNULL"
-        )
-    except AttributeError:
-        pass
-
-    for url in xml_urls:
-        async with aiohttp.ClientSession() as session:
-            resp = await session.get(url)
-            feed = atoma.parse_rss_bytes(await resp.read())
-        
-        for post in feed.items:
-            docs = (
-                news_ref.where("title", "==", "{}".format(post.title))
-                .where("link", "==", "{}".format(post.link))
-                .get()
-            )
-            docs_list = [doc for doc in docs]
-            if len(docs_list) == 0:
-                news_ref.add(
-                    {"title": "{}".format(post.title), "link": "{}".format(post.link)}
-                )
-                send_slack(
-                    post.title,
-                    post.link,
-                    post.pub_date.strftime("(%Y/%m/%d)"),
-                    is_pr=True,
-                )
     
+
+    rss = ryan_rss_utils()
+    coro_list = [rss.process_url(url) for url in rss.xml_urls]
+    results = await asyncio.gather(*coro_list)
+
     # PNG section
     png_ref = db.collection("png")
     for row in get_pngs():
@@ -143,11 +118,11 @@ async def send_slack(title: str, link: str, date: str, is_pr: bool = False):
             "value": "take",
             "action_id": "button",
         }
-
-    r = requests.post(
-        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
-    )
-    r.raise_for_status()
+    
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
+        resp = session.post(
+            "https://slack.com/api/chat.postMessage", headers=headers, json=payload
+        )
 
 
 if __name__ == "__main__":
