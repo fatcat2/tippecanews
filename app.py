@@ -55,8 +55,10 @@ async def test_funct():
             }
         )
     payload = {"replace_original": "true", "blocks": blocks}
+    
+    async with aiohttp.ClientSession as session:
+        await session.post(resp_url, json=payload)
 
-    requests.post(resp_url, json=payload)
     return ""
 
 
