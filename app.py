@@ -24,6 +24,9 @@ async def hello_world():
 
 @app.route("/test")
 async def test_me():
+    async with aiohttp.ClientSession() as session:
+        resp = await session.get(xml_urls[0])
+        feed = atoma.parse_rss_bytes(await resp.read())
     return "This tests things. Please turn back."
 
 
@@ -67,11 +70,13 @@ async def newsfetch():
             "HIGH:!DH:!aNULL"
         )
     except AttributeError:
-        # no pyopenssl support used / needed / available
         pass
+
     for url in xml_urls:
-        response = requests.get(url)
-        feed = atoma.parse_rss_bytes(response.content)
+        async with aiohttp.ClientSession() as session:
+            resp = await session.get(url)
+            feed = atoma.parse_rss_bytes(await resp.read())
+        
         for post in feed.items:
             docs = (
                 news_ref.where("title", "==", "{}".format(post.title))
@@ -89,6 +94,7 @@ async def newsfetch():
                     post.pub_date.strftime("(%Y/%m/%d)"),
                     is_pr=True,
                 )
+    
     # PNG section
     png_ref = db.collection("png")
     for row in get_pngs():
