@@ -133,7 +133,6 @@ def newsfetch():
                 )
                 status_log = status_log + f"<p>Added: {post.title}</p>"
                 logging.debug(f"Added: {post.title}</p>")
-
     png_ref = db.collection("png")
     for row in get_pngs():
         doc_id = row[0] + row[2]
