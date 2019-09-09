@@ -21,24 +21,27 @@ xml_urls = [
 ]
 
 class ryan_rss_utils:
-    def __init__():
+    def __init__(self):
         self.hello = "hello"
+        self.db = firestore.Client()
+        self.news_ref = self.db.collection("news")
 
 
-    async def process_url(url: str):
+    async def process_url(self,url: str):
         async with aiohttp.ClientSession() as session:
             resp = await session.get(url)
             feed = atoma.parse_rss_bytes(await resp.read())
-        
+        print("ah shit, here we go again")
+        print("url")
         for post in feed.items:
             docs = (
-                news_ref.where("title", "==", "{}".format(post.title))
+                self.news_ref.where("title", "==", "{}".format(post.title))
                 .where("link", "==", "{}".format(post.link))
                 .get()
             )
             docs_list = [doc for doc in docs]
             if len(docs_list) == 0:
-                news_ref.add(
+                self.news_ref.add(
                     {"title": "{}".format(post.title), "link": "{}".format(post.link)}
                 )
                 send_slack(
