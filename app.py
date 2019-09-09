@@ -1,15 +1,17 @@
 import os
 
 import atoma
-import datetime
+from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, request
 from google.cloud import firestore
 import requests
 import json #TODO REMOVE
 from info_getters import get_pngs, xml_urls
+import logging
 
 app = Flask(__name__)
+logging.basicConfig(level=10)
 
 load_dotenv()
 
@@ -33,11 +35,25 @@ def test_me():
         # no pyopenssl support used / needed / available
         pass
 
-    response = requests.get(xml_urls[0])
-    feed = atoma.parse_rss_bytes(response.content)
-    status_log = ""
-    for post in feed.items:
-        status_log = status_log + f"<p>{post.title} - {post.pub_date}</p>"
+        status_log = ""
+    db = firestore.Client()
+    news_ref = db.collection("news_releases_test")
+    
+    for url in xml_urls:
+        response = requests.get(url)
+        feed = atoma.parse_rss_bytes(response.content)
+
+        for post in feed.items:
+            doc_title = post.link.split('/')[len(post.link.split('/')) - 1]
+            docs = (
+                    news_ref.where("title", "==", "{}".format(post.title))
+                    .where("link", "==", "{}".format(post.link))
+                    .get()
+                )
+            docs_list = [doc for doc in docs]
+            if len(docs_list) == 0:
+                    status_log = status_log + f"<p>{post.title}</p>"
+
 
     return status_log
 
@@ -76,8 +92,9 @@ def test_funct():
 
 @app.route("/newsfetch")
 def newsfetch():
+    logging.debug("Fetching news")
     db = firestore.Client()
-    news_ref = db.collection("news")
+    news_ref = db.collection("news_releases_test")
     requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
     try:
         requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
@@ -86,6 +103,11 @@ def newsfetch():
     except AttributeError:
         # no pyopenssl support used / needed / available
         pass
+
+    status_log = ""
+
+    logging.debug("Going through XML urls")
+
     for url in xml_urls:
         response = requests.get(url)
         feed = atoma.parse_rss_bytes(response.content)
@@ -100,7 +122,10 @@ def newsfetch():
                 news_ref.add(
                     {"title": "{}".format(post.title), "link": "{}".format(post.link)}
                 )
-                sendSlack(post.title, post.link, post.pub_date.strftime("(%Y/%m/%d)"))
+                send_slack(post.title, post.link, post.pub_date.strftime("(%Y/%m/%d)"), is_pr=True)
+                status_log = status_log + f"<p>Added: {post.title}</p>"
+                logging.debug(f"Added: {post.title}</p>")
+    
     png_ref = db.collection("png")
     for row in get_pngs():
         doc_id = row[0] + row[2]
@@ -109,7 +134,7 @@ def newsfetch():
                 {"name": row[0], "location": row[1], "date issued": row[2]},
                 document_id=doc_id,
             )
-            sendSlack(
+            send_slack(
                 f"PNG issued to {row[0]} on {row[2]}. Banned from {row[1]}", "", ""
             )
         except Exception:
@@ -162,7 +187,7 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False):
 		}
 
 
-    print(payload)
+    # logging.debug(payload)
     r = requests.post(
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
