@@ -1,6 +1,7 @@
 import os
 
 import atoma
+import datetime
 from dotenv import load_dotenv
 from flask import Flask, request
 from google.cloud import firestore
@@ -20,8 +21,27 @@ def hello_world():
 
 @app.route("/test")
 def test_me():
-    send_slack("lol", "wow", "asdf")
-    send_slack("lol", "wow", "asdf", is_pr=True)
+    send_slack(f"This is a test message. It is currently {datetime.now()}", "github.com/fatcat2/tippecanews", "asdf")
+    send_slack(f"This is an interactive test message. It is currently {datetime.now()}", "github.com/fatcat2/tippecanews", "asdf", is_pr=True)
+    
+    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
+    try:
+        requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
+            "HIGH:!DH:!aNULL"
+        )
+    except AttributeError:
+        # no pyopenssl support used / needed / available
+        pass
+
+    response = requests.get(xml_urls[0])
+    feed = atoma.parse_rss_bytes(response.content)
+    status_log = ""
+    for post in feed.items:
+        status_log = status_log + f"<p>{post.title} - {post.pub_date}</p>"
+
+    return status_log
+
+
 
 @app.route("/interactive", methods=["POST"])
 def test_funct():
