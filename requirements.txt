@@ -1,0 +1,5 @@
+atoma==0.0.17
+flask==1.1.1
+google-cloud-firestore==1.4.0
+requests==2.22.0
+beautifulsoup4==4.8.0

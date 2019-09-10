@@ -1,16 +1,16 @@
 import os
 
 import atoma
-from dotenv import load_dotenv
+from datetime import datetime
 from flask import Flask, request
+import json
 from google.cloud import firestore
 import requests
-import json #TODO REMOVE
-from info_getters import get_pngs, xml_urls
+from tippecanews.info_getters import xml_urls, get_pngs
+import logging
 
 app = Flask(__name__)
-
-load_dotenv()
+logging.basicConfig(level=10)
 
 
 @app.route("/")
@@ -18,10 +18,51 @@ def hello_world():
     target = os.environ.get("TARGET", "World")
     return "Hello {}!\n".format(target)
 
+
 @app.route("/test")
 def test_me():
-    send_slack("lol", "wow", "asdf")
-    send_slack("lol", "wow", "asdf", is_pr=True)
+    send_slack(
+        f"This is a test message. It is currently {datetime.now()}",
+        "github.com/fatcat2/tippecanews",
+        "asdf",
+    )
+    send_slack(
+        f"This is an interactive test message. It is currently {datetime.now()}",
+        "github.com/fatcat2/tippecanews",
+        "asdf",
+        is_pr=True,
+    )
+
+    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
+    try:
+        requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
+            "HIGH:!DH:!aNULL"
+        )
+    except AttributeError:
+        # no pyopenssl support used / needed / available
+        pass
+
+        status_log = ""
+    db = firestore.Client()
+    news_ref = db.collection("news_releases_test")
+
+    for url in xml_urls:
+        response = requests.get(url)
+        feed = atoma.parse_rss_bytes(response.content)
+
+        for post in feed.items:
+            # doc_title = post.link.split("/")[len(post.link.split("/")) - 1]
+            docs = (
+                news_ref.where("title", "==", "{}".format(post.title))
+                .where("link", "==", "{}".format(post.link))
+                .get()
+            )
+            docs_list = [doc for doc in docs]
+            if len(docs_list) == 0:
+                status_log = status_log + f"<p>{post.title}</p>"
+
+    return status_log
+
 
 @app.route("/interactive", methods=["POST"])
 def test_funct():
@@ -31,33 +72,32 @@ def test_funct():
     if blocks[0]["accessory"]["value"] == "cancel":
         blocks[0]["accessory"]["value"] = "take"
         blocks[0]["accessory"]["text"]["text"] = "Take me!"
-        blocks.pop(len(blocks)-1)
+        blocks.pop(len(blocks) - 1)
     else:
         blocks[0]["accessory"]["value"] = "cancel"
         blocks[0]["accessory"]["text"]["text"] = "Cancel!"
         blocks.append(
-                {
-		"type": "context",
-		"elements": [
-			{
-				"type": "mrkdwn",
-				"text": f"Taken by @{response['user']['username']}"
-			}
-		]
-	    }
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"Taken by @{response['user']['username']}",
+                    }
+                ],
+            }
         )
-    payload = {
-        "replace_original": "true",
-        "blocks": blocks
-    }
+    payload = {"replace_original": "true", "blocks": blocks}
 
     requests.post(resp_url, json=payload)
     return ""
 
+
 @app.route("/newsfetch")
 def newsfetch():
+    logging.debug("Fetching news")
     db = firestore.Client()
-    news_ref = db.collection("news")
+    news_ref = db.collection("news_releases_test")
     requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
     try:
         requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
@@ -66,6 +106,11 @@ def newsfetch():
     except AttributeError:
         # no pyopenssl support used / needed / available
         pass
+
+    status_log = ""
+
+    logging.debug("Going through XML urls")
+
     for url in xml_urls:
         response = requests.get(url)
         feed = atoma.parse_rss_bytes(response.content)
@@ -80,7 +125,15 @@ def newsfetch():
                 news_ref.add(
                     {"title": "{}".format(post.title), "link": "{}".format(post.link)}
                 )
-                send_slack(post.title, post.link, post.pub_date.strftime("(%Y/%m/%d)"))
+                send_slack(
+                    post.title,
+                    post.link,
+                    post.pub_date.strftime("(%Y/%m/%d)"),
+                    is_pr=True,
+                )
+                status_log = status_log + f"<p>Added: {post.title}</p>"
+                logging.debug(f"Added: {post.title}</p>")
+
     png_ref = db.collection("png")
     for row in get_pngs():
         doc_id = row[0] + row[2]
@@ -89,7 +142,7 @@ def newsfetch():
                 {"name": row[0], "location": row[1], "date issued": row[2]},
                 document_id=doc_id,
             )
-            sendSlack(
+            send_slack(
                 f"PNG issued to {row[0]} on {row[2]}. Banned from {row[1]}", "", ""
             )
         except Exception:
@@ -107,42 +160,24 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False):
         "channel": os.getenv("SLACK_CHANNEL"),
         "text": title,
         "blocks": [
-            {
-		"type": "section",
-		"text": {
-			"type": "mrkdwn",
-			"text": f"{title}"
-		},
-            },
+            {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
             {
                 "type": "context",
-                "elements": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"Posted on {date}"
-                    }
-                ]
-            } 
-	]
+                "elements": [{"type": "mrkdwn", "text": f"Posted on {date}"}],
+            },
+        ],
     }
 
     if is_pr:
-        payload["blocks"][0]["text"] = {
-			"type": "mrkdwn",
-			"text": f"<{link}|{title}>"
-		}
+        payload["blocks"][0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
         payload["blocks"][0]["accessory"] = {
-			"type": "button",
-			"text": {
-				"type": "plain_text",
-				"text": "Take Me!"
-			},
-			"value": "take",
-			"action_id": "button"
-		}
+            "type": "button",
+            "text": {"type": "plain_text", "text": "Take Me!"},
+            "value": "take",
+            "action_id": "button",
+        }
 
-
-    print(payload)
+    # logging.debug(payload)
     r = requests.post(
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
