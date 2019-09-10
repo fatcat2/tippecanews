@@ -1,22 +1,7 @@
-import atoma
 from bs4 import BeautifulSoup
 import requests
 
-xml_urls = [
-    "http://www.purdue.edu/newsroom/rss/academics.xml",
-    "http://www.purdue.edu/newsroom/rss/AdvNews.xml",
-    "http://www.purdue.edu/newsroom/rss/AgriNews.xml",
-    "http://www.purdue.edu/newsroom/rss/BizNews.xml",
-    "http://www.purdue.edu/newsroom/rss/community.xml",
-    "http://www.purdue.edu/newsroom/rss/DiversityNews.xml",
-    "http://www.purdue.edu/newsroom/rss/EdCareerNews.xml",
-    "http://www.purdue.edu/newsroom/rss/EventNews.xml",
-    "http://www.purdue.edu/newsroom/rss/faculty_staff.xml",
-    "http://www.purdue.edu/newsroom/rss/FeaturedNews.xml",
-    "http://www.purdue.edu/newsroom/rss/general.xml",
-    "http://www.purdue.edu/newsroom/rss/HealthMedNews.xml",
-    "http://www.purdue.edu/newsroom/rss/StudentNews.xml",
-]
+xml_urls = ["http://www.purdue.edu/newsroom/rss/general.xml"]
 
 
 def get_pngs():
