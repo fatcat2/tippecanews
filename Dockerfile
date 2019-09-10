@@ -16,4 +16,4 @@ RUN pip install Flask gunicorn google-cloud-firestore atoma python-dotenv bs4
 # to be equal to the cores available.
 CMD exec export GOOGLE_APPLICATION_CREDENTAILS=auth.json
 CMD exec source envfile
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 app:app
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 main:tippecanews
