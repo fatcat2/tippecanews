@@ -6,7 +6,7 @@ from flask import Flask, request
 import json
 from google.cloud import firestore
 import requests
-from info_getters import get_pngs, xml_urls
+from tippecanews.info_getters import xml_urls, get_pngs
 import logging
 
 app = Flask(__name__)
@@ -133,6 +133,7 @@ def newsfetch():
                 )
                 status_log = status_log + f"<p>Added: {post.title}</p>"
                 logging.debug(f"Added: {post.title}</p>")
+
     png_ref = db.collection("png")
     for row in get_pngs():
         doc_id = row[0] + row[2]
