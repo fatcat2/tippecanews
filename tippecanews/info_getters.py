@@ -28,7 +28,6 @@ xml_urls = [
     "http://www.purdue.edu/newsroom/rss/AgNews.xml",
     "http://www.purdue.edu/newsroom/rss/DiscoParkNews.xml",
     "http://www.purdue.edu/newsroom/rss/EdNews.xml",
-    "http://www.purdue.edu/newsroom/rss/EngageNews.xml",
     "http://www.purdue.edu/newsroom/rss/engineering.xml",
     "http://www.purdue.edu/newsroom/rss/HHSNews.xml",
     "http://www.purdue.edu/newsroom/rss/ITaPNews.xml",
