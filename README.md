@@ -1,5 +1,6 @@
 # Tippecanews
 [![Build Status](https://travis-ci.com/fatcat2/tippecanews.svg?branch=master)](https://travis-ci.com/fatcat2/tippecanews)
+
 This is a Cloud Run function that checks a certain list of RSS feeds and stores them in a Firestore database if there are no duplicates.
 
 Tippecanews also sends new Purdue News articles to a specified Slack channel
