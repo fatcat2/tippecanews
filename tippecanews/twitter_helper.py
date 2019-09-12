@@ -35,7 +35,9 @@ class ryan_twtr_utils:
         """Function to get tweets from the past 15 minutes
         :type account: str
         :param account: A string representing a Twitter user's username.
-        :rtype: 
+
+        :rtype: List[twitter.models.Status]
+        :returns: A list of tweets.
         """
         statuses = self.api.GetUserTimeline(screen_name=account)
 
