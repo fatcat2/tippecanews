@@ -1,6 +1,6 @@
 import requests
 
-from tippecanews.info_getters import xml_urls
+from tippecanews.info_getters import get_pngs, xml_urls
 
 
 def test_valid_xml_urls():
@@ -10,9 +10,12 @@ def test_valid_xml_urls():
             "HIGH:!DH:!aNULL"
         )
     except AttributeError:
-        # no pyopenssl support used / needed / available
         pass
 
     for url in xml_urls:
         response = requests.get(url)
         assert response.status_code == 200
+
+
+def test_get_pngs():
+    assert len(get_pngs()) >= 0
