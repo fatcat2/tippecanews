@@ -7,6 +7,7 @@ import json
 from google.cloud import firestore
 import requests
 from tippecanews.info_getters import xml_urls, get_pngs
+from tippecanews.twitter_helper import ryan_twtr_utils
 import logging
 
 app = Flask(__name__)
@@ -147,6 +148,10 @@ def newsfetch():
             )
         except Exception:
             pass
+
+    # Twitter actions
+    twtr = ryan_twtr_utils()
+    twtr.get_new_tweets()
 
     return "Done"
 
