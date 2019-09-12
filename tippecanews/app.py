@@ -149,10 +149,6 @@ def newsfetch():
         except Exception:
             pass
 
-    # Twitter actions
-    twtr = ryan_twtr_utils()
-    twtr.get_new_tweets()
-
     return "Done"
 
 
