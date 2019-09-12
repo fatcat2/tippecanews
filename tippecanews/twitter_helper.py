@@ -45,7 +45,8 @@ class ryan_twtr_utils:
             status
             for status in statuses
             if (
-                datetime.now(timezone.utc) - parser.parse(status.created_at) < timedelta(minutes=15)
+                datetime.now(timezone.utc) - parser.parse(status.created_at)
+                < timedelta(minutes=15)  # noqa
             )
         ]
         return ret_list
