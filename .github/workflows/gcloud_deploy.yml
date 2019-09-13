@@ -9,15 +9,16 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     steps:
-      - name: authenticate
+      - uses: actions/checkout@master
+      - name: Authenticate
         env:
           GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
         uses: actions/gcloud/auth@master
-      - name: build
+      - name: Build
         uses: actions/gcloud/cli@master
         with:
           args: gcloud builds submit --tag gcr.io/tippecanews/tippecanews
-      - name: deploy
+      - name: Deploy
         uses: actions/gcloud/cli@master
         with:
           args: gcloud beta run deploy --image gcr.io/tippecanews/tippecanews --platform managed
