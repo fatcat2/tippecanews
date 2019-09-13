@@ -12,13 +12,13 @@ jobs:
       - name: authenticate
         env:
           GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
-        uses: actions/gcloud/auth@v1
+        uses: actions/gcloud/auth@master
       - name: build
-        uses: actions/gcloud/cli@v1
+        uses: actions/gcloud/cli@master
         with:
           args: gcloud builds submit --tag gcr.io/tippecanews/tippecanews
       - name: deploy
-        uses: actions/gcloud/cli@v1
+        uses: actions/gcloud/cli@master
         with:
           args: gcloud beta run deploy --image gcr.io/tippecanews/tippecanews --platform managed
         
