@@ -15,10 +15,14 @@ jobs:
           GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
         uses: actions/gcloud/auth@master
       - name: Build
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.CLOUDSDK_CORE_PROJECT }}
         uses: actions/gcloud/cli@master
         with:
           args: builds submit --tag gcr.io/tippecanews/tippecanews
       - name: Deploy
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.CLOUDSDK_CORE_PROJECT }}
         uses: actions/gcloud/cli@master
         with:
           args: beta run deploy --image gcr.io/tippecanews/tippecanews --platform managed
