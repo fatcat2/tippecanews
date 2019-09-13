@@ -1,0 +1,24 @@
+name: deploy-prod
+on:
+  push:
+      branches:
+          - master
+          
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: authenticate
+        env:
+          GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
+        uses: actions/gcloud/auth@v1
+      - name: build
+        uses: actions/gcloud/cli@v1
+        with:
+          args: gcloud builds submit --tag gcr.io/tippecanews/tippecanews
+      - name: deploy
+        uses: actions/gcloud/cli@v1
+        with:
+          args: gcloud beta run deploy --image gcr.io/tippecanews/tippecanews --platform managed
+        
