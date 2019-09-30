@@ -18,6 +18,7 @@ def hello_world():
     target = os.environ.get("TARGET", "World")
     return "Hello {}!\n".format(target)
 
+
 @app.route("/cms", methods=["GET", "POST"])
 def cms():
     return jsonify("https://admin-newyork1.bloxcms.com/")
