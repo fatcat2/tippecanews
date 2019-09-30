@@ -2,7 +2,7 @@ import os
 
 import atoma
 from datetime import datetime
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import json
 from google.cloud import firestore
 import requests
@@ -17,6 +17,10 @@ logging.basicConfig(level=10)
 def hello_world():
     target = os.environ.get("TARGET", "World")
     return "Hello {}!\n".format(target)
+
+@app.route("/cms", methods=["GET", "POST"])
+def cms():
+    return jsonify("https://admin-newyork1.bloxcms.com/")
 
 
 @app.route("/test")
