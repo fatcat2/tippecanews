@@ -13,6 +13,7 @@ def test_hello_world(client):
     resp = client.get("/")
     assert resp.status == "200 OK"
 
+
 def test_cms(client):
     resp = client.post("/cms")
     assert resp.status == "200 OK"
