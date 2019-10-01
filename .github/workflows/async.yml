@@ -1,4 +1,4 @@
-name: deploy-test
+name: deploy-async
 on:
   push: 
     branches:
