@@ -87,9 +87,6 @@ async def newsfetch():
         except Exception:
             pass
 
-    # Twitter section
-    twtr_helper = ryan_twtr_utils()
-    twtr_helper.get_new_tweets()
     return "Done"
 
 
