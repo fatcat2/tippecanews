@@ -14,6 +14,7 @@ import requests
 from info_getters import get_pngs, xml_urls
 from ryan_twtr_utils import ryan_twtr_utils
 
+    twtr_helper.get_new_tweets()
 app = Quart(__name__)
 
 @app.route("/")
@@ -67,7 +68,7 @@ async def newsfetch():
     db = firestore.Client()
     news_ref = db.collection("news")
     
-
+    # Utils time
     rss = ryan_rss_utils()
     coro_list = [rss.process_url(url) for url in rss.xml_urls]
     results = await asyncio.gather(*coro_list)
