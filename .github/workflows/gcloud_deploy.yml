@@ -14,12 +14,6 @@ jobs:
         env:
           GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
         uses: actions/gcloud/auth@master
-      - name: Update
-        env:
-          GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
-        uses: actions/gcloud/cli@master
-        with:
-          args: components install beta --quiet
       - name: Build
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.CLOUDSDK_CORE_PROJECT }}
@@ -31,5 +25,5 @@ jobs:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.CLOUDSDK_CORE_PROJECT }}
         uses: actions/gcloud/cli@master
         with:
-          args: beta run deploy --image gcr.io/tippecanews/tippecanews --platform managed --quiet
+          args: components install beta -- quiet && gcloud beta run deploy --image gcr.io/tippecanews/tippecanews --platform managed --quiet
         
