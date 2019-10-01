@@ -25,5 +25,5 @@ jobs:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.CLOUDSDK_CORE_PROJECT }}
         uses: actions/gcloud/cli@master
         with:
-          args: components install beta -- quiet && gcloud beta run deploy --image gcr.io/tippecanews/tippecanews --platform managed --quiet
+          args: components install beta --quiet && gcloud beta run deploy --image gcr.io/tippecanews/tippecanews --platform managed --quiet
         
