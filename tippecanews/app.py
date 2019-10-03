@@ -24,6 +24,16 @@ def cms():
     return jsonify("https://admin-newyork1.bloxcms.com/")
 
 
+@app.route("/tcms", methods=["GET", "POST"])
+def tcms():
+    return jsonify("https://192.168.168.128/desktop/#/purdueexponent.local")
+
+
+@app.route("/email", methods=["GET", "POST"])
+def email():
+    return jsonify("https://webmail.tn-cloud.net/src/login.php")
+
+
 @app.route("/test")
 def test_me():
     send_slack(
