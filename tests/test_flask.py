@@ -17,3 +17,13 @@ def test_hello_world(client):
 def test_cms(client):
     resp = client.post("/cms")
     assert resp.status == "200 OK"
+
+
+def test_tcms(client):
+    resp = client.post("/tcms")
+    assert resp.status == "200 OK"
+
+
+def test_email(client):
+    resp = client.post("/email")
+    assert resp.status == "200 OK"
