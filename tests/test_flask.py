@@ -10,6 +10,8 @@ def client():
 
 
 def test_hello_world(client):
+    """This tests if it can work.
+    """
     resp = client.get("/")
     assert resp.status == "200 OK"
 
