@@ -11,7 +11,6 @@ from tippecanews.utils.info_getters import xml_urls, get_pngs
 import logging
 
 app = Flask(__name__)
-jwt = JWTManager(app)
 logging.basicConfig(level=10)
 
 
