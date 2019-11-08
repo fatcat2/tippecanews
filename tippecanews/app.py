@@ -23,8 +23,9 @@ def hello_world():
     target = os.environ.get("TARGET", "World")
     return "Hello {}!\n".format(target)
 
-@app.route("/login", methods=["POST"])
-def login():
+@app.route("/directory", methods=["POST"])
+def directory_search():
+    return jsonify(request.form.get("payload").get("text"))
 
 
 
