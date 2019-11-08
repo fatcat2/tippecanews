@@ -3,12 +3,6 @@ import os
 import atoma
 from datetime import datetime
 from flask import Flask, request, jsonify
-from flask_jwt_extended import (
-    JWTManager,
-    # jwt_required,
-    # create_access_token,
-    # get_jwt_identity,
-)
 
 import json
 from google.cloud import firestore
