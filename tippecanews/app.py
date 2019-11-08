@@ -4,10 +4,12 @@ import atoma
 from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_jwt_extended import (
-    JWTManager, jwt_required, create_access_token,
-    get_jwt_identity
+    JWTManager,
+    # jwt_required,
+    # create_access_token,
+    # get_jwt_identity,
 )
-jwt = JWTManager(app)
+
 import json
 from google.cloud import firestore
 import requests
@@ -15,6 +17,7 @@ from tippecanews.utils.info_getters import xml_urls, get_pngs
 import logging
 
 app = Flask(__name__)
+jwt = JWTManager(app)
 logging.basicConfig(level=10)
 
 
@@ -23,10 +26,10 @@ def hello_world():
     target = os.environ.get("TARGET", "World")
     return "Hello {}!\n".format(target)
 
+
 @app.route("/directory", methods=["POST"])
 def directory_search():
     return jsonify(request.form.get("payload").get("text"))
-
 
 
 @app.route("/cms", methods=["GET", "POST"])

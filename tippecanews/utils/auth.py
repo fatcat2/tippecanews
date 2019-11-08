@@ -1,5 +1,6 @@
 from google.cloud import firestore
 
+
 def auth(username: str, password: str) -> bool:
     """Helper function to authenticate with database.
 
@@ -18,8 +19,6 @@ def auth(username: str, password: str) -> bool:
 
     if len(users) > 1:
         return False
-
-    user = users[0]
 
     if users[0]["password"] == password:
         return True

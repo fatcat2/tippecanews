@@ -4,3 +4,4 @@ google-cloud-firestore==1.4.0
 requests==2.22.0
 beautifulsoup4==4.8.0
 python-twitter==3.5
+flask_jwt_extended==3.24.1
