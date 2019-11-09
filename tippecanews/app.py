@@ -23,7 +23,7 @@ def hello_world():
 @app.route("/directory", methods=["POST"])
 def directory_search():
     print(request.body)
-    return jsonify(request.form.get("payload").get("text"))
+    return jsonify("sadf")
 
 
 @app.route("/cms", methods=["GET", "POST"])
