@@ -25,6 +25,7 @@ def hello_world():
 def directory_search():
     return jsonify(directory_search(request.form["text"]))
 
+
 @app.route("/cms", methods=["GET", "POST"])
 def cms():
     return jsonify("https://admin-newyork1.bloxcms.com/")

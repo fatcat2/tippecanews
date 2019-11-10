@@ -68,7 +68,8 @@ def get_pngs():
 
     return ret_list
 
-def directory_search(searchName:str) -> Dict[str, Any]:
+
+def directory_search(searchName: str) -> Dict[str, Any]:
     """Helper function to search names in the Purdue Directory
 
     Arguments:
@@ -82,8 +83,10 @@ def directory_search(searchName:str) -> Dict[str, Any]:
     soup = BeautifulSoup(r.text, "html.parser")
 
     result = soup.findAll(id="results")
-    
-    query_results = [row.findAll("td") for row in result[0].findAll("ul")[0].findAll("li")]
+
+    query_results = [
+        row.findAll("td") for row in result[0].findAll("ul")[0].findAll("li")
+    ]
 
     ret_list = []
 
@@ -92,25 +95,23 @@ def directory_search(searchName:str) -> Dict[str, Any]:
         # find the name
         for h2 in row.findAll("h2"):
             tmp.append(h2.text)
-        
+
         # find the rest of the information
         for td in row.findAll("td"):
             tmp.append(td.text)
 
         ret_list.append(tmp)
-    
+
     ret_blocks = {
-        "blocks":[
+        "blocks": [
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"Found *{len(ret_list)}* results for: \"{searchName}\""
-                }
+                    "text": f'Found *{len(ret_list)}* results for: "{searchName}"',
+                },
             },
-            {
-                "type": "divider"
-            }
+            {"type": "divider"},
         ]
     }
 
@@ -120,9 +121,9 @@ def directory_search(searchName:str) -> Dict[str, Any]:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"{result[0]} \nemail: {result[2]}\ncampus: {result[3]}\ncollege: {result[4]}"
-                }
+                    "text": f"{result[0]} \nemail: {result[2]}\ncampus: {result[3]}\ncollege: {result[4]}",
+                },
             }
         )
-    
+
     return ret_blocks
