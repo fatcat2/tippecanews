@@ -8,7 +8,7 @@ import json
 from google.cloud import firestore
 from bs4 import BeautifulSoup
 import requests
-from tippecanews.utils.retrievers import xml_urls, get_pngs, directory_search
+from tippecanews.utils.retrievers import directory_search, get_pngs, send_slack, xml_urls
 import logging
 
 app = Flask(__name__)
@@ -172,38 +172,6 @@ def newsfetch():
 
     return "Done"
 
-
-def send_slack(title: str, link: str, date: str, is_pr: bool = False):
-    if "http" not in link:
-        link = "http://{}".format(link)
-
-    headers = {"Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
-    payload = {
-        "channel": os.getenv("SLACK_CHANNEL"),
-        "text": title,
-        "blocks": [
-            {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
-            {
-                "type": "context",
-                "elements": [{"type": "mrkdwn", "text": f"Posted on {date}"}],
-            },
-        ],
-    }
-
-    if is_pr:
-        payload["blocks"][0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
-        payload["blocks"][0]["accessory"] = {
-            "type": "button",
-            "text": {"type": "plain_text", "text": "Take Me!"},
-            "value": "take",
-            "action_id": "button",
-        }
-
-    # logging.debug(payload)
-    r = requests.post(
-        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
-    )
-    r.raise_for_status()
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
