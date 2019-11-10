@@ -6,8 +6,9 @@ from flask import Flask, request, jsonify
 
 import json
 from google.cloud import firestore
+from bs4 import BeautifulSoup
 import requests
-from tippecanews.utils.info_getters import xml_urls, get_pngs
+from tippecanews.utils.info_getters import xml_urls, get_pngs, directory_search
 import logging
 
 app = Flask(__name__)
@@ -22,9 +23,7 @@ def hello_world():
 
 @app.route("/directory", methods=["POST"])
 def directory_search():
-    print(request.form)
-    return jsonify("return: " + request.form)
-
+    return jsonify(directory_search(request.form["text"]))
 
 @app.route("/cms", methods=["GET", "POST"])
 def cms():
