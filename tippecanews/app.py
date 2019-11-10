@@ -8,7 +8,7 @@ import json
 from google.cloud import firestore
 from bs4 import BeautifulSoup
 import requests
-from tippecanews.utils.info_getters import xml_urls, get_pngs
+from tippecanews.utils.info_getters import xml_urls, get_pngs, directory_search
 import logging
 
 app = Flask(__name__)
@@ -22,9 +22,9 @@ def hello_world():
 
 
 @app.route("/directory", methods=["POST"])
-def directory_search():
+def directory_search_route():
     name = request.form["text"]
-    ret = directory_search_tmp(name)
+    ret = directory_search(name)
     return jsonify(ret)
 
 
@@ -206,65 +206,6 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False):
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
     r.raise_for_status()
-
-def directory_search_tmp(searchName: str):
-    """Helper function to search names in the Purdue Directory
-
-    Arguments:
-        searchName (str): the name to be queried in the Purdue Directory.
-
-    Returns:
-        A Dict in Slack format.
-    """
-    # POST UP LEBRON!!!
-    r = requests.post("https://purdue.edu/directory", data={"searchString": searchName})
-    soup = BeautifulSoup(r.text, "html.parser")
-
-    result = soup.findAll(id="results")
-
-    query_results = [
-        row.findAll("td") for row in result[0].findAll("ul")[0].findAll("li")
-    ]
-
-    ret_list = []
-
-    for row in result[0].findAll("ul")[0].findAll("li"):
-        tmp = []
-        # find the name
-        for h2 in row.findAll("h2"):
-            tmp.append(h2.text)
-
-        # find the rest of the information
-        for td in row.findAll("td"):
-            tmp.append(td.text)
-
-        ret_list.append(tmp)
-
-    ret_blocks = {
-        "blocks": [
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": f'Found *{len(ret_list)}* results for: "{searchName}"',
-                },
-            },
-            {"type": "divider"},
-        ]
-    }
-
-    for result in ret_list:
-        ret_blocks["blocks"].append(
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": f"{result[0]} \nemail: {result[2]}\ncampus: {result[3]}\ncollege: {result[4]}",
-                },
-            }
-        )
-
-    return ret_blocks
-
+    
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
