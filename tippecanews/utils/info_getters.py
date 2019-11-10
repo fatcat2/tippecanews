@@ -93,10 +93,6 @@ def directory_search(searchName: str) -> Dict[str, Any]:
 
     result = soup.findAll(id="results")
 
-    query_results = [
-        row.findAll("td") for row in result[0].findAll("ul")[0].findAll("li")
-    ]
-
     ret_list = []
 
     for row in result[0].findAll("ul")[0].findAll("li"):

@@ -6,7 +6,6 @@ from flask import Flask, request, jsonify
 
 import json
 from google.cloud import firestore
-from bs4 import BeautifulSoup
 import requests
 from tippecanews.utils.info_getters import xml_urls, get_pngs, directory_search
 import logging
@@ -204,6 +203,7 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False):
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
     r.raise_for_status()
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
