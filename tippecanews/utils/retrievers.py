@@ -92,7 +92,7 @@ def directory_search(searchName: str) -> Dict[str, Any]:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f'Found *{len(ret_list)}* results for: "{searchName}"',
+                    "text": f'Found *{len(ret_list)}* result{'s' if len(ret_list) > 1 else ""} for: "{searchName}"',
                 },
             },
             {"type": "divider"},
