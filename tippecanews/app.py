@@ -23,9 +23,7 @@ def hello_world():
 
 @app.route("/directory", methods=["POST"])
 def directory_search_route():
-    name = request.form["text"]
-    ret = directory_search(name)
-    return jsonify(ret)
+    return jsonify(directory_search(request.form["text"]))
 
 
 @app.route("/cms", methods=["GET", "POST"])
@@ -206,6 +204,6 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False):
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
     r.raise_for_status()
-    
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
