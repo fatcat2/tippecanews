@@ -1,4 +1,5 @@
-from typing import Any, Dict
+import os
+from typing import Any, Dict, List
 
 from bs4 import BeautifulSoup
 import requests
