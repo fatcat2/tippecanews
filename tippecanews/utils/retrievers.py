@@ -47,27 +47,6 @@ xml_urls = [
 ]
 
 
-def get_pngs() -> List[List[str]]:
-    """Retrieves a list of three-wide arrays from the Purdue PNG website.
-    """
-    r = requests.get(
-        "https://www.purdue.edu/ehps/police/assistance/stats/personanongrata.html"
-    )
-
-    soup = BeautifulSoup(r.text, "html.parser")
-    table = soup.find(summary="Persona nongrata list")
-
-    ret_list = []
-
-    for tr in table.find_all("tr"):
-        td = tr.find_all("td")
-        row = [i.text.strip() for i in td]
-        if len(row) != 0:
-            ret_list.append(row)
-
-    return ret_list
-
-
 def directory_search(searchName: str) -> Dict[str, Any]:
     """Helper function to search names in the Purdue Directory
 
@@ -135,3 +114,71 @@ def directory_search(searchName: str) -> Dict[str, Any]:
         )
 
     return ret_blocks
+
+
+def get_pngs() -> List[List[str]]:
+    """Retrieves a list of three-wide arrays from the Purdue PNG website.
+
+    Returns:
+        A list of rows representing information about PNGs.
+    """
+    r = requests.get(
+        "https://www.purdue.edu/ehps/police/assistance/stats/personanongrata.html"
+    )
+
+    soup = BeautifulSoup(r.text, "html.parser")
+    table = soup.find(summary="Persona nongrata list")
+
+    ret_list = []
+
+    for tr in table.find_all("tr"):
+        td = tr.find_all("td")
+        row = [i.text.strip() for i in td]
+        if len(row) != 0:
+            ret_list.append(row)
+
+    return ret_list
+
+def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
+    """A helper function that sends messages to a specified Slack channel.
+
+    Arguments:
+        title (str): A string representing the title of the message.
+        link (str): A string representing a possible link to attach with the message
+        date (str): When the press release was released.
+        is_pr (bool): A boolean representing whether the incoming Slack message
+            is a press release or otherswise.
+    
+    Returns:
+        None
+    """
+    if "http" not in link:
+        link = "http://{}".format(link)
+
+    headers = {"Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
+    payload = {
+        "channel": os.getenv("SLACK_CHANNEL"),
+        "text": title,
+        "blocks": [
+            {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
+            {
+                "type": "context",
+                "elements": [{"type": "mrkdwn", "text": f"Posted on {date}"}],
+            },
+        ],
+    }
+
+    if is_pr:
+        payload["blocks"][0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
+        payload["blocks"][0]["accessory"] = {
+            "type": "button",
+            "text": {"type": "plain_text", "text": "Take Me!"},
+            "value": "take",
+            "action_id": "button",
+        }
+
+    # logging.debug(payload)
+    r = requests.post(
+        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
+    )
+    r.raise_for_status()
