@@ -55,39 +55,11 @@ def test_me():
         is_pr=True,
     )
 
-    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
-    try:
-        requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
-            "HIGH:!DH:!aNULL"
-        )
-    except AttributeError:
-        # no pyopenssl support used / needed / available
-        pass
-
-        status_log = ""
-    db = firestore.Client()
-    news_ref = db.collection("news_releases_test")
-
-    for url in xml_urls:
-        response = requests.get(url)
-        feed = atoma.parse_rss_bytes(response.content)
-
-        for post in feed.items:
-            # doc_title = post.link.split("/")[len(post.link.split("/")) - 1]
-            docs = (
-                news_ref.where("title", "==", "{}".format(post.title))
-                .where("link", "==", "{}".format(post.link))
-                .get()
-            )
-            docs_list = [doc for doc in docs]
-            if len(docs_list) == 0:
-                status_log = status_log + f"<p>{post.title}</p>"
-
-    return status_log
+    return jsonify(200)
 
 
 @app.route("/interactive", methods=["POST"])
-def test_funct():
+def interactive():
     response = json.loads(request.form.get("payload"))
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
