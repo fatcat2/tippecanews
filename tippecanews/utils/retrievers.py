@@ -71,7 +71,7 @@ def directory_search(searchName: str) -> Dict[str, Any]:
     soup = BeautifulSoup(r.text, "html.parser")
 
     result = soup.findAll(id="results")
-    
+
     ret_list = []
 
     for row in result[0].findAll("ul")[0].findAll("li"):
@@ -86,13 +86,15 @@ def directory_search(searchName: str) -> Dict[str, Any]:
 
         ret_list.append(tmp)
 
+    result_str = "results" if len(ret_list) else "result"
+
     ret_blocks = {
         "blocks": [
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f'Found *{len(ret_list)}* result{'s' if len(ret_list) > 1 else ""} for: "{searchName}"',
+                    "text": f'Found *{len(ret_list)}* {result_str} for: "{searchName}"',
                 },
             },
             {"type": "divider"},
@@ -136,6 +138,7 @@ def get_pngs() -> List[List[str]]:
 
     return ret_list
 
+
 def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     """A helper function that sends messages to a specified Slack channel.
 
@@ -145,7 +148,7 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
         date (str): When the press release was released.
         is_pr (bool): A boolean representing whether the incoming Slack message
             is a press release or otherswise.
-    
+
     Returns:
         None
     """

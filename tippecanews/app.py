@@ -6,9 +6,13 @@ from flask import Flask, request, jsonify
 
 import json
 from google.cloud import firestore
-from bs4 import BeautifulSoup
 import requests
-from tippecanews.utils.retrievers import directory_search, get_pngs, send_slack, xml_urls
+from tippecanews.utils.retrievers import (
+    directory_search,
+    get_pngs,
+    send_slack,
+    xml_urls,
+)
 import logging
 
 app = Flask(__name__)
