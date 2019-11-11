@@ -47,7 +47,7 @@ def test_send_slack_press_release(mocked_responses):
         responses.POST,
         test_url,
         callback=request_callback,
-        headers={"Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
+        content_type="application/json",
     )
 
     send_slack(test_title, test_link, "12-05-1889", is_pr=True)
