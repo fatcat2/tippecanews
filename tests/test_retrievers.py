@@ -1,4 +1,5 @@
 import requests
+import responses
 
 from tippecanews.utils.info_getters import get_pngs, xml_urls
 
