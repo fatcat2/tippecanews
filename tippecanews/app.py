@@ -7,7 +7,12 @@ from flask import Flask, request, jsonify
 import json
 from google.cloud import firestore
 import requests
-from tippecanews.utils.info_getters import xml_urls, get_pngs, directory_search
+from tippecanews.utils.retrievers import (
+    directory_search,
+    get_pngs,
+    send_slack,
+    xml_urls,
+)
 import logging
 
 app = Flask(__name__)
@@ -54,39 +59,11 @@ def test_me():
         is_pr=True,
     )
 
-    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
-    try:
-        requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
-            "HIGH:!DH:!aNULL"
-        )
-    except AttributeError:
-        # no pyopenssl support used / needed / available
-        pass
-
-        status_log = ""
-    db = firestore.Client()
-    news_ref = db.collection("news_releases_test")
-
-    for url in xml_urls:
-        response = requests.get(url)
-        feed = atoma.parse_rss_bytes(response.content)
-
-        for post in feed.items:
-            # doc_title = post.link.split("/")[len(post.link.split("/")) - 1]
-            docs = (
-                news_ref.where("title", "==", "{}".format(post.title))
-                .where("link", "==", "{}".format(post.link))
-                .get()
-            )
-            docs_list = [doc for doc in docs]
-            if len(docs_list) == 0:
-                status_log = status_log + f"<p>{post.title}</p>"
-
-    return status_log
+    return jsonify(200)
 
 
 @app.route("/interactive", methods=["POST"])
-def test_funct():
+def interactive():
     response = json.loads(request.form.get("payload"))
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
@@ -170,39 +147,6 @@ def newsfetch():
             pass
 
     return "Done"
-
-
-def send_slack(title: str, link: str, date: str, is_pr: bool = False):
-    if "http" not in link:
-        link = "http://{}".format(link)
-
-    headers = {"Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
-    payload = {
-        "channel": os.getenv("SLACK_CHANNEL"),
-        "text": title,
-        "blocks": [
-            {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
-            {
-                "type": "context",
-                "elements": [{"type": "mrkdwn", "text": f"Posted on {date}"}],
-            },
-        ],
-    }
-
-    if is_pr:
-        payload["blocks"][0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
-        payload["blocks"][0]["accessory"] = {
-            "type": "button",
-            "text": {"type": "plain_text", "text": "Take Me!"},
-            "value": "take",
-            "action_id": "button",
-        }
-
-    # logging.debug(payload)
-    r = requests.post(
-        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
-    )
-    r.raise_for_status()
 
 
 if __name__ == "__main__":
