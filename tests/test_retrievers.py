@@ -1,7 +1,5 @@
 import json
-import os
 
-import pytest
 import requests
 import responses
 
@@ -32,7 +30,9 @@ def test_send_slack_press_release():
     test_link = "http://ryanjchen.com"
     test_url = "https://slack.com/api/chat.postMessage"
 
-    responses.add(responses.POST, test_url, body="{}", status=200, content_type="application/json")
+    responses.add(
+        responses.POST, test_url, body="{}", status=200, content_type="application/json"
+    )
 
     send_slack(test_title, test_link, "12-05-1889", is_pr=True)
 
