@@ -262,11 +262,11 @@ def get_bylines():
         ]
     }
 
-    for key in key_string.keys():
+    for reporter in my_dict.keys():
         res_articles = ""
-        for article in my_dict[key]["articles"]:
+        for article in my_dict[reporter]["articles"]:
             res_articles = res_articles + f"* {article}\n"
-        res_string = f"{key}: {my_dict[key]["count"]} \n {res_articles}"
+        res_string = f"{reporter}: {my_dict[reporter]['count']} \n{res_articles}"
         ret_blocks["blocks"].append(
             {
                 "type": "section",
@@ -277,4 +277,4 @@ def get_bylines():
             }
         )
 
-    return ret_str
+    return ret_blocks
