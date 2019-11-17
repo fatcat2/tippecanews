@@ -1,5 +1,10 @@
 import os
 from typing import Any, Dict, List
+import re
+from datetime import datetime
+from collections import defaultdict
+
+import feedparser
 
 from bs4 import BeautifulSoup
 import requests
@@ -184,3 +189,105 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
     r.raise_for_status()
+
+
+def get_bylines():
+
+    my_dict = defaultdict(lambda: {"articles": [], "count": 0})
+
+    regex_string = r"B([yY]) (\w+) (\w+)"
+
+    regex_two = r"B([yY]) (\w+) (\w+) AND (\w+) (\w+)"
+
+    regex_three = r"B([yY]) (\w+) (\w+), (\w+) (\w+) AND (\w+) (\w+)"
+
+    d = datetime.now()
+
+    if d.day <= 15:
+        start_str = f"{d.month}/1/{d.year}"
+        end_str = f"{d.month}/15{d.year}"
+    else:
+        start_str = f"{d.month}/16/{d.year}"
+        end_str = f"{d.month}/{d.day}/{d.year}"
+
+    campus_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=campus&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
+    city_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
+
+    campus_feed = feedparser.parse(campus_search_string)
+    city_feed = feedparser.parse(city_search_string)
+
+    entry_list = campus_feed.entries + city_feed.entries
+
+    for entry in entry_list:
+        m = re.match(regex_three, entry.author)
+        if m is None:
+            n = re.match(regex_two, entry.author)
+            if n is None:
+                o = re.match(regex_string, entry.author)
+                if o is None:
+                    print("Nothing found for: " + entry.author)
+                    pass
+                else:
+                    key_string = f"{o.group(2)} {o.group(3)}"
+                    yeet = my_dict[key_string]
+                    yeet["articles"].append(entry.title)
+                    yeet["count"] = yeet["count"] + 1
+                    my_dict[key_string] = yeet
+            else:
+                key_string = f"{n.group(2)} {n.group(3)}"
+                yeet = my_dict[key_string]
+                yeet["articles"].append(entry.title)
+                yeet["count"] = yeet["count"] + 1
+                my_dict[key_string] = yeet
+
+                key_string = f"{n.group(4)} {n.group(5)}"
+                yeet = my_dict[key_string]
+                yeet["articles"].append(entry.title)
+                yeet["count"] = yeet["count"] + 1
+                my_dict[key_string] = yeet
+        else:
+            key_string = f"{m.group(2)} {m.group(3)}"
+            yeet = my_dict[key_string]
+            yeet["articles"].append(entry.title)
+            yeet["count"] = yeet["count"] + 1
+            my_dict[key_string] = yeet
+
+            key_string = f"{m.group(4)} {m.group(5)}"
+            yeet = my_dict[key_string]
+            yeet["articles"].append(entry.title)
+            yeet["count"] = yeet["count"] + 1
+            my_dict[key_string] = yeet
+
+            key_string = f"{m.group(6)} {m.group(7)}"
+            yeet = my_dict[key_string]
+            yeet["articles"].append(entry.title)
+            yeet["count"] = yeet["count"] + 1
+            my_dict[key_string] = yeet
+
+    ret_blocks = {"blocks": []}
+
+    ret_blocks["blocks"].append(
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"{len(my_dict.keys())} reporters wrote articles between {start_str} and {end_str}",
+            },  # noqa
+        }  # noqa
+    )
+
+    ret_blocks["blocks"].append({"type": "divider"})
+
+    for reporter in my_dict.keys():
+        res_articles = ""
+        for article in my_dict[reporter]["articles"]:
+            res_articles = res_articles + f"* {article}\n"
+        res_string = f"{reporter}: {my_dict[reporter]['count']} \n{res_articles}"
+        ret_blocks["blocks"].append(
+            {
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": res_string,},  # noqa
+            }  # noqa
+        )
+
+    return ret_blocks

@@ -12,6 +12,7 @@ from tippecanews.utils.retrievers import (
     get_pngs,
     send_slack,
     xml_urls,
+    get_bylines,
 )
 import logging
 
@@ -28,6 +29,11 @@ def hello_world():
 @app.route("/directory", methods=["POST"])
 def directory_search_route():
     return jsonify(directory_search(request.form["text"]))
+
+
+@app.route("/bylines", methods=["POST"])
+def byline_route():
+    return jsonify(get_bylines())
 
 
 @app.route("/cms", methods=["GET", "POST"])
