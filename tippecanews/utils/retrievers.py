@@ -266,6 +266,20 @@ def get_bylines():
 
     ret_blocks = {"blocks": []}
 
+    ret_blocks["blocks"].append(
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"{len(my_dict.keys())} reporters wrote articles between {start_str} and {end_str}",
+            },  # noqa
+        } # noqa
+    )
+
+    ret_blocks["blocks"].append(
+        {"type": "divider"}
+    )
+
     for reporter in my_dict.keys():
         res_articles = ""
         for article in my_dict[reporter]["articles"]:
