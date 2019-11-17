@@ -191,7 +191,8 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     r.raise_for_status()
 
 
-my_dict = defaultdict(lambda: {"articles": [],"count": 0})
+my_dict = defaultdict(lambda: {"articles": [], "count": 0})
+
 
 def increment(key_string, entry):
     yeet = my_dict[key_string]
@@ -199,13 +200,14 @@ def increment(key_string, entry):
     yeet["count"] = yeet["count"] + 1
     my_dict[key_string] = yeet
 
-def get_bylines():
-        
-    regex_string = "B([yY]) (\w+) (\w+)"
 
-    regex_two = "B([yY]) (\w+) (\w+) AND (\w+) (\w+)"
-    
-    regex_three = "B([yY]) (\w+) (\w+), (\w+) (\w+) AND (\w+) (\w+)"
+def get_bylines():
+
+    regex_string = r"B([yY]) (\w+) (\w+)"
+
+    regex_two = r"B([yY]) (\w+) (\w+) AND (\w+) (\w+)"
+
+    regex_three = r"B([yY]) (\w+) (\w+), (\w+) (\w+) AND (\w+) (\w+)"
 
     d = datetime.now()
 
@@ -254,9 +256,5 @@ def get_bylines():
 
             key_string = f"{m.group(6)} {m.group(7)}"
             increment(key_string, e)
-
-    search_string_city = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
-
-    feed = feedparser.parse(search_string_city)
 
     return my_dict
