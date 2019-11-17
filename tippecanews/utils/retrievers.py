@@ -210,9 +210,6 @@ def get_bylines():
         start_str = f"{d.month}/16/{d.year}"
         end_str = f"{d.month}/{d.day}/{d.year}"
 
-    start_str = "11/1/2019"
-    end_str = "11/15/2019"
-
     campus_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=campus&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
     city_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
 
