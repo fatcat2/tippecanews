@@ -257,11 +257,24 @@ def get_bylines():
             key_string = f"{m.group(6)} {m.group(7)}"
             increment(key_string, e)
 
-    ret_str = ""
+    ret_blocks = {
+        "blocks": [
+        ]
+    }
 
-    for reporter in my_dict.keys():
-        ret_str = ret_str + f"{reporter}: {my_dict[reporter]['count']}\n"
-        for article in my_dict["reporter"]:
-            ret_str = ret_str + f"* {article}\n"
+    for key in key_string.keys():
+        res_articles = ""
+        for article in my_dict[key]["articles"]:
+            res_articles = res_articles + f"* {article}\n"
+        res_string = f"{key}: {my_dict[key]["count"]} \n {res_articles}"
+        ret_blocks["blocks"].append(
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": res_string,
+                },
+            }
+        )
 
     return ret_str
