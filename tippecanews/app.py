@@ -32,7 +32,7 @@ def directory_search_route():
 
 @app.route("/bylines", methods=["POST"])
 def byline_route():
-    return jsonify(get_bylines())
+    return get_bylines()
 
 @app.route("/cms", methods=["GET", "POST"])
 def cms():
