@@ -191,17 +191,9 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     r.raise_for_status()
 
 
-my_dict = defaultdict(lambda: {"articles": [], "count": 0})
-
-
-def increment(key_string, entry):
-    yeet = my_dict[key_string]
-    yeet["articles"].append(entry.title)
-    yeet["count"] = yeet["count"] + 1
-    my_dict[key_string] = yeet
-
-
 def get_bylines():
+
+    my_dict = defaultdict(lambda: {"articles": [], "count": 0})
 
     regex_string = r"B([yY]) (\w+) (\w+)"
 
@@ -229,38 +221,53 @@ def get_bylines():
 
     entry_list = campus_feed.entries + city_feed.entries
 
-    for e in entry_list:
-        m = re.match(regex_three, e.author)
+    for entry in entry_list:
+        m = re.match(regex_three, entry.author)
         if m is None:
-            n = re.match(regex_two, e.author)
+            n = re.match(regex_two, entry.author)
             if n is None:
-                o = re.match(regex_string, e.author)
+                o = re.match(regex_string, entry.author)
                 if o is None:
-                    print("Nothing found for: " + e.author)
+                    print("Nothing found for: " + entry.author)
                     pass
                 else:
                     key_string = f"{o.group(2)} {o.group(3)}"
-                    increment(key_string, e)
+                    yeet = my_dict[key_string]
+                    yeet["articles"].append(entry.title)
+                    yeet["count"] = yeet["count"] + 1
+                    my_dict[key_string] = yeet
             else:
                 key_string = f"{n.group(2)} {n.group(3)}"
-                increment(key_string, e)
+                yeet = my_dict[key_string]
+                yeet["articles"].append(entry.title)
+                yeet["count"] = yeet["count"] + 1
+                my_dict[key_string] = yeet
 
                 key_string = f"{n.group(4)} {n.group(5)}"
-                increment(key_string, e)
+                yeet = my_dict[key_string]
+                yeet["articles"].append(entry.title)
+                yeet["count"] = yeet["count"] + 1
+                my_dict[key_string] = yeet
         else:
             key_string = f"{m.group(2)} {m.group(3)}"
-            increment(key_string, e)
+            yeet = my_dict[key_string]
+            yeet["articles"].append(entry.title)
+            yeet["count"] = yeet["count"] + 1
+            my_dict[key_string] = yeet
 
             key_string = f"{m.group(4)} {m.group(5)}"
-            increment(key_string, e)
+            yeet = my_dict[key_string]
+            yeet["articles"].append(entry.title)
+            yeet["count"] = yeet["count"] + 1
+            my_dict[key_string] = yeet
 
             key_string = f"{m.group(6)} {m.group(7)}"
-            increment(key_string, e)
+            yeet = my_dict[key_string]
+            yeet["articles"].append(entry.title)
+            yeet["count"] = yeet["count"] + 1
+            my_dict[key_string] = yeet
 
-    ret_blocks = {
-        "blocks": [
-        ]
-    }
+    ret_blocks = {"blocks": []}
 
     for reporter in my_dict.keys():
         res_articles = ""
@@ -270,11 +277,8 @@ def get_bylines():
         ret_blocks["blocks"].append(
             {
                 "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": res_string,
-                },
-            }
+                "text": {"type": "mrkdwn", "text": res_string,},  # noqa
+            }  # noqa
         )
 
     return ret_blocks
