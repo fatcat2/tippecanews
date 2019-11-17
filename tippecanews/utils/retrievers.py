@@ -1,5 +1,10 @@
 import os
 from typing import Any, Dict, List
+import re
+from datetime import datetime
+from collections import defaultdict
+
+import feedparser
 
 from bs4 import BeautifulSoup
 import requests
@@ -184,3 +189,74 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
     r.raise_for_status()
+
+
+my_dict = defaultdict(lambda: {"articles": [],"count": 0})
+
+def increment(key_string, entry):
+    yeet = my_dict[key_string]
+    yeet["articles"].append(entry.title)
+    yeet["count"] = yeet["count"] + 1
+    my_dict[key_string] = yeet
+
+def get_bylines():
+        
+    regex_string = "B([yY]) (\w+) (\w+)"
+
+    regex_two = "B([yY]) (\w+) (\w+) AND (\w+) (\w+)"
+    
+    regex_three = "B([yY]) (\w+) (\w+), (\w+) (\w+) AND (\w+) (\w+)"
+
+    d = datetime.now()
+
+    if d.day <= 15:
+        start_str = f"{d.month}/1/{d.year}"
+        end_str = f"{d.month}/15{d.year}"
+    else:
+        start_str = f"{d.month}/16/{d.year}"
+        end_str = f"{d.month}/{d.day}/{d.year}"
+
+    start_str = "11/1/2019"
+    end_str = "11/15/2019"
+
+    campus_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=campus&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
+    city_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
+
+    campus_feed = feedparser.parse(campus_search_string)
+    city_feed = feedparser.parse(city_search_string)
+
+    entry_list = campus_feed.entries + city_feed.entries
+
+    for e in entry_list:
+        m = re.match(regex_three, e.author)
+        if m is None:
+            n = re.match(regex_two, e.author)
+            if n is None:
+                o = re.match(regex_string, e.author)
+                if o is None:
+                    print("Nothing found for: " + e.author)
+                    pass
+                else:
+                    key_string = f"{o.group(2)} {o.group(3)}"
+                    increment(key_string, e)
+            else:
+                key_string = f"{n.group(2)} {n.group(3)}"
+                increment(key_string, e)
+
+                key_string = f"{n.group(4)} {n.group(5)}"
+                increment(key_string, e)
+        else:
+            key_string = f"{m.group(2)} {m.group(3)}"
+            increment(key_string, e)
+
+            key_string = f"{m.group(4)} {m.group(5)}"
+            increment(key_string, e)
+
+            key_string = f"{m.group(6)} {m.group(7)}"
+            increment(key_string, e)
+
+    search_string_city = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
+
+    feed = feedparser.parse(search_string_city)
+
+    return my_dict
