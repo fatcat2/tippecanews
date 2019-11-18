@@ -2,7 +2,7 @@ import os
 
 import atoma
 from datetime import datetime
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 import json
 from google.cloud import firestore
@@ -16,14 +16,14 @@ from tippecanews.utils.retrievers import (
 )
 import logging
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="static", static_folder="static/static")
 logging.basicConfig(level=10)
 
 
-@app.route("/")
-def hello_world():
-    target = os.environ.get("TARGET", "World")
-    return "Hello {}!\n".format(target)
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve(path):
+    return render_template("index.html")
 
 
 @app.route("/directory", methods=["POST"])

@@ -9,11 +9,11 @@ def client():
     yield client
 
 
-def test_hello_world(client):
-    resp = client.get("/")
+def test_tcms(client):
+    resp = client.post("/tcms")
     assert resp.status == "200 OK"
 
 
-def test_cms(client):
-    resp = client.post("/cms")
+def test_email(client):
+    resp = client.post("/email")
     assert resp.status == "200 OK"
