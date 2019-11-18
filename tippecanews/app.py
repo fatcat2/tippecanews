@@ -2,7 +2,7 @@ import os
 
 import atoma
 from datetime import datetime
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 
 import json
 from google.cloud import firestore
@@ -16,17 +16,14 @@ from tippecanews.utils.retrievers import (
 )
 import logging
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, template_folder="frontend/build", static_folder="static/static")
 logging.basicConfig(level=10)
 
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def serve(path):
-    if path != "" and os.path.exists(app.static_folder + "/" + path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, "index.html")
+    return render_template("index.html")
 
 
 @app.route("/directory", methods=["POST"])
