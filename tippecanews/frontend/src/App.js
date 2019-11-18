@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import { PageHeader, Row, Col, Alert } from 'antd';
 import { Typography, Divider, List } from 'antd';
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph } = Typography;
 
 const use_list = [
   "Getting Purdue News Slack releases in #tippecanews",
@@ -110,6 +110,10 @@ class App extends React.Component {
                   You type in /bylines into any Slack channel to get a message only you can see with all the bylines from the current pay period.
                   Something to note is that if it's the 17th or 2nd of the month and no articles have been posted, it will show up as no articles
                   for the pay period because there are no articles lulzzzz
+                </Paragraph>
+                <Divider />
+                <Paragraph>
+                  Tippecanews is maintained by <a href="twitter.com/ryanjengchen">@ryanjengchen</a>. Find him on Twitter, or email him at <a href="mailto:ryanjchen2@gmail.com">ryanjchen2@gmail.com</a> if you have any questions.
                 </Paragraph>
               </Typography>
             </Col>

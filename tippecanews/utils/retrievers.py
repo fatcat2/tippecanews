@@ -212,11 +212,13 @@ def get_bylines():
 
     campus_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=campus&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
     city_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
+    sports_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=sports&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
 
     campus_feed = feedparser.parse(campus_search_string)
     city_feed = feedparser.parse(city_search_string)
+    sports_feed = feedparser.parse(sports_search_string)
 
-    entry_list = campus_feed.entries + city_feed.entries
+    entry_list = campus_feed.entries + city_feed.entries + sports_feed.entries
 
     for entry in entry_list:
         m = re.match(regex_three, entry.author)
