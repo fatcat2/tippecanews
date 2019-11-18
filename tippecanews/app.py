@@ -2,7 +2,7 @@ import os
 
 import atoma
 from datetime import datetime
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, render_template
 
 import json
 from google.cloud import firestore
