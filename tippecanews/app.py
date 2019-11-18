@@ -16,7 +16,7 @@ from tippecanews.utils.retrievers import (
 )
 import logging
 
-app = Flask(__name__, static_folder="frontend/build")
+app = Flask(__name__, static_folder="static")
 logging.basicConfig(level=10)
 
 
