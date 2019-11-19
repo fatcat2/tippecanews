@@ -2,7 +2,8 @@ import os
 
 import atoma
 from datetime import datetime
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
+
 
 import json
 from google.cloud import firestore
@@ -20,10 +21,14 @@ app = Flask(__name__, template_folder="static", static_folder="static/static")
 logging.basicConfig(level=10)
 
 
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def serve(path):
+@app.route("/")
+def serve():
     return render_template("index.html")
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory("static", "favicon.ico")
 
 
 @app.route("/directory", methods=["POST"])
