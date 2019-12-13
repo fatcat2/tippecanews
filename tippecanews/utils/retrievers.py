@@ -162,7 +162,7 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
 
     headers = {
         "content-type": "application/json",
-        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN"))}
+        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
     }
     payload = {
         "channel": os.getenv("SLACK_CHANNEL"),
