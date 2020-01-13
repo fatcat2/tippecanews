@@ -23,6 +23,11 @@ logging.basicConfig(level=10)
 
 @app.route("/")
 def serve():
+    """Renders the instruction page.
+
+    Returns:
+        JSON'd object
+    """
     return render_template("index.html")
 
 
