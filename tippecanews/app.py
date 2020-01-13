@@ -26,7 +26,7 @@ def serve():
     """Renders the instruction page.
 
     Returns:
-        JSON'd object
+        The template for the instruction page.
     """
     return render_template("index.html")
 
