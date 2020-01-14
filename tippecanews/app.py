@@ -26,18 +26,28 @@ def serve():
     """Renders the instruction page.
 
     Returns:
-        JSON'd object
+        The template for the instruction page.
     """
     return render_template("index.html")
 
 
 @app.route("/favicon.ico")
 def favicon():
+    """Returns the favicon.
+
+    Returns:
+        The favicon file
+    """
     return send_from_directory("static", "favicon.ico")
 
 
 @app.route("/directory", methods=["POST"])
 def directory_search_route():
+    """Takes in a username and searches it through the Purdue Directory.
+
+    Returns:
+        Information found by querying the Purdue Directory in JSON form.
+    """
     return jsonify(directory_search(request.form["text"]))
 
 
