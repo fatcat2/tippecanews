@@ -53,6 +53,11 @@ def directory_search_route():
 
 @app.route("/bylines", methods=["POST"])
 def byline_route():
+    """Calls the get_bylines function and returns it to user in a request.
+
+    Returns:
+        List of bylines, formatted for Slack.
+    """
     return jsonify(get_bylines())
 
 
