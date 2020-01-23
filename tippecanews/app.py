@@ -53,16 +53,18 @@ def directory_search_route():
 
 @app.route("/bylines", methods=["POST"])
 def byline_route():
-    """Calls the get_bylines function and returns it to user in a request.
+    """Returns the bylines in a Slack-compatible format.
 
     Returns:
-        List of bylines, formatted for Slack.
+        Bylines in a Slack-compatible format
     """
     return jsonify(get_bylines())
 
 
 @app.route("/cms", methods=["GET", "POST"])
 def cms():
+    """Returns the CMS
+    """
     return jsonify("https://admin-newyork1.bloxcms.com/")
 
 
