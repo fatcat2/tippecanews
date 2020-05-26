@@ -63,23 +63,37 @@ def byline_route():
 
 @app.route("/cms", methods=["GET", "POST"])
 def cms():
-    """Returns the CMS
+    """Returns the link to CMS in a Slack-compatible format.
+
+    Returns:
+        CMS in a Slack-compatible format
     """
     return jsonify("https://admin-newyork1.bloxcms.com/")
 
 
 @app.route("/tcms", methods=["GET", "POST"])
 def tcms():
+    """Returns the TCMS link in a Slack-compatible format.
+
+    Returns:
+        TCMS in a Slack-compatible format
+    """
     return jsonify("https://192.168.168.128/desktop/#/purdueexponent.local")
 
 
 @app.route("/email", methods=["GET", "POST"])
 def email():
+    """Returns the email link in a Slack-compatible format.
+
+    Returns:
+        Email link in a Slack-compatible format
+    """
     return jsonify("https://webmail.tn-cloud.net/src/login.php")
 
 
 @app.route("/test")
 def test_me():
+    """ Test function to ensure things are working. """
     send_slack(
         f"This is a test message. It is currently {datetime.now()}",
         "github.com/fatcat2/tippecanews",
@@ -97,6 +111,8 @@ def test_me():
 
 @app.route("/interactive", methods=["POST"])
 def interactive():
+    """A route to handle interactions with press release messages.
+    """
     response = json.loads(request.form.get("payload"))
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
@@ -126,6 +142,11 @@ def interactive():
 
 @app.route("/newsfetch")
 def newsfetch():
+    """Function that scans through various Purdue news channels in order to find information within 15 minutes of it happening.
+    News sources being scanned:
+    * PUPD logs
+    * Some of the RSS feeds from Purdue news
+    """
     logging.debug("Fetching news")
     db = firestore.Client()
     news_ref = db.collection("news_releases_test")
