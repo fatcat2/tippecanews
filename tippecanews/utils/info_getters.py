@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from bs4 import BeautifulSoup
 import requests
 
@@ -65,3 +67,68 @@ def get_pngs():
         # print(row)
 
     return ret_list
+
+
+def directory_search(searchName: str) -> Dict[str, Any]:
+    """Helper function to search names in the Purdue Directory
+
+    Arguments:
+        searchName (str): the name to be queried in the Purdue Directory.
+
+    Returns:
+        A Dict in Slack format.
+    """
+    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
+    try:
+        requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
+            "HIGH:!DH:!aNULL"
+        )
+    except AttributeError:
+        # no pyopenssl support used / needed / available
+        pass
+
+    # POST UP LEBRON!!!
+    r = requests.post("https://purdue.edu/directory", data={"searchString": searchName})
+    soup = BeautifulSoup(r.text, "html.parser")
+
+    result = soup.findAll(id="results")
+
+    ret_list = []
+
+    for row in result[0].findAll("ul")[0].findAll("li"):
+        tmp = []
+        # find the name
+        for h2 in row.findAll("h2"):
+            tmp.append(h2.text)
+
+        # find the rest of the information
+        for td in row.findAll("td"):
+            tmp.append(td.text)
+
+        ret_list.append(tmp)
+
+    ret_blocks = {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f'Found *{len(ret_list)}* results for: "{searchName}"',
+                },
+            },
+            {"type": "divider"},
+        ]
+    }
+
+    for result in ret_list:
+        ret_blocks["blocks"].append(
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"{result[0]} \nemail: {result[2]}\ncampus: {result[3]}\ncollege: {result[4]}",
+                },
+            }
+        )
+
+    return ret_blocks
