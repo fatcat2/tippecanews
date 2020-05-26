@@ -192,7 +192,13 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     r.raise_for_status()
 
 
-def get_bylines():
+def get_bylines() -> List[Dict[str, Any]]:
+    """Helper function to retrieve reporter bylines for the current payperiod.
+
+    Returns:
+        List[Dict[str, Any]]
+        A list of Slack blocks containing reporter information.
+    """
 
     my_dict = defaultdict(lambda: {"articles": [], "count": 0})
 

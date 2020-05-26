@@ -23,41 +23,77 @@ logging.basicConfig(level=10)
 
 @app.route("/")
 def serve():
+    """Renders the instruction page.
+
+    Returns:
+        The template for the instruction page.
+    """
     return render_template("index.html")
 
 
 @app.route("/favicon.ico")
 def favicon():
+    """Returns the favicon.
+
+    Returns:
+        The favicon file
+    """
     return send_from_directory("static", "favicon.ico")
 
 
 @app.route("/directory", methods=["POST"])
 def directory_search_route():
+    """Takes in a username and searches it through the Purdue Directory.
+
+    Returns:
+        Information found by querying the Purdue Directory in JSON form.
+    """
     return jsonify(directory_search(request.form["text"]))
 
 
 @app.route("/bylines", methods=["POST"])
 def byline_route():
+    """Returns the bylines in a Slack-compatible format.
+
+    Returns:
+        Bylines in a Slack-compatible format
+    """
     return jsonify(get_bylines())
 
 
 @app.route("/cms", methods=["GET", "POST"])
 def cms():
+    """Returns the link to CMS in a Slack-compatible format.
+
+    Returns:
+        CMS in a Slack-compatible format
+    """
     return jsonify("https://admin-newyork1.bloxcms.com/")
 
 
 @app.route("/tcms", methods=["GET", "POST"])
 def tcms():
+    """Returns the TCMS link in a Slack-compatible format.
+
+    Returns:
+        TCMS in a Slack-compatible format
+    """
     return jsonify("https://192.168.168.128/desktop/#/purdueexponent.local")
 
 
 @app.route("/email", methods=["GET", "POST"])
 def email():
+    """Returns the email link in a Slack-compatible format.
+
+    Returns:
+        Email link in a Slack-compatible format
+    """
     return jsonify("https://webmail.tn-cloud.net/src/login.php")
 
 
 @app.route("/test")
 def test_me():
+    """ Test function to ensure things are working. """
     send_slack(
         f"This is a test message. It is currently {datetime.now()}",
         "github.com/fatcat2/tippecanews",
@@ -75,6 +111,8 @@ def test_me():
 
 @app.route("/interactive", methods=["POST"])
 def interactive():
+    """A route to handle interactions with press release messages.
+    """
     response = json.loads(request.form.get("payload"))
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
@@ -104,6 +142,11 @@ def interactive():
 
 @app.route("/newsfetch")
 def newsfetch():
+    """Function that scans through various Purdue news channels in order to find information within 15 minutes of it happening.
+    News sources being scanned:
+    * PUPD logs
+    * Some of the RSS feeds from Purdue news
+    """
     logging.debug("Fetching news")
     db = firestore.Client()
     news_ref = db.collection("news_releases_test")
