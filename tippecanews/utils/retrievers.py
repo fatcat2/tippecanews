@@ -6,8 +6,11 @@ from collections import defaultdict
 
 import feedparser
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 import requests
+
+import json, sys
+from ast import literal_eval
 
 xml_urls = [
     "http://www.purdue.edu/newsroom/rss/academics.xml",
@@ -300,3 +303,77 @@ def get_bylines() -> List[Dict[str, Any]]:
         )
 
     return ret_blocks
+
+
+def crime_scrape():
+    r = requests.get("https://www.purdue.edu/ehps/police/assistance/stats/statsdaily.html")
+    soup = BeautifulSoup(r.text, features="html.parser")
+
+    crime_div = soup.find("article", {"class": "post clearfix"})
+
+    ret_dict = {}
+    key = ""
+    for p in crime_div.find_all("p"):
+        print(p)
+        for c in p.contents:
+            if isinstance(c, element.NavigableString):
+                x = re.findall(r"([A-Z]+DAY) ([0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", c)
+                if x:
+                    key = c
+                    ret_dict[c] = set()
+                else:
+                    try:
+                        ret_dict[key].add(" ".join(p.contents))
+                    except TypeError:
+                        ret_dict[key].add(str(p))
+                    except:
+                        print(c)
+                        print(type(c))
+                        print("Unexpected error:", sys.exc_info()[0])
+                        continue
+            elif isinstance(c, element.Tag):
+                for t in c.contents:
+                    if isinstance(t, element.NavigableString):
+                        x = re.findall(r"([A-Z]+DAY) ([0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", t)
+                        if x:
+                            key = t
+                            ret_dict[t] = set()
+                        else:
+                            try:
+                                print("----------")
+                                ret_dict[key].add(p)
+                            except AttributeError:
+                                print("----------")
+                                print("Unexpected error:", sys.exc_info()[0])
+                                ret_dict[key].add(" ".join(p.contents))
+                            except:
+                                print("----------")
+                                print(type(t))
+                                print("Unexpected error:", sys.exc_info()[0])
+                                continue
+    
+    for key in ret_dict:
+        ret_dict[key] = list(ret_dict[key])
+
+    # # print(ret_dict.keys())
+
+    ret_blocks = {"blocks": []}
+
+    ret_blocks["blocks"].append(
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Here are the new crimes detected by the system.",
+            },  # noqa
+        }  # noqa
+    )
+
+    return ret_dict
+
+    # print(json.dumps(ret_dict))
+
+
+
+if __name__ == "__main__":
+    crime_scrape()
