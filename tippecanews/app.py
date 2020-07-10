@@ -14,6 +14,7 @@ from tippecanews.utils.retrievers import (
     send_slack,
     xml_urls,
     get_bylines,
+    get_quote
 )
 import logging
 
@@ -138,6 +139,10 @@ def interactive():
 
     requests.post(resp_url, json=payload)
     return ""
+
+@app.route("/daily")
+def daily_route():
+    return jsonify(get_quote())
 
 
 @app.route("/newsfetch")
