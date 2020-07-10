@@ -14,6 +14,7 @@ from tippecanews.utils.retrievers import (
     send_slack,
     xml_urls,
     get_bylines,
+    crime_scrape
 )
 import logging
 
@@ -94,19 +95,8 @@ def email():
 @app.route("/test")
 def test_me():
     """ Test function to ensure things are working. """
-    send_slack(
-        f"This is a test message. It is currently {datetime.now()}",
-        "github.com/fatcat2/tippecanews",
-        "asdf",
-    )
-    send_slack(
-        f"This is an interactive test message. It is currently {datetime.now()}",
-        "github.com/fatcat2/tippecanews",
-        "asdf",
-        is_pr=True,
-    )
-
-    return jsonify(200)
+    
+    return jsonify(crime_scrape())
 
 
 @app.route("/interactive", methods=["POST"])
