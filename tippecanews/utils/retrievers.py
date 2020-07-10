@@ -329,6 +329,20 @@ def get_quote() -> Dict[str, Any]:
         }  # noqa
     )
 
-    print(ret_blocks)
+    headers = {
+        "content-type": "application/json",
+        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
+    }
+    payload = {
+        "channel": os.getenv("SLACK_CHANNEL"),
+        "text": "",
+        "blocks": ret_blocks["blocks"]
+    }
+
+    r = requests.post(
+        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
+    )
+
+    return ret_blocks
 
 
