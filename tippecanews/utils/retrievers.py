@@ -313,8 +313,9 @@ def crime_scrape():
 
     # print(crime_div)
 
-    ret_dict = {}
+    ret_dict = defaultdict(lambda: [])
     key = ""
+    is_key = False
     for p in crime_div.find_all("p"):
         # print(p.contents)
         cleaned_result = ""
@@ -328,36 +329,29 @@ def crime_scrape():
                 match = re.findall(r"([A-Z]+DAY) ([0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", p.contents[0])
                 if len(match) > 0:
                     cleaned_result = " ".join(match[0])
+                    is_key = True
         else:
             cleaned_list = [c for c in p.contents if not isinstance(c, element.Tag)]
             cleaned_result = " ".join(cleaned_list)
         
-        print(cleaned_result)
+        if len(cleaned_result) < 1:
+            continue
+
+        match = re.findall(r"([A-Z]+DAY) ([0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", cleaned_result)
+        if len(match) > 0 or is_key:
+            key = cleaned_result
+        else:
+            ret_dict[key].append(cleaned_result)
+        
+        is_key=False
     
     for key in ret_dict:
         ret_dict[key] = list(ret_dict[key])
 
-    # # print(ret_dict.keys())
-
-    ret_blocks = {"blocks": []}
-
-    ret_blocks["blocks"].append(
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Here are the new crimes detected by the system.",
-            },  # noqa
-        }  # noqa
-    )
-
-    print(ret_dict)
-
-    return ret_dict
-
-    # print(json.dumps(ret_dict))
+    return json.dumps(ret_dict)
 
 
 
 if __name__ == "__main__":
-    crime_scrape()
+    with open("hi.json", "w+") as f:
+        f.write(crime_scrape())
