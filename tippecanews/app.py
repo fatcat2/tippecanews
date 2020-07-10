@@ -14,7 +14,7 @@ from tippecanews.utils.retrievers import (
     send_slack,
     xml_urls,
     get_bylines,
-    get_quote
+    get_quote,
 )
 import logging
 
@@ -141,6 +141,7 @@ def interactive():
     requests.post(resp_url, json=payload)
     return ""
 
+
 @app.route("/daily")
 def daily_route():
     return jsonify(get_quote())
@@ -170,30 +171,32 @@ def newsfetch():
     logging.debug("Going through XML urls")
 
     for url in xml_urls:
-        try:
-            response = requests.get(url)
-            feed = atoma.parse_rss_bytes(response.content)
-            for post in feed.items:
-                docs = (
-                    news_ref.where("title", "==", "{}".format(post.title))
-                    .where("link", "==", "{}".format(post.link))
-                    .get()
-                )
-                docs_list = [doc for doc in docs]
-                if len(docs_list) == 0:
-                    news_ref.add(
-                        {"title": "{}".format(post.title), "link": "{}".format(post.link)}
-                    )
-                    send_slack(
-                        post.title,
-                        post.link,
-                        post.pub_date.strftime("(%Y/%m/%d)"),
-                        is_pr=True,
-                    )
-                    status_log = status_log + f"<p>Added: {post.title}</p>"
-                    logging.debug(f"Added: {post.title}</p>")
-        except:
+        response = requests.get(url)
+        if response.status_code == 404:
             continue
+        feed = atoma.parse_rss_bytes(response.content)
+        for post in feed.items:
+            docs = (
+                news_ref.where("title", "==", "{}".format(post.title))
+                .where("link", "==", "{}".format(post.link))
+                .get()
+            )
+            docs_list = [doc for doc in docs]
+            if len(docs_list) == 0:
+                news_ref.add(
+                    {
+                        "title": "{}".format(post.title),
+                        "link": "{}".format(post.link),
+                    }
+                )
+                send_slack(
+                    post.title,
+                    post.link,
+                    post.pub_date.strftime("(%Y/%m/%d)"),
+                    is_pr=True,
+                )
+                status_log = status_log + f"<p>Added: {post.title}</p>"
+                logging.debug(f"Added: {post.title}</p>")
 
     png_ref = db.collection("png")
     for row in get_pngs():
