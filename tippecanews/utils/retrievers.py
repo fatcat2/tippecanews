@@ -10,46 +10,46 @@ from bs4 import BeautifulSoup
 import requests
 
 xml_urls = [
-    "http://www.purdue.edu/newsroom/rss/academics.xml",
-    "http://www.purdue.edu/newsroom/rss/AdvNews.xml",
-    "http://www.purdue.edu/newsroom/rss/AgriNews.xml",
-    "http://www.purdue.edu/newsroom/rss/BizNews.xml",
-    "http://www.purdue.edu/newsroom/rss/community.xml",
-    "http://www.purdue.edu/newsroom/rss/DiversityNews.xml",
-    "http://www.purdue.edu/newsroom/rss/EdCareerNews.xml",
-    "http://www.purdue.edu/newsroom/rss/EventNews.xml",
-    "http://www.purdue.edu/newsroom/rss/faculty_staff.xml",
-    "http://www.purdue.edu/newsroom/rss/FeaturedNews.xml",
-    "http://www.purdue.edu/newsroom/rss/general.xml",
-    "http://www.purdue.edu/newsroom/rss/HealthMedNews.xml",
-    "http://www.purdue.edu/newsroom/rss/hrnews.xml",
-    "http://www.purdue.edu/newsroom/rss/InfoTech.xml",
-    "http://www.purdue.edu/newsroom/rss/LifeNews.xml",
-    "http://www.purdue.edu/newsroom/rss/LifeSciNews.xml",
-    "http://www.purdue.edu/newsroom/rss/OTCNews.xml",
-    "http://www.purdue.edu/newsroom/rss/outreach.xml",
-    "http://www.purdue.edu/newsroom/rss/PhysicalSciNews.xml",
-    "http://www.purdue.edu/newsroom/rss/PRFAdminNews.xml",
-    "http://www.purdue.edu/newsroom/rss/ResearchNews.xml",
-    "http://www.purdue.edu/newsroom/rss/StudentNews.xml",
-    "http://www.purdue.edu/newsroom/rss/VetMedNews.xml",
-    "http://www.purdue.edu/newsroom/rss/AgNews.xml",
-    "http://www.purdue.edu/newsroom/rss/DiscoParkNews.xml",
-    "http://www.purdue.edu/newsroom/rss/EdNews.xml",
-    "http://www.purdue.edu/newsroom/rss/engineering.xml",
-    "http://www.purdue.edu/newsroom/rss/HHSNews.xml",
-    "http://www.purdue.edu/newsroom/rss/ITaPNews.xml",
-    "http://www.purdue.edu/newsroom/rss/CLANews.xml",
-    "http://www.purdue.edu/newsroom/rss/LibrariesNews.xml",
-    "http://www.purdue.edu/newsroom/rss/KrannertNews.xml",
-    "http://www.purdue.edu/newsroom/rss/NEESnews.xml",
-    "http://www.purdue.edu/newsroom/rss/NursingNews.xml",
-    "http://www.purdue.edu/newsroom/rss/PharmacyNews.xml",
-    "http://www.purdue.edu/newsroom/rss/president.xml",
-    "http://www.purdue.edu/newsroom/rss/PRFNews.xml",
-    "http://www.purdue.edu/newsroom/rss/ScienceNews.xml",
-    "http://www.purdue.edu/newsroom/rss/TechNews.xml",
-    "http://www.purdue.edu/newsroom/rss/VetNews.xml",
+    "https://www.purdue.edu/newsroom/rss/academics.xml",
+    "https://www.purdue.edu/newsroom/rss/AdvNews.xml",
+    "https://www.purdue.edu/newsroom/rss/AgriNews.xml",
+    "https://www.purdue.edu/newsroom/rss/BizNews.xml",
+    "https://www.purdue.edu/newsroom/rss/community.xml",
+    "https://www.purdue.edu/newsroom/rss/DiversityNews.xml",
+    "https://www.purdue.edu/newsroom/rss/EdCareerNews.xml",
+    "https://www.purdue.edu/newsroom/rss/EventNews.xml",
+    "https://www.purdue.edu/newsroom/rss/faculty_staff.xml",
+    "https://www.purdue.edu/newsroom/rss/FeaturedNews.xml",
+    "https://www.purdue.edu/newsroom/rss/general.xml",
+    "https://www.purdue.edu/newsroom/rss/HealthMedNews.xml",
+    "https://www.purdue.edu/newsroom/rss/hrnews.xml",
+    "https://www.purdue.edu/newsroom/rss/InfoTech.xml",
+    "https://www.purdue.edu/newsroom/rss/LifeNews.xml",
+    "https://www.purdue.edu/newsroom/rss/LifeSciNews.xml",
+    "https://www.purdue.edu/newsroom/rss/OTCNews.xml",
+    "https://www.purdue.edu/newsroom/rss/outreach.xml",
+    "https://www.purdue.edu/newsroom/rss/PhysicalSciNews.xml",
+    "https://www.purdue.edu/newsroom/rss/PRFAdminNews.xml",
+    "https://www.purdue.edu/newsroom/rss/ResearchNews.xml",
+    "https://www.purdue.edu/newsroom/rss/StudentNews.xml",
+    "https://www.purdue.edu/newsroom/rss/VetMedNews.xml",
+    "https://www.purdue.edu/newsroom/rss/AgNews.xml",
+    "https://www.purdue.edu/newsroom/rss/DiscoParkNews.xml",
+    "https://www.purdue.edu/newsroom/rss/EdNews.xml",
+    "https://www.purdue.edu/newsroom/rss/engineering.xml",
+    "https://www.purdue.edu/newsroom/rss/HHSNews.xml",
+    "https://www.purdue.edu/newsroom/rss/ITaPNews.xml",
+    "https://www.purdue.edu/newsroom/rss/CLANews.xml",
+    "https://www.purdue.edu/newsroom/rss/LibrariesNews.xml",
+    "https://www.purdue.edu/newsroom/rss/KrannertNews.xml",
+    "https://www.purdue.edu/newsroom/rss/NEESnews.xml",
+    "https://www.purdue.edu/newsroom/rss/NursingNews.xml",
+    "https://www.purdue.edu/newsroom/rss/PharmacyNews.xml",
+    "https://www.purdue.edu/newsroom/rss/president.xml",
+    "https://www.purdue.edu/newsroom/rss/PRFNews.xml",
+    "https://www.purdue.edu/newsroom/rss/ScienceNews.xml",
+    "https://www.purdue.edu/newsroom/rss/TechNews.xml",
+    "https://www.purdue.edu/newsroom/rss/VetNews.xml",
 ]
 
 
@@ -300,3 +300,49 @@ def get_bylines() -> List[Dict[str, Any]]:
         )
 
     return ret_blocks
+
+def get_quote() -> Dict[str, Any]:
+    """Helper function to get and process daily quotes."""
+
+    r = requests.get("http://api.quotable.io/random")
+
+    data = r.json()
+
+    tipp_daily_total = 0
+
+    corona_r = requests.get("https://hub.mph.in.gov/api/3/action/datastore_search?resource_id=8b8e6cd7-ede2-4c41-a9bd-4266df783145&q=Tippecanoe")
+
+    while len(corona_r.json()["result"]["records"]) > 0:
+        corona_data = corona_r.json()["result"]
+        tipp_daily_total += sum([record["m1e_covid_cases"] for record in corona_data["records"]])
+        corona_r = requests.get("https://hub.mph.in.gov" + corona_data["_links"]["next"])
+
+    ret_blocks = {"blocks": []}
+
+    ret_blocks["blocks"].append(
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"good morning! here's a quote to get your day started ʕ•́ᴥ•̀ʔっ\n\"{data['content']}\" - {data['author']}\nthere are {tipp_daily_total} COVID-19 cases in tippecanoe county, according to the isdh (╥﹏╥)",
+            },  # noqa
+        }  # noqa
+    )
+
+    headers = {
+        "content-type": "application/json",
+        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
+    }
+    payload = {
+        "channel": os.getenv("SLACK_CHANNEL"),
+        "text": "",
+        "blocks": ret_blocks["blocks"]
+    }
+
+    r = requests.post(
+        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
+    )
+
+    return ret_blocks
+
+

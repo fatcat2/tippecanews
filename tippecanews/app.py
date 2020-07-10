@@ -14,6 +14,7 @@ from tippecanews.utils.retrievers import (
     send_slack,
     xml_urls,
     get_bylines,
+    get_quote,
 )
 import logging
 
@@ -106,6 +107,7 @@ def test_me():
         is_pr=True,
     )
 
+    get_quote()
     return jsonify(200)
 
 
@@ -140,6 +142,11 @@ def interactive():
     return ""
 
 
+@app.route("/daily")
+def daily_route():
+    return jsonify(get_quote())
+
+
 @app.route("/newsfetch")
 def newsfetch():
     """Function that scans through various Purdue news channels in order to find information within 15 minutes of it happening.
@@ -165,6 +172,8 @@ def newsfetch():
 
     for url in xml_urls:
         response = requests.get(url)
+        if response.status_code == 404:
+            continue
         feed = atoma.parse_rss_bytes(response.content)
         for post in feed.items:
             docs = (
@@ -175,7 +184,10 @@ def newsfetch():
             docs_list = [doc for doc in docs]
             if len(docs_list) == 0:
                 news_ref.add(
-                    {"title": "{}".format(post.title), "link": "{}".format(post.link)}
+                    {
+                        "title": "{}".format(post.title),
+                        "link": "{}".format(post.link),
+                    }
                 )
                 send_slack(
                     post.title,
