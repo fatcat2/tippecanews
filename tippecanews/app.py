@@ -170,27 +170,30 @@ def newsfetch():
     logging.debug("Going through XML urls")
 
     for url in xml_urls:
-        response = requests.get(url)
-        feed = atoma.parse_rss_bytes(response.content)
-        for post in feed.items:
-            docs = (
-                news_ref.where("title", "==", "{}".format(post.title))
-                .where("link", "==", "{}".format(post.link))
-                .get()
-            )
-            docs_list = [doc for doc in docs]
-            if len(docs_list) == 0:
-                news_ref.add(
-                    {"title": "{}".format(post.title), "link": "{}".format(post.link)}
+        try:
+            response = requests.get(url)
+            feed = atoma.parse_rss_bytes(response.content)
+            for post in feed.items:
+                docs = (
+                    news_ref.where("title", "==", "{}".format(post.title))
+                    .where("link", "==", "{}".format(post.link))
+                    .get()
                 )
-                send_slack(
-                    post.title,
-                    post.link,
-                    post.pub_date.strftime("(%Y/%m/%d)"),
-                    is_pr=True,
-                )
-                status_log = status_log + f"<p>Added: {post.title}</p>"
-                logging.debug(f"Added: {post.title}</p>")
+                docs_list = [doc for doc in docs]
+                if len(docs_list) == 0:
+                    news_ref.add(
+                        {"title": "{}".format(post.title), "link": "{}".format(post.link)}
+                    )
+                    send_slack(
+                        post.title,
+                        post.link,
+                        post.pub_date.strftime("(%Y/%m/%d)"),
+                        is_pr=True,
+                    )
+                    status_log = status_log + f"<p>Added: {post.title}</p>"
+                    logging.debug(f"Added: {post.title}</p>")
+        except:
+            continue
 
     png_ref = db.collection("png")
     for row in get_pngs():
