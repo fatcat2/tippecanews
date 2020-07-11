@@ -301,6 +301,7 @@ def get_bylines() -> List[Dict[str, Any]]:
 
     return ret_blocks
 
+
 def get_quote() -> Dict[str, Any]:
     """Helper function to get and process daily quotes."""
 
@@ -310,11 +311,12 @@ def get_quote() -> Dict[str, Any]:
 
     tipp_daily_total = 0
 
-    corona_r = requests.get("https://hub.mph.in.gov/api/3/action/datastore_search?resource_id=8b8e6cd7-ede2-4c41-a9bd-4266df783145&q=Tippecanoe")
+    corona_r = requests.get(
+        "https://hub.mph.in.gov/api/3/action/datastore_search?resource_id=8b8e6cd7-ede2-4c41-a9bd-4266df783145&q=Tippecanoe"
+    )
 
     while len(corona_r.json()["result"]["records"]) > 0:
         corona_data = corona_r.json()["result"]
-        print(corona_data["records"])
         tipp_daily_total += sum([record["COVID_COUNT"] for record in corona_data["records"]])
         corona_r = requests.get("https://hub.mph.in.gov" + corona_data["_links"]["next"])
 
@@ -335,9 +337,9 @@ def get_quote() -> Dict[str, Any]:
         "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
     }
     payload = {
-        "channel": os.getenv("SLACK_CHANNEL"),
+        "channel": "random",
         "text": "",
-        "blocks": ret_blocks["blocks"]
+        "blocks": ret_blocks["blocks"],
     }
 
     r = requests.post(
@@ -345,5 +347,3 @@ def get_quote() -> Dict[str, Any]:
     )
 
     return ret_blocks
-
-
