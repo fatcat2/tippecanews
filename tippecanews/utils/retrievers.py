@@ -314,7 +314,8 @@ def get_quote() -> Dict[str, Any]:
 
     while len(corona_r.json()["result"]["records"]) > 0:
         corona_data = corona_r.json()["result"]
-        tipp_daily_total += sum([record["m1e_covid_cases"] for record in corona_data["records"]])
+        print(corona_data["records"])
+        tipp_daily_total += sum([record["COVID_COUNT"] for record in corona_data["records"]])
         corona_r = requests.get("https://hub.mph.in.gov" + corona_data["_links"]["next"])
 
     ret_blocks = {"blocks": []}
