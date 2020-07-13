@@ -326,9 +326,10 @@ def crime_scrape():
                 cleaned_result = " ".join(cleaned_list).strip()
             else:
                 # regex search
-                match = re.findall(r"([A-Z]+DAY) ([0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", p.contents[0])
-                if len(match) > 0:
-                    cleaned_result = " ".join(match[0])
+                match = re.findall(r"([A-Z]+DAY [0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", p.contents[0])
+                print(match)
+                if len(match) >0:
+                    cleaned_result = match[0]
                     is_key = True
         else:
             cleaned_list = [c for c in p.contents if not isinstance(c, element.Tag)]
@@ -337,8 +338,9 @@ def crime_scrape():
         if len(cleaned_result) < 1:
             continue
 
-        match = re.findall(r"([A-Z]+DAY) ([0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", cleaned_result)
-        if len(match) > 0 or is_key:
+        match = re.findall(r"([A-Z]+DAY [0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", cleaned_result)
+        print(match)
+        if len(match) == 1 or is_key:
             key = cleaned_result
         else:
             ret_dict[key].append(cleaned_result)
