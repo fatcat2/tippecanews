@@ -1,5 +1,6 @@
 # Tippecanews
 [![github actions](https://github.com/fatcat2/tippecanews/workflows/Python%20application/badge.svg)](https://github.com/fatcat2/tippecanews)
+![deploy-prod](https://github.com/fatcat2/tippecanews/workflows/deploy-prod/badge.svg)
 [![codecov](https://codecov.io/gh/fatcat2/tippecanews/branch/master/graph/badge.svg)](https://codecov.io/gh/fatcat2/tippecanews)
 
 This is a Cloud Run function that checks a certain list of RSS feeds and stores them in a Firestore database if there are no duplicates.

@@ -14,7 +14,8 @@ from tippecanews.utils.retrievers import (
     send_slack,
     xml_urls,
     get_bylines,
-    crime_scrape
+    crime_scrape,
+    get_quote,
 )
 import logging
 import base64
@@ -96,25 +97,20 @@ def email():
 @app.route("/test")
 def test_me():
     """ Test function to ensure things are working. """
-    
-    db = firestore.Client()
-    crime_ref = db.collection("crime")
-    crime_dict = crime_scrape()
-    for key in crime_dict:
-        for crime in crime_dict[key]:
-            doc_id = base64.b64encode(f"{key}_{crime}".encode()).decode()
-            try:
-                crime_ref.add(
-                    {"crime_string": crime},
-                    document_id=(doc_id)
-                )
-                send_slack(
-                    crime, "", ""
-                )
-            except Exception:
-                pass
-    
-    return jsonify(crime_scrape())
+    send_slack(
+        f"This is a test message. It is currently {datetime.now()}",
+        "github.com/fatcat2/tippecanews",
+        "asdf",
+    )
+    send_slack(
+        f"This is an interactive test message. It is currently {datetime.now()}",
+        "github.com/fatcat2/tippecanews",
+        "asdf",
+        is_pr=True,
+    )
+
+    get_quote()
+    return jsonify(200)
 
 
 @app.route("/interactive", methods=["POST"])
@@ -148,6 +144,11 @@ def interactive():
     return ""
 
 
+@app.route("/daily")
+def daily_route():
+    return jsonify(get_quote())
+
+
 @app.route("/newsfetch")
 def newsfetch():
     """Function that scans through various Purdue news channels in order to find information within 15 minutes of it happening.
@@ -173,6 +174,8 @@ def newsfetch():
 
     for url in xml_urls:
         response = requests.get(url)
+        if response.status_code == 404:
+            continue
         feed = atoma.parse_rss_bytes(response.content)
         for post in feed.items:
             docs = (
@@ -183,7 +186,7 @@ def newsfetch():
             docs_list = [doc for doc in docs]
             if len(docs_list) == 0:
                 news_ref.add(
-                    {"title": "{}".format(post.title), "link": "{}".format(post.link)}
+                    {"title": "{}".format(post.title), "link": "{}".format(post.link),}
                 )
                 send_slack(
                     post.title,
