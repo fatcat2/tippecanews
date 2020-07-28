@@ -6,8 +6,11 @@ from collections import defaultdict
 
 import feedparser
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 import requests
+
+import json, sys
+from ast import literal_eval
 
 xml_urls = [
     "https://www.purdue.edu/newsroom/rss/academics.xml",
@@ -301,6 +304,53 @@ def get_bylines() -> List[Dict[str, Any]]:
 
     return ret_blocks
 
+
+def crime_scrape():
+    r = requests.get("https://www.purdue.edu/ehps/police/assistance/stats/statsdaily.html")
+    soup = BeautifulSoup(r.text, features="html.parser")
+
+    crime_div = soup.find("article", {"class": "post clearfix"})
+
+    # print(crime_div)
+
+    ret_dict = defaultdict(lambda: [])
+    key = ""
+    is_key = False
+    for p in crime_div.find_all("p"):
+        # print(p.contents)
+        cleaned_result = ""
+        if(len(p.contents) == 1):
+            # check for tag
+            if isinstance(p.contents[0], element.Tag):
+                cleaned_list = [c for c in p.contents[0].contents if not isinstance(c, element.Tag)]
+                cleaned_result = " ".join(cleaned_list).strip()
+            else:
+                # regex search
+                match = re.findall(r"([A-Z]+DAY [0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", p.contents[0])
+                print(match)
+                if len(match) >0:
+                    cleaned_result = match[0]
+                    is_key = True
+        else:
+            cleaned_list = [c for c in p.contents if not isinstance(c, element.Tag)]
+            cleaned_result = " ".join(cleaned_list)
+        
+        if len(cleaned_result) < 1:
+            continue
+
+        match = re.findall(r"([A-Z]+DAY [0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", cleaned_result)
+        print(match)
+        if len(match) == 1 or is_key:
+            key = cleaned_result
+        else:
+            ret_dict[key].append(cleaned_result)
+        
+        is_key=False
+    
+    for key in ret_dict:
+        ret_dict[key] = list(ret_dict[key])
+
+    return ret_dict
 
 def get_quote() -> Dict[str, Any]:
     """Helper function to get and process daily quotes."""
