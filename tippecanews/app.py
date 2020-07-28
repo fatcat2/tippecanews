@@ -17,6 +17,7 @@ from tippecanews.utils.retrievers import (
     crime_scrape
 )
 import logging
+import base64
 
 app = Flask(__name__, template_folder="static", static_folder="static/static")
 logging.basicConfig(level=10)
@@ -95,6 +96,23 @@ def email():
 @app.route("/test")
 def test_me():
     """ Test function to ensure things are working. """
+    
+    db = firestore.Client()
+    crime_ref = db.collection("crime")
+    crime_dict = crime_scrape()
+    for key in crime_dict:
+        for crime in crime_dict[key]:
+            doc_id = base64.b64encode(f"{key}_{crime}".encode()).decode()
+            try:
+                crime_ref.add(
+                    {"crime_string": crime},
+                    document_id=(doc_id)
+                )
+                send_slack(
+                    crime, "", ""
+                )
+            except Exception:
+                pass
     
     return jsonify(crime_scrape())
 
@@ -189,6 +207,8 @@ def newsfetch():
             )
         except Exception:
             pass
+    
+    
 
     return "Done"
 

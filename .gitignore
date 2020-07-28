@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 
 slack.txt
+.nox

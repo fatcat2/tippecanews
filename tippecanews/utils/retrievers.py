@@ -350,7 +350,7 @@ def crime_scrape():
     for key in ret_dict:
         ret_dict[key] = list(ret_dict[key])
 
-    return json.dumps(ret_dict)
+    return ret_dict
 
 
 
