@@ -1,4 +1,4 @@
-name: Python application
+name: Run nox (PyTest, formatter, linter)
 
 on: [pull_request]
 
