@@ -2,6 +2,7 @@ from collections import defaultdict
 import re
 from typing import Any, Dict
 
+
 def process_bylines(entry_list) -> Dict[str, Any]:
     bylines = defaultdict(lambda: {"articles": [], "count": 0})
 
@@ -46,5 +47,5 @@ def process_bylines(entry_list) -> Dict[str, Any]:
             key_string = f"{match_three.group(6)} {match_three.group(7)}"
             bylines[key_string]["articles"].append(entry.title)
             bylines[key_string]["count"] = bylines[key_string]["count"] + 1
-    
+
     return bylines
