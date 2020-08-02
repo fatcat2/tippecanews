@@ -27,27 +27,27 @@ def process_bylines(entry_list) -> Dict[str, Any]:
                     pass
                 else:
                     key_string = f"{match_one.group(2)} {match_one.group(3)}"
-                    bylines[key_string]["articles"].append(entry.title)
+                    bylines[key_string]["articles"].append(entry["title"])
                     bylines[key_string]["count"] = bylines[key_string]["count"] + 1
             else:
                 key_string = f"{match_two.group(2)} {match_two.group(3)}"
-                bylines[key_string]["articles"].append(entry.title)
+                bylines[key_string]["articles"].append(entry["title"])
                 bylines[key_string]["count"] = bylines[key_string]["count"] + 1
 
                 key_string = f"{match_two.group(4)} {match_two.group(5)}"
-                bylines[key_string]["articles"].append(entry.title)
+                bylines[key_string]["articles"].append(entry["title"])
                 bylines[key_string]["count"] = bylines[key_string]["count"] + 1
         else:
             key_string = f"{match_three.group(2)} {match_three.group(3)}"
-            bylines[key_string]["articles"].append(entry.title)
+            bylines[key_string]["articles"].append(entry["title"])
             bylines[key_string]["count"] = bylines[key_string]["count"] + 1
 
             key_string = f"{match_three.group(4)} {match_three.group(5)}"
-            bylines[key_string]["articles"].append(entry.title)
+            bylines[key_string]["articles"].append(entry["title"])
             bylines[key_string]["count"] = bylines[key_string]["count"] + 1
 
             key_string = f"{match_three.group(6)} {match_three.group(7)}"
-            bylines[key_string]["articles"].append(entry.title)
+            bylines[key_string]["articles"].append(entry["title"])
             bylines[key_string]["count"] = bylines[key_string]["count"] + 1
 
     return bylines
