@@ -184,7 +184,7 @@ def newsfetch():
             docs_list = [doc for doc in docs]
             if len(docs_list) == 0:
                 news_ref.add(
-                    {"title": "{}".format(post.title), "link": "{}".format(post.link),}
+                    {"title": "{}".format(post.title), "link": "{}".format(post.link)}
                 )
                 send_slack(
                     post.title,
