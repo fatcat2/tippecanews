@@ -212,8 +212,6 @@ def newsfetch():
             )
         except Exception:
             pass
-    
-    
 
     return "Done"
 
