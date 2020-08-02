@@ -1,5 +1,5 @@
 # Tippecanews
-![Tests](https://github.com/fatcat2/tippecanews/workflows/Run%20nox%20(PyTest,%20formatter,%20linter)/badge.svg)
+![Tests](https://github.com/fatcat2/tippecanews/workflows/Tests/badge.svg)
 ![deploy-prod](https://github.com/fatcat2/tippecanews/workflows/deploy-prod/badge.svg)
 [![codecov](https://codecov.io/gh/fatcat2/tippecanews/branch/master/graph/badge.svg)](https://codecov.io/gh/fatcat2/tippecanews)
 
