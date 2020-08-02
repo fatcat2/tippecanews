@@ -9,8 +9,6 @@ import feedparser
 from bs4 import BeautifulSoup, element
 import requests
 
-import json, sys
-from ast import literal_eval
 
 xml_urls = [
     "https://www.purdue.edu/newsroom/rss/academics.xml",
