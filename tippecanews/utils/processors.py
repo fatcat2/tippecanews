@@ -13,7 +13,7 @@ def process_bylines(entry_list) -> Dict[str, Any]:
     for entry in entry_list:
         try:
             entry["author"]
-        except:
+        except KeyError:
             continue
         match_three = re.match(regex_three, entry["author"])
         if match_three is None:
