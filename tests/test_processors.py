@@ -14,17 +14,20 @@ def test_staff_report():
 
     assert len(bylines_list) == 0
 
+
 def test_double_byline_success():
     bylines_list = process_bylines(test_data_double_byline)
 
     for key in bylines_list.keys():
         assert key == "JORDAN SMITH" or key == "ADRIAN GAETA"
 
+
 def test_triple_byline_success():
     bylines_list = process_bylines(test_data_triple_byline)
 
     for key in bylines_list.keys():
         assert key == "JORDAN SMITH" or key == "ADRIAN GAETA" or key == "ALISA REYNYA"
+
 
 test_data_good_article = [
     {
@@ -181,4 +184,3 @@ test_data_triple_byline = [
         "author_detail": {"name": "BY ADRIAN GAETA Summer Reporter"},
     }
 ]
-
