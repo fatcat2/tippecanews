@@ -18,9 +18,7 @@ from tippecanews.utils.retrievers import (
 )
 import logging
 
-app = Flask(
-    __name__, template_folder="frontend/build", static_folder="frontend/build/static"
-)
+app = Flask(__name__, template_folder="build", static_folder="build/static")
 logging.basicConfig(level=10)
 
 
@@ -61,7 +59,7 @@ def byline_route():
     Returns:
         Bylines in a Slack-compatible format
     """
-    return jsonify(get_bylines())
+    return jsonify(get_bylines(request.form["text"]))
 
 
 @app.route("/cms", methods=["GET", "POST"])
