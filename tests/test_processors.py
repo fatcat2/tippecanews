@@ -1,19 +1,15 @@
-import json
-import time
-import responses
-
 from tippecanews.utils.processors import process_bylines
 
 
 def test_good_article():
     bylines_list = process_bylines(test_data_good_article)
 
-    assert len(responses.calls) == 1
-    assert responses.calls[0].request.url == test_url
-    assert json.loads(responses.calls[0].request.body)["text"] == test_title
+    assert len(bylines_list) == 1
+    # assert responses.calls[0].request.url == test_url
+    # assert json.loads(responses.calls[0].request.body)["text"] == test_title
 
 
-def test_good_article():
+def test_staff_report():
     bylines_list = process_bylines(test_data_staff_report)
 
     assert len(bylines_list) == 0
