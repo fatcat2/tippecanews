@@ -14,13 +14,13 @@ from tippecanews.utils.retrievers import (
     send_slack,
     xml_urls,
     get_bylines,
-    crime_scrape,
     get_quote,
 )
 import logging
-import base64
 
-app = Flask(__name__, template_folder="static", static_folder="static/static")
+app = Flask(
+    __name__, template_folder="frontend/build", static_folder="frontend/build/static"
+)
 logging.basicConfig(level=10)
 
 
@@ -186,7 +186,7 @@ def newsfetch():
             docs_list = [doc for doc in docs]
             if len(docs_list) == 0:
                 news_ref.add(
-                    {"title": "{}".format(post.title), "link": "{}".format(post.link),}
+                    {"title": "{}".format(post.title), "link": "{}".format(post.link)}
                 )
                 send_slack(
                     post.title,
@@ -210,8 +210,6 @@ def newsfetch():
             )
         except Exception:
             pass
-    
-    
 
     return "Done"
 

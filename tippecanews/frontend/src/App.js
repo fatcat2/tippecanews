@@ -77,6 +77,13 @@ class App extends React.Component {
                   We used to have tweets, but it took up way too much space in the channel. 
                 </Paragraph>
                 <Title level={3}>
+                  Daily coronavirus counts and inspirational quotes!
+                </Title>
+                <Paragraph>
+                  This is a new feature that I implemented. Every day at 9 a.m. EST, Tippecanews sends a coronavirus count for Tippecanoe 
+                  county straight from the ISDH, along with a random inspirational quote!
+                </Paragraph>
+                <Title level={3}>
                   Getting links!
                 </Title>
                 <Paragraph>
