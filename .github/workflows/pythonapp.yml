@@ -1,6 +1,6 @@
-name: Python application
+name: Run nox (PyTest, formatter, linter)
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build:

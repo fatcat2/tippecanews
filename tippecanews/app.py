@@ -14,9 +14,11 @@ from tippecanews.utils.retrievers import (
     send_slack,
     xml_urls,
     get_bylines,
+    crime_scrape,
     get_quote,
 )
 import logging
+import base64
 
 app = Flask(
     __name__, template_folder="frontend/build", static_folder="frontend/build/static"
@@ -210,6 +212,8 @@ def newsfetch():
             )
         except Exception:
             pass
+    
+    
 
     return "Done"
 
