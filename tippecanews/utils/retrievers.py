@@ -201,7 +201,7 @@ def get_bylines() -> List[Dict[str, Any]]:
         A list of Slack blocks containing reporter information.
     """
 
-    my_dict = defaultdict(lambda: {"articles": [], "count": 0})
+    bylines = defaultdict(lambda: {"articles": [], "count": 0})
 
     regex_string = r"B([yY]) (\w+) (\w+)"
 
@@ -233,46 +233,34 @@ def get_bylines() -> List[Dict[str, Any]]:
         if match_three is None:
             match_two = re.match(regex_two, entry.author)
             if match_two is None:
-                match_three = re.match(regex_string, entry.author)
-                if match_three is None:
+                match_one = re.match(regex_string, entry.author)
+                if match_one is None:
                     print("Nothing found for: " + entry.author)
                     pass
                 else:
-                    key_string = f"{match_three.group(2)} {match_three.group(3)}"
-                    yeet = my_dict[key_string]
-                    yeet["articles"].append(entry.title)
-                    yeet["count"] = yeet["count"] + 1
-                    my_dict[key_string] = yeet
+                    key_string = f"{match_one.group(2)} {match_one.group(3)}"
+                    bylines[key_string]["articles"].append(entry.title)
+                    bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
             else:
                 key_string = f"{match_two.group(2)} {match_two.group(3)}"
-                yeet = my_dict[key_string]
-                yeet["articles"].append(entry.title)
-                yeet["count"] = yeet["count"] + 1
-                my_dict[key_string] = yeet
+                bylines[key_string]["articles"].append(entry.title)
+                bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
 
                 key_string = f"{match_two.group(4)} {match_two.group(5)}"
-                yeet = my_dict[key_string]
-                yeet["articles"].append(entry.title)
-                yeet["count"] = yeet["count"] + 1
-                my_dict[key_string] = yeet
+                bylines[key_string]["articles"].append(entry.title)
+                bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
         else:
             key_string = f"{match_three.group(2)} {match_three.group(3)}"
-            yeet = my_dict[key_string]
-            yeet["articles"].append(entry.title)
-            yeet["count"] = yeet["count"] + 1
-            my_dict[key_string] = yeet
+            bylines[key_string]["articles"].append(entry.title)
+            bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
 
             key_string = f"{match_three.group(4)} {match_three.group(5)}"
-            yeet = my_dict[key_string]
-            yeet["articles"].append(entry.title)
-            yeet["count"] = yeet["count"] + 1
-            my_dict[key_string] = yeet
+            bylines[key_string]["articles"].append(entry.title)
+            bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
 
             key_string = f"{match_three.group(6)} {match_three.group(7)}"
-            yeet = my_dict[key_string]
-            yeet["articles"].append(entry.title)
-            yeet["count"] = yeet["count"] + 1
-            my_dict[key_string] = yeet
+            bylines[key_string]["articles"].append(entry.title)
+            bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
 
     ret_blocks = {"blocks": []}
 
@@ -281,18 +269,18 @@ def get_bylines() -> List[Dict[str, Any]]:
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"{len(my_dict.keys())} reporters wrote articles between {start_str} and {end_str}",
+                "text": f"{len(bylines.keys())} reporters wrote articles between {start_str} and {end_str}",
             },  # noqa
         }  # noqa
     )
 
     ret_blocks["blocks"].append({"type": "divider"})
 
-    for reporter in my_dict.keys():
+    for reporter in bylines.keys():
         res_articles = ""
-        for article in my_dict[reporter]["articles"]:
+        for article in bylines[reporter]["articles"]:
             res_articles = res_articles + f"* {article}\n"
-        res_string = f"{reporter}: {my_dict[reporter]['count']} \n{res_articles}"
+        res_string = f"{reporter}: {bylines[reporter]['count']} \n{res_articles}"
         ret_blocks["blocks"].append(
             {
                 "type": "section",
