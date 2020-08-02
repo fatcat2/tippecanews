@@ -59,7 +59,7 @@ def byline_route():
     Returns:
         Bylines in a Slack-compatible format
     """
-    return jsonify(get_bylines())
+    return jsonify(get_bylines(request.form["text"]))
 
 
 @app.route("/cms", methods=["GET", "POST"])

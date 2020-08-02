@@ -9,6 +9,7 @@ import feedparser
 from bs4 import BeautifulSoup, element
 import requests
 
+from .processors import process_bylines
 
 xml_urls = [
     "https://www.purdue.edu/newsroom/rss/academics.xml",
@@ -193,7 +194,7 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     r.raise_for_status()
 
 
-def get_bylines() -> List[Dict[str, Any]]:
+def get_bylines(query: str) -> List[Dict[str, Any]]:
     """Helper function to retrieve reporter bylines for the current payperiod.
 
     Returns:
@@ -201,22 +202,21 @@ def get_bylines() -> List[Dict[str, Any]]:
         A list of Slack blocks containing reporter information.
     """
 
-    bylines = defaultdict(lambda: {"articles": [], "count": 0})
+    date_regex_string = r"[0-9]*[0-9]/[0-9]*[0-9]/[12][09][012][0-9]"
 
-    regex_string = r"B([yY]) (\w+) (\w+)"
+    date_regex_match = re.findall(date_regex_string, query)
 
-    regex_two = r"B([yY]) (\w+) (\w+) AND (\w+) (\w+)"
-
-    regex_three = r"B([yY]) (\w+) (\w+), (\w+) (\w+) AND (\w+) (\w+)"
-
-    d = datetime.now()
-
-    if d.day <= 15:
-        start_str = f"{d.month}/1/{d.year}"
-        end_str = f"{d.month}/15{d.year}"
+    if len(date_regex_match) == 2:
+        start_str = date_regex_match[0]
+        end_str = date_regex_match[1]
     else:
-        start_str = f"{d.month}/16/{d.year}"
-        end_str = f"{d.month}/{d.day}/{d.year}"
+        d = datetime.now()
+        if d.day <= 15:
+            start_str = f"{d.month}/1/{d.year}"
+            end_str = f"{d.month}/15{d.year}"
+        else:
+            start_str = f"{d.month}/16/{d.year}"
+            end_str = f"{d.month}/{d.day}/{d.year}"
 
     campus_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=campus&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
     city_search_string = f"https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1={start_str}&d2={end_str}"
@@ -228,39 +228,9 @@ def get_bylines() -> List[Dict[str, Any]]:
 
     entry_list = campus_feed.entries + city_feed.entries + sports_feed.entries
 
-    for entry in entry_list:
-        match_three = re.match(regex_three, entry.author)
-        if match_three is None:
-            match_two = re.match(regex_two, entry.author)
-            if match_two is None:
-                match_one = re.match(regex_string, entry.author)
-                if match_one is None:
-                    print("Nothing found for: " + entry.author)
-                    pass
-                else:
-                    key_string = f"{match_one.group(2)} {match_one.group(3)}"
-                    bylines[key_string]["articles"].append(entry.title)
-                    bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
-            else:
-                key_string = f"{match_two.group(2)} {match_two.group(3)}"
-                bylines[key_string]["articles"].append(entry.title)
-                bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
+    print(entry_list)
 
-                key_string = f"{match_two.group(4)} {match_two.group(5)}"
-                bylines[key_string]["articles"].append(entry.title)
-                bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
-        else:
-            key_string = f"{match_three.group(2)} {match_three.group(3)}"
-            bylines[key_string]["articles"].append(entry.title)
-            bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
-
-            key_string = f"{match_three.group(4)} {match_three.group(5)}"
-            bylines[key_string]["articles"].append(entry.title)
-            bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
-
-            key_string = f"{match_three.group(6)} {match_three.group(7)}"
-            bylines[key_string]["articles"].append(entry.title)
-            bylines[key_string]["count"] = bylines["key_string"]["count"] + 1
+    bylines = process_bylines(entry_list)
 
     ret_blocks = {"blocks": []}
 

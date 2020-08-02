@@ -6,22 +6,24 @@ from typing import Any, Dict
 def process_bylines(entry_list) -> Dict[str, Any]:
     bylines = defaultdict(lambda: {"articles": [], "count": 0})
 
-    regex_one = r"B([yY]) (\w+) (\w+)"
-    regex_two = r"B([yY]) (\w+) (\w+) AND (\w+) (\w+)"
-    regex_three = r"B([yY]) (\w+) (\w+), (\w+) (\w+) AND (\w+) (\w+)"
+    regex_single_byline = r"B([yY]) (\w+) (\w+)"
+    regex_double_byline = r"B([yY]) (\w+) (\w+) AND (\w+) (\w+)"
+    regex_triple_byline = r"B([yY]) (\w+) (\w+), (\w+) (\w+) AND (\w+) (\w+)"
 
     for entry in entry_list:
         try:
             entry["author"]
         except KeyError:
             continue
-        match_three = re.match(regex_three, entry["author"])
+        match_three = re.match(regex_triple_byline, entry["author"])
         if match_three is None:
-            match_two = re.match(regex_two, entry["author"])
+            match_two = re.match(regex_double_byline, entry["author"])
             if match_two is None:
-                match_one = re.match(regex_one, entry["author"])
+                match_one = re.match(regex_single_byline, entry["author"])
                 if match_one is None:
                     print("Nothing found for: " + entry["author"])
+                    pass
+                elif match_one.group(2) + " " + match_one.group(3) == "STAFF REPORTS":
                     pass
                 else:
                     key_string = f"{match_one.group(2)} {match_one.group(3)}"
