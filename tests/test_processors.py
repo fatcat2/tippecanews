@@ -14,6 +14,17 @@ def test_staff_report():
 
     assert len(bylines_list) == 0
 
+def test_double_byline_success():
+    bylines_list = process_bylines(test_data_double_byline)
+
+    for key in bylines_list.keys():
+        assert key == "JORDAN SMITH" or key == "ADRIAN GAETA"
+
+def test_triple_byline_success():
+    bylines_list = process_bylines(test_data_triple_byline)
+
+    for key in bylines_list.keys():
+        assert key == "JORDAN SMITH" or key == "ADRIAN GAETA" or key == "ALISA REYNYA"
 
 test_data_good_article = [
     {
@@ -92,3 +103,82 @@ test_data_staff_report = [
         "author_detail": {"name": "STAFF REPORTS"},
     }
 ]
+
+test_data_double_byline = [
+    {
+        "title": "Cereal-sly? Lafayette man calls police over empty box",
+        "title_detail": {
+            "type": "text/plain",
+            "language": "None",
+            "base": "https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1=07/01/2020&d2=07/10/2020",
+            "value": "Cereal-sly? Lafayette man calls police over empty box",
+        },
+        "summary": "Tippecanoe County police were called Thursday afternoon over a wrongfully eaten box of Cap'n Crunch cereal.",
+        "summary_detail": {
+            "type": "text/html",
+            "language": "None",
+            "base": "https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1=07/01/2020&d2=07/10/2020",
+            "value": "Tippecanoe County police were called Thursday afternoon over a wrongfully eaten box of Cap'n Crunch cereal.",
+        },
+        "published": "Fri, 10 Jul 2020 09:50:00 -0400",
+        "id": "http://www.purdueexponent.org/tncms/asset/editorial/4a677de0-c2b4-11ea-9a39-efbf7e2739f2",
+        "guidislink": False,
+        "links": [
+            {
+                "rel": "alternate",
+                "type": "text/html",
+                "href": "https://www.purdueexponent.org/city_state/article_4a677de0-c2b4-11ea-9a39-efbf7e2739f2.html",
+            },
+            {
+                "length": "234005",
+                "type": "image/jpeg",
+                "href": "https://bloximages.newyork1.vip.townnews.com/purdueexponent.org/content/tncms/assets/v3/editorial/f/04/f04449ee-4692-11ea-80f0-5b0179fc3c15/5c8085b0642f1.image.jpg?resize=300%2C225",
+                "rel": "enclosure",
+            },
+        ],
+        "link": "https://www.purdueexponent.org/city_state/article_4a677de0-c2b4-11ea-9a39-efbf7e2739f2.html",
+        "authors": [{"name": "BY ADRIAN GAETA Summer Reporter"}],
+        "author": "BY ADRIAN GAETA AND JORDAN SMITH Summer Reporter",
+        "author_detail": {"name": "BY ADRIAN GAETA Summer Reporter"},
+    }
+]
+
+test_data_triple_byline = [
+    {
+        "title": "Cereal-sly? Lafayette man calls police over empty box",
+        "title_detail": {
+            "type": "text/plain",
+            "language": "None",
+            "base": "https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1=07/01/2020&d2=07/10/2020",
+            "value": "Cereal-sly? Lafayette man calls police over empty box",
+        },
+        "summary": "Tippecanoe County police were called Thursday afternoon over a wrongfully eaten box of Cap'n Crunch cereal.",
+        "summary_detail": {
+            "type": "text/html",
+            "language": "None",
+            "base": "https://www.purdueexponent.org/search/?q=&nsa=eedition&t=article&c[]=city_state&l=100&s=start_time&sd=desc&f=rss&d1=07/01/2020&d2=07/10/2020",
+            "value": "Tippecanoe County police were called Thursday afternoon over a wrongfully eaten box of Cap'n Crunch cereal.",
+        },
+        "published": "Fri, 10 Jul 2020 09:50:00 -0400",
+        "id": "http://www.purdueexponent.org/tncms/asset/editorial/4a677de0-c2b4-11ea-9a39-efbf7e2739f2",
+        "guidislink": False,
+        "links": [
+            {
+                "rel": "alternate",
+                "type": "text/html",
+                "href": "https://www.purdueexponent.org/city_state/article_4a677de0-c2b4-11ea-9a39-efbf7e2739f2.html",
+            },
+            {
+                "length": "234005",
+                "type": "image/jpeg",
+                "href": "https://bloximages.newyork1.vip.townnews.com/purdueexponent.org/content/tncms/assets/v3/editorial/f/04/f04449ee-4692-11ea-80f0-5b0179fc3c15/5c8085b0642f1.image.jpg?resize=300%2C225",
+                "rel": "enclosure",
+            },
+        ],
+        "link": "https://www.purdueexponent.org/city_state/article_4a677de0-c2b4-11ea-9a39-efbf7e2739f2.html",
+        "authors": [{"name": "BY ADRIAN GAETA Summer Reporter"}],
+        "author": "BY ADRIAN GAETA, ALISA REYNYA AND JORDAN SMITH Summer Reporter",
+        "author_detail": {"name": "BY ADRIAN GAETA Summer Reporter"},
+    }
+]
+
