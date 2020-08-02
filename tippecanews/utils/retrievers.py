@@ -229,46 +229,46 @@ def get_bylines() -> List[Dict[str, Any]]:
     entry_list = campus_feed.entries + city_feed.entries + sports_feed.entries
 
     for entry in entry_list:
-        m = re.match(regex_three, entry.author)
-        if m is None:
-            n = re.match(regex_two, entry.author)
-            if n is None:
-                o = re.match(regex_string, entry.author)
-                if o is None:
+        match_three = re.match(regex_three, entry.author)
+        if match_three is None:
+            match_two = re.match(regex_two, entry.author)
+            if match_two is None:
+                match_three = re.match(regex_string, entry.author)
+                if match_three is None:
                     print("Nothing found for: " + entry.author)
                     pass
                 else:
-                    key_string = f"{o.group(2)} {o.group(3)}"
+                    key_string = f"{match_three.group(2)} {match_three.group(3)}"
                     yeet = my_dict[key_string]
                     yeet["articles"].append(entry.title)
                     yeet["count"] = yeet["count"] + 1
                     my_dict[key_string] = yeet
             else:
-                key_string = f"{n.group(2)} {n.group(3)}"
+                key_string = f"{match_two.group(2)} {match_two.group(3)}"
                 yeet = my_dict[key_string]
                 yeet["articles"].append(entry.title)
                 yeet["count"] = yeet["count"] + 1
                 my_dict[key_string] = yeet
 
-                key_string = f"{n.group(4)} {n.group(5)}"
+                key_string = f"{match_two.group(4)} {match_two.group(5)}"
                 yeet = my_dict[key_string]
                 yeet["articles"].append(entry.title)
                 yeet["count"] = yeet["count"] + 1
                 my_dict[key_string] = yeet
         else:
-            key_string = f"{m.group(2)} {m.group(3)}"
+            key_string = f"{match_three.group(2)} {match_three.group(3)}"
             yeet = my_dict[key_string]
             yeet["articles"].append(entry.title)
             yeet["count"] = yeet["count"] + 1
             my_dict[key_string] = yeet
 
-            key_string = f"{m.group(4)} {m.group(5)}"
+            key_string = f"{match_three.group(4)} {match_three.group(5)}"
             yeet = my_dict[key_string]
             yeet["articles"].append(entry.title)
             yeet["count"] = yeet["count"] + 1
             my_dict[key_string] = yeet
 
-            key_string = f"{m.group(6)} {m.group(7)}"
+            key_string = f"{match_three.group(6)} {match_three.group(7)}"
             yeet = my_dict[key_string]
             yeet["articles"].append(entry.title)
             yeet["count"] = yeet["count"] + 1
