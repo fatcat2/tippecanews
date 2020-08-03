@@ -146,7 +146,7 @@ def get_pngs() -> List[List[str]]:
     return ret_list
 
 
-def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
+def send_slack(title: str, link: str, date: str, is_pr: bool = False, channel: str = None) -> None:
     """A helper function that sends messages to a specified Slack channel.
 
     Arguments:
@@ -161,13 +161,15 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     """
     if "http" not in link:
         link = "http://{}".format(link)
+    
+    channel = os.getenv("SLACK_CHANNEL") if channel is None else channel
 
     headers = {
         "content-type": "application/json",
         "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
     }
     payload = {
-        "channel": os.getenv("SLACK_CHANNEL"),
+        "channel": channel,
         "text": title,
         "blocks": [
             {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
@@ -227,8 +229,6 @@ def get_bylines(query: str) -> List[Dict[str, Any]]:
     sports_feed = feedparser.parse(sports_search_string)
 
     entry_list = campus_feed.entries + city_feed.entries + sports_feed.entries
-
-    print(entry_list)
 
     bylines = process_bylines(entry_list)
 
@@ -317,7 +317,7 @@ def crime_scrape():
     return ret_dict
 
 
-def get_quote() -> Dict[str, Any]:
+def get_quote() -> boolean:
     """Helper function to get and process daily quotes."""
 
     r = requests.get("http://api.quotable.io/random")
@@ -338,31 +338,9 @@ def get_quote() -> Dict[str, Any]:
         corona_r = requests.get(
             "https://hub.mph.in.gov" + corona_data["_links"]["next"]
         )
+    
+    morning_message: str =  f"good morning! here's a quote to get your day started ʕ•́ᴥ•̀ʔっ\n\"{data['content']}\" - {data['author']}\nthere are {tipp_daily_total} COVID-19 cases in tippecanoe county, according to the isdh (╥﹏╥)",
 
-    ret_blocks = {"blocks": []}
+    send_slack(morning_message, "", datetime.now().date(), channel="random")
 
-    ret_blocks["blocks"].append(
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"good morning! here's a quote to get your day started ʕ•́ᴥ•̀ʔっ\n\"{data['content']}\" - {data['author']}\nthere are {tipp_daily_total} COVID-19 cases in tippecanoe county, according to the isdh (╥﹏╥)",
-            },  # noqa
-        }  # noqa
-    )
-
-    headers = {
-        "content-type": "application/json",
-        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
-    }
-    payload = {
-        "channel": "random",
-        "text": "",
-        "blocks": ret_blocks["blocks"],
-    }
-
-    r = requests.post(
-        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
-    )
-
-    return ret_blocks
+    return True
