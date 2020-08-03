@@ -317,7 +317,7 @@ def crime_scrape():
     return ret_dict
 
 
-def get_quote() -> boolean:
+def get_quote() -> bool:
     """Helper function to get and process daily quotes."""
 
     r = requests.get("http://api.quotable.io/random")
@@ -339,7 +339,7 @@ def get_quote() -> boolean:
             "https://hub.mph.in.gov" + corona_data["_links"]["next"]
         )
     
-    morning_message: str =  f"good morning! here's a quote to get your day started ʕ•́ᴥ•̀ʔっ\n\"{data['content']}\" - {data['author']}\nthere are {tipp_daily_total} COVID-19 cases in tippecanoe county, according to the isdh (╥﹏╥)",
+    morning_message: str =  f"good morning! here's a quote to get your day started ʕ•́ᴥ•̀ʔっ\n\"{data['content']}\" - {data['author']}\nthere are {tipp_daily_total} COVID-19 cases in tippecanoe county, according to the isdh (╥﹏╥)"
 
     send_slack(morning_message, "", datetime.now().date(), channel="random")
 
