@@ -365,4 +365,37 @@ def get_quote() -> Dict[str, Any]:
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
 
+    case_count_r = requests.get("https://hub.mph.in.gov/api/3/action/datastore_search_sql?sql=SELECT \"DATE\", sum(\"COVID_COUNT\") as count from \"46b310b9-2f29-4a51-90dc-3886d9cf4ac1\" where \"COUNTY_NAME\" = 'Tippecanoe' group by \"DATE\" order by \"DATE\" desc limit 30")
+
+    records = case_count_r.json()["result"]["records"]
+
+    for record in records:
+        record["count"] = int(record["count"])
+        record["DATE"] = datetime.fromisoformat(record["DATE"])
+
+    counts = [record["count"] for record in records]
+    dates = [record["DATE"] for record in records]
+
+    plt.title("Cases reported in Tippecanoe County by day")
+
+    plt.ylim(0, max(counts) + 5)
+    plt.plot(dates, counts)
+    plt.xticks(rotation=20)
+    plt.savefig('/tmp/tmp1337.png', pad_inches=5)
+
+    headers = {
+        "content-type": "application/json",
+        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
+    }
+    payload = {
+        "channel": "random",
+        "text": "",
+        "file": "/tmp/tmp1337.png",
+    }
+
+    r = requests.post(
+        "https://slack.com/api/files.upload", headers=headers, json=payload
+    )
+
+
     return ret_blocks
