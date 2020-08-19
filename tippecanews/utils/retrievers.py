@@ -11,6 +11,13 @@ import requests
 
 from .processors import process_bylines
 
+from matplotlib import pyplot as plt
+from imgurpython import ImgurClient
+
+import numpy as np
+import pandas as pd
+from datetime import datetime
+
 xml_urls = [
     "https://www.purdue.edu/newsroom/rss/academics.xml",
     "https://www.purdue.edu/newsroom/rss/AdvNews.xml",
@@ -365,37 +372,49 @@ def get_quote() -> Dict[str, Any]:
         "https://slack.com/api/chat.postMessage", headers=headers, json=payload
     )
 
-    case_count_r = requests.get("https://hub.mph.in.gov/api/3/action/datastore_search_sql?sql=SELECT \"DATE\", sum(\"COVID_COUNT\") as count from \"46b310b9-2f29-4a51-90dc-3886d9cf4ac1\" where \"COUNTY_NAME\" = 'Tippecanoe' group by \"DATE\" order by \"DATE\" desc limit 30")
-
-    records = case_count_r.json()["result"]["records"]
-
-    for record in records:
-        record["count"] = int(record["count"])
-        record["DATE"] = datetime.fromisoformat(record["DATE"])
-
-    counts = [record["count"] for record in records]
-    dates = [record["DATE"] for record in records]
-
-    plt.title("Cases reported in Tippecanoe County by day")
-
-    plt.ylim(0, max(counts) + 5)
-    plt.plot(dates, counts)
-    plt.xticks(rotation=20)
-    plt.savefig('/tmp/tmp1337.png', pad_inches=5)
-
     headers = {
-        "content-type": "application/json",
-        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
+            "content-type": "multipart/form-data",
+            "Authorization": "Bearer {}".format(slack_token),
     }
+
+    r = requests.get("https://hub.mph.in.gov/api/3/action/datastore_search_sql?sql=SELECT%20%22DATE%22,%20SUM(%22COVID_COUNT%22)%20as%20COVID_COUNT%20from%20%2246b310b9-2f29-4a51-90dc-3886d9cf4ac1%22%20WHERE%20%22COUNTY_NAME%22%20LIKE%20%27Tippecanoe%27%20GROUP%20BY%20%22DATE%22%20ORDER%20BY%20%22DATE%22%20DESC%20LIMIT%2030")
+
+    covid_list = []
+    index = []
+    columns = ["covid_count"]
+
+    for record in r.json()["result"]["records"]:
+        covid_list.append(int(record["covid_count"]))
+        index.append(pd.to_datetime(record["DATE"]))
+
+    df = pd.DataFrame(covid_list, index=index, columns=columns)
+
+    filename = datetime.now().strftime("%b_%d_%Y") + ".png"
+
+    with plt.style.context('fivethirtyeight'):
+        plt.figure(figsize=(16, 9))
+        plt.title(f"no. of new cases per day in last 30 days ({datetime.fromisoformat(r.json()['result']['records'][0]['DATE']).strftime('%b %d, %Y')})")
+        plt.xticks(rotation=30)
+        plt.plot(df["covid_count"], label="Number of new cases")
+        # plt.plot(df.rolling(7).mean(), label="7-day average")
+        plt.legend()
+        plt.savefig(filename, bbox_inches='tight', pad_inches=0.5)
+
     payload = {
-        "channel": "random",
-        "text": "",
-        "file": "/tmp/tmp1337.png",
+            "channels": [os.getenv("SLACK_CHANNEL")],
+            "text": "look at this graph 🎶",
+            "file": filename,
+            "token": slack_token,
+            }
+
+    graph_file = {
+    "file" : (filename, open(filename, "rb"), "png")
     }
 
     r = requests.post(
-        "https://slack.com/api/files.upload", headers=headers, json=payload
-    )
+            "https://slack.com/api/files.upload", params=payload, files=graph_file
+            )
 
+    r.raise_for_status()
 
     return ret_blocks
