@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from collections import defaultdict
 
+import json
 import feedparser
 
 from bs4 import BeautifulSoup, element
@@ -358,24 +359,16 @@ def get_quote() -> Dict[str, Any]:
         }  # noqa
     )
 
-    headers = {
-        "content-type": "application/json",
-        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
-    }
     payload = {
-        "channel": "random",
-        "text": "",
-        "blocks": ret_blocks["blocks"],
+        "channel": os.getenv("SLACK_RANDOM"),
+        "text": "hey! it's ur morning update (づ｡◕‿‿◕｡)づ",
+        "token": os.getenv("SLACK_TOKEN"),
+        "blocks": json.dumps(ret_blocks["blocks"]),
     }
 
     r = requests.post(
-        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
+        "https://slack.com/api/chat.postMessage", params=payload
     )
-
-    headers = {
-            "content-type": "multipart/form-data",
-            "Authorization": "Bearer {}".format(slack_token),
-    }
 
     r = requests.get("https://hub.mph.in.gov/api/3/action/datastore_search_sql?sql=SELECT%20%22DATE%22,%20SUM(%22COVID_COUNT%22)%20as%20COVID_COUNT%20from%20%2246b310b9-2f29-4a51-90dc-3886d9cf4ac1%22%20WHERE%20%22COUNTY_NAME%22%20LIKE%20%27Tippecanoe%27%20GROUP%20BY%20%22DATE%22%20ORDER%20BY%20%22DATE%22%20DESC%20LIMIT%2030")
 
@@ -401,10 +394,10 @@ def get_quote() -> Dict[str, Any]:
         plt.savefig(filename, bbox_inches='tight', pad_inches=0.5)
 
     payload = {
-            "channels": [os.getenv("SLACK_CHANNEL")],
+            "channels": [os.getenv("SLACK_RANDOM")],
             "text": "look at this graph 🎶",
             "file": filename,
-            "token": slack_token,
+            "token": os.getenv("SLACK_TOKEN"),
             }
 
     graph_file = {
