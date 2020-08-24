@@ -4,12 +4,18 @@ import re
 from datetime import datetime
 from collections import defaultdict
 
+import json
 import feedparser
 
 from bs4 import BeautifulSoup, element
 import requests
 
 from .processors import process_bylines
+
+from matplotlib import pyplot as plt
+
+import numpy as np
+import pandas as pd
 
 xml_urls = [
     "https://www.purdue.edu/newsroom/rss/academics.xml",
@@ -351,18 +357,72 @@ def get_quote() -> Dict[str, Any]:
         }  # noqa
     )
 
-    headers = {
-        "content-type": "application/json",
-        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
-    }
     payload = {
-        "channel": "random",
-        "text": "",
-        "blocks": ret_blocks["blocks"],
+        "channel": os.getenv("SLACK_RANDOM"),
+        "text": "hey! it's ur morning update (づ｡◕‿‿◕｡)づ",
+        "token": os.getenv("SLACK_TOKEN"),
+        "blocks": json.dumps(ret_blocks["blocks"]),
     }
 
-    r = requests.post(
-        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
+    r = requests.post("https://slack.com/api/chat.postMessage", params=payload)
+
+    r = requests.get(
+        "https://hub.mph.in.gov/api/3/action/datastore_search_sql?sql=SELECT%20%22DATE%22,%20SUM(%22COVID_COUNT%22)%20as%20COVID_COUNT%20from%20%2246b310b9-2f29-4a51-90dc-3886d9cf4ac1%22%20WHERE%20%22COUNTY_NAME%22%20LIKE%20%27Tippecanoe%27%20GROUP%20BY%20%22DATE%22%20ORDER%20BY%20%22DATE%22%20DESC%20LIMIT%2030"
     )
+
+    covid_list = []
+    index = []
+    columns = ["covid_count"]
+
+    for record in r.json()["result"]["records"]:
+        covid_list.append(int(record["covid_count"]))
+        index.append(pd.to_datetime(record["DATE"]))
+
+    df = pd.DataFrame(covid_list, index=index, columns=columns)
+
+    filename = datetime.now().strftime("%b_%d_%Y") + ".png"
+
+    series = df["covid_count"][::-1]
+
+    sma = []
+    window = []
+
+    for value in series:
+        if len(window) < 7:
+            window.append(value)
+        else:
+            window.pop(0)
+            window.append(value)
+
+        sma.append(np.average(window))
+
+    with plt.style.context("fivethirtyeight"):
+        plt.figure(figsize=(16, 9))
+        plt.title(
+            f"no. of new cases per day in last 30 days ({datetime.fromisoformat(r.json()['result']['records'][0]['DATE']).strftime('%b %d, %Y')})"
+        )
+        plt.xticks(rotation=30)
+        plt.bar(
+            np.arange(len(index)), df["covid_count"][::-1], label="daily no. of cases"
+        )
+        plt.plot(sma, color="gold", label="seven day moving average")
+        plt.xticks(range(len(index)), [date.strftime("%b %d") for date in index[::-1]])
+        plt.legend()
+        plt.savefig(filename, bbox_inches="tight", pad_inches=0.5)
+
+    payload = {
+        "channels": [os.getenv("SLACK_RANDOM")],
+        "text": "look at this graph 🎶",
+        "file": filename,
+        "token": os.getenv("SLACK_TOKEN"),
+    }
+
+    graph_file = {"file": (filename, open(filename, "rb"), "png")}
+
+    r = requests.post(
+        "https://slack.com/api/files.upload", params=payload, files=graph_file
+    )
+
+    r.raise_for_status()
 
     return ret_blocks
