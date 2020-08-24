@@ -13,11 +13,9 @@ import requests
 from .processors import process_bylines
 
 from matplotlib import pyplot as plt
-from imgurpython import ImgurClient
 
 import numpy as np
 import pandas as pd
-from datetime import datetime
 
 xml_urls = [
     "https://www.purdue.edu/newsroom/rss/academics.xml",
@@ -395,7 +393,7 @@ def get_quote() -> Dict[str, Any]:
         else:
             window.pop(0)
             window.append(value)
-            
+
         sma.append(np.average(window))
 
     with plt.style.context("fivethirtyeight"):
@@ -404,9 +402,11 @@ def get_quote() -> Dict[str, Any]:
             f"no. of new cases per day in last 30 days ({datetime.fromisoformat(r.json()['result']['records'][0]['DATE']).strftime('%b %d, %Y')})"
         )
         plt.xticks(rotation=30)
-        plt.bar(np.arange(len(index)), df["covid_count"][::-1], label="daily no. of cases")
+        plt.bar(
+            np.arange(len(index)), df["covid_count"][::-1], label="daily no. of cases"
+        )
         plt.plot(sma, color="gold", label="seven day moving average")
-        plt.xticks(range(len(index)), [date.strftime("%b %d")  for date in index[::-1]])
+        plt.xticks(range(len(index)), [date.strftime("%b %d") for date in index[::-1]])
         plt.legend()
         plt.savefig(filename, bbox_inches="tight", pad_inches=0.5)
 
