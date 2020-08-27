@@ -199,7 +199,7 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
 
     # logging.debug(payload)
     r = requests.post(
-        "https://slack.com/api/chat.postMessage", headers=headers, params=payload
+        "https://slack.com/api/chat.postMessage", params=payload
     )
     r.raise_for_status()
 
