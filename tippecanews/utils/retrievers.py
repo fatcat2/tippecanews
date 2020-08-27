@@ -168,11 +168,6 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     if "http" not in link:
         link = "http://{}".format(link)
 
-    headers = {
-        "content-type": "application/json",
-        "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
-    }
-
     payload = {
         "channel": os.getenv("SLACK_CHANNEL"),
         "text": title,
