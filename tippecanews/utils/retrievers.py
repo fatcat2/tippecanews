@@ -172,17 +172,21 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
         "content-type": "application/json",
         "Authorization": "Bearer {}".format(os.getenv("SLACK_TOKEN")),
     }
+
     payload = {
         "channel": os.getenv("SLACK_CHANNEL"),
         "text": title,
-        "blocks": [
+        "token": os.getenv("SLACK_TOKEN"),
+        "blocks": "",
+    }
+
+    block_array = [
             {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
             {
                 "type": "context",
                 "elements": [{"type": "mrkdwn", "text": f"Posted on {date}"}],
             },
-        ],
-    }
+        ]
 
     if is_pr:
         payload["blocks"][0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
@@ -195,7 +199,7 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
 
     # logging.debug(payload)
     r = requests.post(
-        "https://slack.com/api/chat.postMessage", headers=headers, json=payload
+        "https://slack.com/api/chat.postMessage", headers=headers, params=payload
     )
     r.raise_for_status()
 
