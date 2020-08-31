@@ -107,7 +107,7 @@ def test_me():
         is_pr=True,
     )
 
-    get_quote()
+    # get_quote()
     return jsonify(200)
 
 
