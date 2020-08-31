@@ -172,30 +172,44 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
         "channel": os.getenv("SLACK_CHANNEL"),
         "text": title,
         "token": os.getenv("SLACK_TOKEN"),
-        "blocks": "",
+        "blocks": [],
     }
 
     block_array = [
-            {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"{title}"
+                }
+            },
             {
                 "type": "context",
-                "elements": [{"type": "mrkdwn", "text": f"Posted on {date}"}],
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"Posted on {date}"
+                    }
+                ],
             },
         ]
 
     if is_pr:
-        payload["blocks"][0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
-        payload["blocks"][0]["accessory"] = {
+        block_array[0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
+        block_array[0]["accessory"] = {
             "type": "button",
             "text": {"type": "plain_text", "text": "Take Me!"},
             "value": "take",
             "action_id": "button",
         }
+    
+    payload["blocks"] = json.dumps(block_array)
 
     # logging.debug(payload)
     r = requests.post(
         "https://slack.com/api/chat.postMessage", params=payload
     )
+    
     r.raise_for_status()
 
 
