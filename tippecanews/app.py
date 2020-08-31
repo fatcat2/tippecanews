@@ -15,6 +15,7 @@ from tippecanews.utils.retrievers import (
     xml_urls,
     get_bylines,
     get_quote,
+    crime_scrape,
 )
 import logging
 
@@ -106,8 +107,7 @@ def test_me():
         "asdf",
         is_pr=True,
     )
-
-    get_quote()
+    
     return jsonify(200)
 
 
@@ -208,6 +208,24 @@ def newsfetch():
             )
         except Exception:
             pass
+
+    crimes = crime_scrape()
+    crime_ref = db.collection("crimes")
+
+    for day in crimes.keys():
+        docs = (
+                crime_ref.where("date", "==", "{}".format(day))
+                .get()
+            )
+        
+        if len(docs) == 0:
+            insert_obj = {
+                "date": day,
+                "crimes": crimes[day]
+            }
+
+            crime_ref.add(insert_obj)
+
 
     return "Done"
 
