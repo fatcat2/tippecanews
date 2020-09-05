@@ -176,23 +176,12 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     }
 
     block_array = [
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": f"{title}"
-                }
-            },
-            {
-                "type": "context",
-                "elements": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"Posted on {date}"
-                    }
-                ],
-            },
-        ]
+        {"type": "section", "text": {"type": "mrkdwn", "text": f"{title}"}},
+        {
+            "type": "context",
+            "elements": [{"type": "mrkdwn", "text": f"Posted on {date}"}],
+        },
+    ]
 
     if is_pr:
         block_array[0]["text"] = {"type": "mrkdwn", "text": f"<{link}|{title}>"}
@@ -202,14 +191,12 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
             "value": "take",
             "action_id": "button",
         }
-    
+
     payload["blocks"] = json.dumps(block_array)
 
     # logging.debug(payload)
-    r = requests.post(
-        "https://slack.com/api/chat.postMessage", params=payload
-    )
-    
+    r = requests.post("https://slack.com/api/chat.postMessage", params=payload)
+
     r.raise_for_status()
 
 
@@ -273,7 +260,10 @@ def get_bylines(query: str) -> List[Dict[str, Any]]:
         ret_blocks["blocks"].append(
             {
                 "type": "section",
-                "text": {"type": "mrkdwn", "text": res_string,},  # noqa
+                "text": {
+                    "type": "mrkdwn",
+                    "text": res_string,
+                },  # noqa
             }  # noqa
         )
 
