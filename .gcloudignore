@@ -3,3 +3,9 @@ __pycache__
 .nox
 .pytest_cache
 env
+Tippecanews.egg-info
+.flake8
+.coverage
+tippecanews/__pycache__
+tippecanews/utils/__pycache__
+tippecanews/frontend/node_modules
