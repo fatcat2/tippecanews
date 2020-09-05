@@ -95,8 +95,7 @@ class ryan_twtr_utils:
         r.raise_for_status()
 
     def get_new_tweets(self) -> None:
-        """Function to get all new tweets from the account list.
-        """
+        """Function to get all new tweets from the account list."""
         for username in self._account_list:
             for tweet in self._get_past_fifteen_mins(username):
                 self._send_slack_twt(tweet)

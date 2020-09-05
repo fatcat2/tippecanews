@@ -107,14 +107,13 @@ def test_me():
         is_pr=True,
     )
 
-    get_quote()
+    # get_quote()
     return jsonify(200)
 
 
 @app.route("/interactive", methods=["POST"])
 def interactive():
-    """A route to handle interactions with press release messages.
-    """
+    """A route to handle interactions with press release messages."""
     response = json.loads(request.form.get("payload"))
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
