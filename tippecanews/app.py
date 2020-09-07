@@ -17,6 +17,11 @@ from tippecanews.utils.retrievers import (
     get_quote,
     crime_scrape,
 )
+
+from tippecanews.utils.matches import (
+    send_matches
+)
+
 import logging
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
@@ -116,8 +121,24 @@ def test_me():
 def interactive():
     """A route to handle interactions with press release messages."""
     response = json.loads(request.form.get("payload"))
+
+    if response["type"] == "block_actions":
+        value = response["actions"][0]["value"]
+        user = response["user"]
+
+        if value = "yes":
+            payload = {"text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."}
+        else:
+            payload = {"text": "ok ! maybe next week ..."}
+
+        r = requests.post(response["response_url"], json=payload)
+        print(r.json())
+
+        return ""
+
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
+
     if blocks[0]["accessory"]["value"] == "cancel":
         blocks[0]["accessory"]["value"] = "take"
         blocks[0]["accessory"]["text"]["text"] = "Take me!"
@@ -144,6 +165,9 @@ def interactive():
 
 @app.route("/daily")
 def daily_route():
+    if datetime.now().weekday() == 6:
+        send_matches()
+
     return jsonify(get_quote())
 
 
