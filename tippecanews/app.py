@@ -19,7 +19,8 @@ from tippecanews.utils.retrievers import (
 )
 
 from tippecanews.utils.matches import (
-    send_matches
+    send_matches,
+    match_people
 )
 
 import logging
@@ -183,6 +184,17 @@ def daily_route():
         send_matches()
 
     return jsonify(get_quote())
+
+@app.route("/sendmatches")
+def send_match_route():
+    send_matches()
+    return "sent matching messages"
+
+@app.route("/makematches")
+def match_route():
+    match_people()
+    return "matched with people"
+
 
 
 @app.route("/newsfetch")
