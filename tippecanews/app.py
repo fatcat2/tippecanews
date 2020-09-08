@@ -125,9 +125,23 @@ def interactive():
     if response["type"] == "block_actions":
         value = response["actions"][0]["value"]
         user = response["user"]
+        db = firestore.Client()
+        today = datetime.now()
+        week_doc = db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").get()
 
-        if value = "yes":
+        if not week_doc.exists:
+            set_data = {
+                    "uids": []
+            }
+            db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").set(set_data)
+            week_doc = db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").get()
+
+        week_data = week_doc.to_dict()
+
+        if value == "yes":
             payload = {"text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."}
+            week_data["uids"].append(user["id"])
+            db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").update(week_data)
         else:
             payload = {"text": "ok ! maybe next week ..."}
 
