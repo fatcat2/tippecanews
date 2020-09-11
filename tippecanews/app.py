@@ -204,7 +204,7 @@ def newsfetch():
                 document_id=doc_id,
             )
             send_slack(
-                f"PNG issued to {row[0]} on {row[2]}. Banned from {row[1]}", "", ""
+                f"PNG issued to {row[0]} until {row[2]}. Banned from {row[1]}", "", ""
             )
         except Exception:
             pass
