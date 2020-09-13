@@ -24,7 +24,8 @@ def send_matches():
     for uid in user_ids:
         send_msg_params = {
             "token": os.getenv("SLACK_TOKEN"),
-            "channel": uid
+            "channel": uid,
+            "text": "Hey! Do you wanna meet someone new at The Exponent this week?"
         }
 
         blocks = {
@@ -34,7 +35,7 @@ def send_matches():
                                 "type": "section",
                                 "text": {
                                         "type": "mrkdwn",
-                                        "text": "Hey! Do you wanna meet someone new at the Exponent this week?"
+                                        "text": "Hey! Do you wanna meet someone new at The Exponent this week?"
                                 }
                         },
                         {
