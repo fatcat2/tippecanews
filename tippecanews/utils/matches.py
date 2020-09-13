@@ -19,9 +19,7 @@ def send_matches():
 
     data = r.json()
 
-    print(data)
-
-    user_ids = [member["id"] for member in data["members"] if member["is_bot"] is not False]
+    user_ids = [member["id"] for member in data["members"] if member["is_bot"] is False]
 
     for uid in user_ids:
         send_msg_params = {
@@ -66,7 +64,7 @@ def send_matches():
         send_msg_params["blocks"] = json.dumps(blocks["blocks"])
 
         r = requests.post("https://slack.com/api/chat.postMessage", params=send_msg_params)
-
+    
         print(r.json())
 
 def match_people():
@@ -113,5 +111,5 @@ def match_people():
 
 
 if __name__ == "__main__":
-    match_people()
+    send_matches()
 
