@@ -69,7 +69,9 @@ def send_matches():
 def match_people():
     db = firestore.Client()
     today = datetime.now()
-    week_doc = db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").get()
+    day = today.day - 1
+
+    week_doc = db.collection("meetings").document(f"{today.month}_{day}_{today.year}").get()
     if week_doc.exists:
         members = week_doc.to_dict()["uids"]
         random.shuffle(members)
@@ -110,5 +112,5 @@ def match_people():
 
 
 if __name__ == "__main__":
-    send_matches()
+    match_people()
 
