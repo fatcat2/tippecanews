@@ -147,7 +147,6 @@ def interactive():
             payload = {"text": "ok ! maybe next week ..."}
 
         r = requests.post(response["response_url"], json=payload)
-        print(r.json())
 
         return ""
 
@@ -259,22 +258,22 @@ def newsfetch():
         except Exception:
             pass
 
-    crimes = crime_scrape()
-    crime_ref = db.collection("crimes")
+    # crimes = crime_scrape()
+    # crime_ref = db.collection("crimes")
 
-    for day in crimes.keys():
-        docs = (
-                crime_ref.where("date", "==", "{}".format(day))
-                .get()
-            )
+    # for day in crimes.keys():
+    #     docs = (
+    #             crime_ref.where("date", "==", "{}".format(day))
+    #             .get()
+    #         )
         
-        if len(docs) == 0:
-            insert_obj = {
-                "date": day,
-                "crimes": crimes[day]
-            }
+    #     if len(docs) == 0:
+    #         insert_obj = {
+    #             "date": day,
+    #             "crimes": crimes[day]
+    #         }
 
-            crime_ref.add(insert_obj)
+    #         crime_ref.add(insert_obj)
 
 
     return "Done"
