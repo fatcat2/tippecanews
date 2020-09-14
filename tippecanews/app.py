@@ -15,13 +15,10 @@ from tippecanews.utils.retrievers import (
     xml_urls,
     get_bylines,
     get_quote,
-    crime_scrape,
+    # crime_scrape,
 )
 
-from tippecanews.utils.matches import (
-    send_matches,
-    match_people
-)
+from tippecanews.utils.matches import send_matches, match_people
 
 import logging
 
@@ -128,25 +125,38 @@ def interactive():
         user = response["user"]
         db = firestore.Client()
         today = datetime.now()
-        week_doc = db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").get()
+        week_doc = (
+            db.collection("meetings")
+            .document(f"{today.month}_{today.day}_{today.year}")
+            .get()
+        )
 
         if not week_doc.exists:
-            set_data = {
-                    "uids": []
-            }
-            db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").set(set_data)
-            week_doc = db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").get()
+            set_data = {"uids": []}
+            db.collection("meetings").document(
+                f"{today.month}_{today.day}_{today.year}"
+            ).set(set_data)
+            week_doc = (
+                db.collection("meetings")
+                .document(f"{today.month}_{today.day}_{today.year}")
+                .get()
+            )
 
         week_data = week_doc.to_dict()
 
         if value == "yes":
-            payload = {"text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."}
+            payload = {
+                "text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."
+            }
             week_data["uids"].append(user["id"])
-            db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").update(week_data)
+            db.collection("meetings").document(
+                f"{today.month}_{today.day}_{today.year}"
+            ).update(week_data)
         else:
             payload = {"text": "ok ! maybe next week ..."}
 
         r = requests.post(response["response_url"], json=payload)
+        r.raise_for_status()
 
         return ""
 
@@ -184,16 +194,17 @@ def daily_route():
 
     return jsonify(get_quote())
 
+
 @app.route("/sendmatches")
 def send_match_route():
     send_matches()
     return "sent matching messages"
 
+
 @app.route("/makematches")
 def match_route():
     match_people()
     return "matched with people"
-
 
 
 @app.route("/newsfetch")
@@ -266,7 +277,7 @@ def newsfetch():
     #             crime_ref.where("date", "==", "{}".format(day))
     #             .get()
     #         )
-        
+
     #     if len(docs) == 0:
     #         insert_obj = {
     #             "date": day,
@@ -274,7 +285,6 @@ def newsfetch():
     #         }
 
     #         crime_ref.add(insert_obj)
-
 
     return "Done"
 
