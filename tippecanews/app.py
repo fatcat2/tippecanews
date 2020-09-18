@@ -15,8 +15,11 @@ from tippecanews.utils.retrievers import (
     xml_urls,
     get_bylines,
     get_quote,
-    crime_scrape,
+    # crime_scrape,
 )
+
+from tippecanews.utils.matches import send_matches, match_people
+
 import logging
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
@@ -116,8 +119,50 @@ def test_me():
 def interactive():
     """A route to handle interactions with press release messages."""
     response = json.loads(request.form.get("payload"))
+
+    if response["type"] == "block_actions":
+        value = response["actions"][0]["value"]
+        user = response["user"]
+        db = firestore.Client()
+        today = datetime.now()
+        week_doc = (
+            db.collection("meetings")
+            .document(f"{today.month}_{today.day}_{today.year}")
+            .get()
+        )
+
+        if not week_doc.exists:
+            set_data = {"uids": []}
+            db.collection("meetings").document(
+                f"{today.month}_{today.day}_{today.year}"
+            ).set(set_data)
+            week_doc = (
+                db.collection("meetings")
+                .document(f"{today.month}_{today.day}_{today.year}")
+                .get()
+            )
+
+        week_data = week_doc.to_dict()
+
+        if value == "yes":
+            payload = {
+                "text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."
+            }
+            week_data["uids"].append(user["id"])
+            db.collection("meetings").document(
+                f"{today.month}_{today.day}_{today.year}"
+            ).update(week_data)
+        else:
+            payload = {"text": "ok ! maybe next week ..."}
+
+        r = requests.post(response["response_url"], json=payload)
+        r.raise_for_status()
+
+        return ""
+
     resp_url = response["response_url"]
     blocks = response["message"]["blocks"]
+
     if blocks[0]["accessory"]["value"] == "cancel":
         blocks[0]["accessory"]["value"] = "take"
         blocks[0]["accessory"]["text"]["text"] = "Take me!"
@@ -144,7 +189,22 @@ def interactive():
 
 @app.route("/daily")
 def daily_route():
+    if datetime.now().weekday() == 6:
+        send_matches()
+
     return jsonify(get_quote())
+
+
+@app.route("/sendmatches")
+def send_match_route():
+    send_matches()
+    return "sent matching messages"
+
+
+@app.route("/makematches")
+def match_route():
+    match_people()
+    return "matched with people"
 
 
 @app.route("/newsfetch")
@@ -209,23 +269,22 @@ def newsfetch():
         except Exception:
             pass
 
-    crimes = crime_scrape()
-    crime_ref = db.collection("crimes")
+    # crimes = crime_scrape()
+    # crime_ref = db.collection("crimes")
 
-    for day in crimes.keys():
-        docs = (
-                crime_ref.where("date", "==", "{}".format(day))
-                .get()
-            )
-        
-        if len(docs) == 0:
-            insert_obj = {
-                "date": day,
-                "crimes": crimes[day]
-            }
+    # for day in crimes.keys():
+    #     docs = (
+    #             crime_ref.where("date", "==", "{}".format(day))
+    #             .get()
+    #         )
 
-            crime_ref.add(insert_obj)
+    #     if len(docs) == 0:
+    #         insert_obj = {
+    #             "date": day,
+    #             "crimes": crimes[day]
+    #         }
 
+    #         crime_ref.add(insert_obj)
 
     return "Done"
 
