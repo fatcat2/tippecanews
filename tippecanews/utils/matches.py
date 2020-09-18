@@ -19,9 +19,8 @@ def send_matches():
 
     data = r.json()
 
-    print(data)
 
-    user_ids = [member["id"] for member in data["members"] if member["is_bot"] is not False]
+    user_ids = [member["id"] for member in data["members"] if member["is_bot"] is False]
 
     for uid in user_ids:
         send_msg_params = {
@@ -67,7 +66,7 @@ def send_matches():
 
         r = requests.post("https://slack.com/api/chat.postMessage", params=send_msg_params)
 
-        print(r.json())
+        print(r.json()["ok"])
 
 def match_people():
     db = firestore.Client()
@@ -113,5 +112,5 @@ def match_people():
 
 
 if __name__ == "__main__":
-    match_people()
+    send_matches()
 
