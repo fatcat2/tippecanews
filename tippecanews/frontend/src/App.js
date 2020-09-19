@@ -42,6 +42,7 @@ class App extends React.Component {
           subTitle="HOW TO USE MY BABY"
         />
         <br />
+        
         <div>
           <Row>
             <Col span={12} offset={6}>
@@ -121,6 +122,10 @@ class App extends React.Component {
                 <Divider />
                 <Paragraph>
                   Tippecanews is maintained by <a href="twitter.com/ryanjengchen">@ryanjengchen</a>. Find him on Twitter, or email him at <a href="mailto:ryanjchen2@gmail.com">ryanjchen2@gmail.com</a> if you have any questions.
+                </Paragraph>
+                <Divider />
+                <Paragraph>
+                  <a href="https://slack.com/oauth/v2/authorize?user_scope=identity.basic&client_id=566562418550.1308594106323&redirect_uri=http://localhost:8080/stats"><img alt="Sign in with Slack" height="40" width="172" src="https://platform.slack-edge.com/img/sign_in_with_slack.png" srcset="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x" /></a>
                 </Paragraph>
               </Typography>
             </Col>

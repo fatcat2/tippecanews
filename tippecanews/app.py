@@ -288,6 +288,27 @@ def newsfetch():
 
     return "Done"
 
+@app.route("/stats")
+def stats_route():
+    code = request.args.get("code")
+    
+    params = {
+            "client_id": os.getenv("SLACK_CLIENT_ID"),
+            "client_secret": os.getenv("SLACK_CLIENT_SECRET"),
+            "code": code,
+            "redirect_uri": os.getenv("REDIRECT_URI")
+    }
+
+    r = requests.get("https://slack.com/api/oauth.v2.access", params=params)
+
+    user_identity_params = {
+            "token": r.json()["authed_user"]["access_token"]
+    }
+
+    identity_response = requests.get("https://slack.com/api/users.identity", params=user_identity_params)
+
+    return identity_response.json()["user"]["name"]
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
