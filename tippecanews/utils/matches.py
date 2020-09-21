@@ -67,11 +67,15 @@ def send_matches():
             "https://slack.com/api/chat.postMessage", params=send_msg_params
         )
 
+        print(r.json())
+
 
 def match_people():
     db = firestore.Client()
     today = datetime.now()
     day = today.day - 1
+
+    print(day)
 
     week_doc = (
         db.collection("meetings").document(f"{today.month}_{day}_{today.year}").get()
