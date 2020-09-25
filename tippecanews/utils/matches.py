@@ -8,7 +8,12 @@ from google.cloud import firestore
 import requests
 
 
-def send_matches():
+def send_matches() -> int:
+    """Helper function to send the matches out to all members of the workspace.
+
+    Returns:
+        An int representing the number of users matching messages were sent to.
+    """
     # get list of all users
     list_users_url = "https://slack.com/api/users.list"
 
@@ -19,6 +24,8 @@ def send_matches():
     data = r.json()
 
     user_ids = [member["id"] for member in data["members"] if member["is_bot"] is False]
+
+    counter = 0
 
     for uid in user_ids:
         send_msg_params = {
@@ -66,6 +73,13 @@ def send_matches():
         r = requests.post(
             "https://slack.com/api/chat.postMessage", params=send_msg_params
         )
+
+        if r.json()["ok"]:
+            counter += 1
+        else:
+            raise Exception
+    
+    return counter
 
 
 def match_people():
