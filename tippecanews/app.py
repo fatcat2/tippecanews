@@ -15,10 +15,13 @@ from tippecanews.utils.retrievers import (
     xml_urls,
     get_bylines,
     get_quote,
-    # crime_scrape,
 )
 
-from tippecanews.utils.matches import send_matches, match_people
+from tippecanews.utils.matches import (
+    send_matches,
+    make_matches,
+    check_matches
+)
 
 import logging
 
@@ -197,14 +200,16 @@ def daily_route():
 
 @app.route("/sendmatches")
 def send_match_route():
-    send_matches()
-    return "sent matching messages"
+    return send_matches()
 
 
 @app.route("/makematches")
-def match_route():
-    match_people()
-    return "matched with people"
+def make_match_route():
+    return make_matches()
+
+@app.route("/checkmatches")
+def check_match_route():
+    return check_matches()
 
 
 @app.route("/newsfetch")
