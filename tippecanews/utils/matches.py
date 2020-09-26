@@ -144,70 +144,75 @@ def check_matches() -> int:
     Returns:
         An int representing the number of users matching messages were sent to.
     """
-    # get list of all users
-    list_users_url = "https://slack.com/api/users.list"
+    db = firestore.Client()
 
-    params = {"token": os.getenv("SLACK_TOKEN")}
+    today = datetime.now() - timedelta(days=datetime.now().weekday() + 1)
 
-    r = requests.get(list_users_url, params=params)
+    week_doc = (
+        db.collection("meetings")
+        .document(f"{today.month}_{today.day}_{today.year}")
+        .get()
+    )
 
-    data = r.json()
+    if week_doc.exists:
+        members = week_doc.to_dict()["uids"]
 
-    user_ids = [member["id"] for member in data["members"] if member["is_bot"] is False]
+        tmp = []
+        pairs_list = []
 
-    counter = 0
+        counter = 0
 
-    for uid in user_ids:
-        send_msg_params = {
-            "token": os.getenv("SLACK_TOKEN"),
-            "channel": uid,
-            "text": "Hey! Do you wanna meet someone new at The Exponent this week?",
-        }
+        for uid in members:
+            send_msg_params = {
+                "token": os.getenv("SLACK_TOKEN"),
+                "channel": uid,
+                "text": "Hey! Did you meet the person you were paired up with this week?",
+            }
 
-        blocks = {
-            "type": "home",
-            "blocks": [
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "Hey! Did you meet the person you were paired up with this week?",
+            blocks = {
+                "type": "home",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Hey! Did you meet the person you were paired up with this week?",
+                        },
                     },
-                },
-                {
-                    "type": "actions",
-                    "elements": [
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "yes !",
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "yes !",
+                                },
+                                "value": "yes_meet",
                             },
-                            "value": "yes_meet",
-                        },
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "no !",
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "no !",
+                                },
+                                "value": "no_meet",
                             },
-                            "value": "no_meet",
-                        },
-                    ],
-                },
-            ],
-        }
+                        ],
+                    },
+                ],
+            }
 
-        send_msg_params["blocks"] = json.dumps(blocks["blocks"])
+            send_msg_params["blocks"] = json.dumps(blocks["blocks"])
 
-        r = requests.post(
-            "https://slack.com/api/chat.postMessage", params=send_msg_params
-        )
+            r = requests.post(
+                "https://slack.com/api/chat.postMessage", params=send_msg_params
+            )
 
-        if r.json()["ok"]:
-            counter += 1
-        else:
-            raise Exception
+            if r.json()["ok"]:
+                counter += 1
+            else:
+                raise Exception
 
     return counter
 
