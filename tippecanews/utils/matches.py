@@ -162,7 +162,7 @@ def check_matches():
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Hey! Do you wanna meet someone new at The Exponent this week?",
+                        "text": "Hey! Did you meet the person you were paired up with this week?",
                     },
                 },
                 {
@@ -174,7 +174,7 @@ def check_matches():
                                 "type": "plain_text",
                                 "text": "yes !",
                             },
-                            "value": "yes",
+                            "value": "yes_meet",
                         },
                         {
                             "type": "button",
@@ -182,7 +182,7 @@ def check_matches():
                                 "type": "plain_text",
                                 "text": "no !",
                             },
-                            "value": "no",
+                            "value": "no_meet",
                         },
                     ],
                 },
