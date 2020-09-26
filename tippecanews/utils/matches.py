@@ -100,6 +100,9 @@ def match_people() -> int:
 
     if week_doc.exists:
         members = week_doc.to_dict()["uids"]
+
+        members = random.shuffle(members)
+
         tmp = []
         pairs_list = []
 
