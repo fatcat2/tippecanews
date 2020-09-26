@@ -8,7 +8,7 @@ from google.cloud import firestore
 import requests
 
 
-def send_matches(firestore_db_client=None) -> int:
+def send_matches() -> int:
     """Helper function to send the matches out to all members of the workspace.
 
     Returns:
@@ -74,6 +74,14 @@ def send_matches(firestore_db_client=None) -> int:
             "https://slack.com/api/chat.postMessage", data=send_msg_params
         )
 
+        if not r.json()["ok"]:
+            raise Exception
+
+        counter += 1
+    
+    return counter
+
+
 def make_matches(firestore_db_client=None) -> int:
     """A helper function to match pair people from the previous day together and create group chats.
 
@@ -83,8 +91,6 @@ def make_matches(firestore_db_client=None) -> int:
     db = firestore.Client()
 
     today = datetime.now() - timedelta(days=datetime.now().weekday() + 1)
-
-    print(day)
 
     week_doc = (
         db.collection("meetings")
@@ -130,6 +136,7 @@ def make_matches(firestore_db_client=None) -> int:
         return len(pairs_list)
 
     return 0
+
 
 def check_matches(firestore_db_client=None) -> int:
     """Helper function to send the matches out to all members of the workspace.
