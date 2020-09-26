@@ -128,6 +128,10 @@ def match_people() -> int:
             f"{today.month}_{today.day}_{today.year}"
         ).update({"pairs": pairs_list})
 
+        return len(pairs_list)
+    
+    return 0
+
 
 def check_matches():
     """Helper function to send the matches out to all members of the workspace.
