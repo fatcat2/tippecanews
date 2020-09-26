@@ -149,7 +149,7 @@ def interactive():
                 "text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."
             }
             week_data["uids"].append(user["id"])
-            db.collection("meetings").document(
+            db.collection(os.getenv("MEETINGS_DB")).document(
                 f"{today.month}_{today.day}_{today.year}"
             ).update(week_data)
         else:

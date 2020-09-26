@@ -74,14 +74,6 @@ def send_matches() -> int:
             "https://slack.com/api/chat.postMessage", params=send_msg_params
         )
 
-        if r.json()["ok"]:
-            counter += 1
-        else:
-            raise Exception
-
-    return counter
-
-
 def match_people() -> int:
     """A helper function to match pair people from the previous day together and create group chats.
 
@@ -91,6 +83,8 @@ def match_people() -> int:
     db = firestore.Client()
 
     today = datetime.now() - timedelta(days=datetime.now().weekday() + 1)
+
+    print(day)
 
     week_doc = (
         db.collection("meetings")
