@@ -1,5 +1,5 @@
 import copy
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 import random
@@ -85,7 +85,7 @@ def send_matches() -> int:
 def match_people():
     db = firestore.Client()
     today = datetime.now()
-    day = today.day - 1
+    day = datetime.now() - timedelta(days=datetime.now().weekday()+1)
 
     week_doc = (
         db.collection("meetings").document(f"{today.month}_{day}_{today.year}").get()
@@ -96,6 +96,71 @@ def match_people():
 
         pairs_list = []
         tmp = []
+        for uid in user_ids:
+            send_msg_params = {
+                "token": os.getenv("SLACK_TOKEN"),
+                "channel": uid,
+                "text": "Hey! Did you meet your assigned matched person this week?",
+            }
+
+            blocks = {
+                "type": "home",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Hey! Do you wanna meet someone new at The Exponent this week?",
+                        },
+                    },
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "yes !",
+                                },
+                                "value": "met_the_person",
+                            },
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "no !",
+                                },
+                                "value": "didnt_meet_the_person",
+                            },
+                        ],
+                    },
+                ],
+            }
+
+            send_msg_params["blocks"] = json.dumps(blocks["blocks"])
+
+            r = requests.post(
+                "https://slack.com/api/chat.postMessage", params=send_msg_params
+            )
+
+
+        db.collection("meetings").document(
+            f"{today.month}_{today.day}_{today.year}"
+        ).update({"pairs": pairs_list})
+
+
+def check_matches():
+    if datetime.now() > 0:
+        day = datetime.now() - timedelta(days=datetime.now().weekday()+1)
+    else:
+        day = datetime.now()
+
+    week_doc = (
+        db.collection("meetings").document(f"{today.month}_{day}_{today.year}").get()
+    )
+    if week_doc.exists:
+        members = week_doc.to_dict()["uids"]
+
         for member in members:
             tmp.append(member)
             if len(tmp) >= 2:
