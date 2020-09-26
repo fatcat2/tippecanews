@@ -8,7 +8,7 @@ from google.cloud import firestore
 import requests
 
 
-def send_matches() -> int:
+def send_matches(firestore_db_client=None) -> int:
     """Helper function to send the matches out to all members of the workspace.
 
     Returns:
@@ -74,7 +74,7 @@ def send_matches() -> int:
             "https://slack.com/api/chat.postMessage", params=send_msg_params
         )
 
-def match_people() -> int:
+def make_matches(firestore_db_client=None) -> int:
     """A helper function to match pair people from the previous day together and create group chats.
 
     Returns:
@@ -131,14 +131,16 @@ def match_people() -> int:
 
     return 0
 
-
-def check_matches() -> int:
+def check_matches(firestore_db_client=None) -> int:
     """Helper function to send the matches out to all members of the workspace.
+
+    Args:
+        firestore (google.cloud.firestore.Firestore)
 
     Returns:
         An int representing the number of users matching messages were sent to.
     """
-    db = firestore.Client()
+    db = firestore_db_client if firestore_db_client is not None else firestore.Client()
 
     today = datetime.now() - timedelta(days=datetime.now().weekday() + 1)
 
@@ -151,6 +153,8 @@ def check_matches() -> int:
     if week_doc.exists:
         members = week_doc.to_dict()["uids"]
 
+        print(members)
+
         tmp = []
         pairs_list = []
 
@@ -158,7 +162,7 @@ def check_matches() -> int:
 
         for uid in members:
             send_msg_params = {
-                "token": os.getenv("SLACK_TOKEN"),
+                "token": "xoxb-566562418550-1332232032288-axPgdTsBsE86CP9Y6ovp8HlJ",
                 "channel": uid,
                 "text": "Hey! Did you meet the person you were paired up with this week?",
             }
@@ -206,10 +210,11 @@ def check_matches() -> int:
             if r.json()["ok"]:
                 counter += 1
             else:
+                print(r.json())
                 raise Exception
 
     return counter
 
 
 if __name__ == "__main__":
-    match_people()
+    check_matches()
