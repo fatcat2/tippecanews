@@ -78,7 +78,7 @@ def send_matches() -> int:
             counter += 1
         else:
             raise Exception
-    
+
     return counter
 
 
@@ -89,11 +89,13 @@ def match_people() -> int:
         The number of pairs created.
     """
     db = firestore.Client()
-    
-    today = datetime.now() - timedelta(days=datetime.now().weekday()+1)
+
+    today = datetime.now() - timedelta(days=datetime.now().weekday() + 1)
 
     week_doc = (
-        db.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").get()
+        db.collection("meetings")
+        .document(f"{today.month}_{today.day}_{today.year}")
+        .get()
     )
 
     if week_doc.exists:
@@ -129,11 +131,11 @@ def match_people() -> int:
         ).update({"pairs": pairs_list})
 
         return len(pairs_list)
-    
+
     return 0
 
 
-def check_matches():
+def check_matches() -> int:
     """Helper function to send the matches out to all members of the workspace.
 
     Returns:
@@ -203,7 +205,7 @@ def check_matches():
             counter += 1
         else:
             raise Exception
-    
+
     return counter
 
 
