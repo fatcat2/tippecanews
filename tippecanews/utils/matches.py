@@ -71,7 +71,7 @@ def send_matches(firestore_db_client=None) -> int:
         send_msg_params["blocks"] = json.dumps(blocks["blocks"])
 
         r = requests.post(
-            "https://slack.com/api/chat.postMessage", params=send_msg_params
+            "https://slack.com/api/chat.postMessage", data=send_msg_params
         )
 
 def make_matches(firestore_db_client=None) -> int:
@@ -118,7 +118,7 @@ def make_matches(firestore_db_client=None) -> int:
                         "text": "y'all got matched! pls find a time to meet up with each other! maybe try zoom?",
                     }
                     r = requests.post(
-                        "https://slack.com/api/chat.postMessage", params=welcome_params
+                        "https://slack.com/api/chat.postMessage", data=welcome_params
                     )
                 pairs_list.append(json.dumps(copy.copy(tmp)))
                 tmp.clear()
@@ -162,7 +162,7 @@ def check_matches(firestore_db_client=None) -> int:
 
         for uid in members:
             send_msg_params = {
-                "token": "xoxb-566562418550-1332232032288-axPgdTsBsE86CP9Y6ovp8HlJ",
+                "token": os.getenv("SLACK_TOKEN"),
                 "channel": uid,
                 "text": "Hey! Did you meet the person you were paired up with this week?",
             }
@@ -204,7 +204,7 @@ def check_matches(firestore_db_client=None) -> int:
             send_msg_params["blocks"] = json.dumps(blocks["blocks"])
 
             r = requests.post(
-                "https://slack.com/api/chat.postMessage", params=send_msg_params
+                "https://slack.com/api/chat.postMessage", data=send_msg_params
             )
 
             if r.json()["ok"]:
