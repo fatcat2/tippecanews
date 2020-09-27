@@ -112,20 +112,23 @@ def make_matches(firestore_db_client=None) -> int:
                 users_str = f"{tmp[0]},{tmp[1]}"
                 params = {"token": os.getenv("SLACK_TOKEN"), "users": users_str}
                 r = requests.post(
-                    "https://slack.com/api/conversations.open", params=params
+                    "https://slack.com/api/conversations.open", data=params
                 )
 
                 data = r.json()
 
-                if data["ok"]:
-                    welcome_params = {
-                        "token": os.getenv("SLACK_TOKEN"),
-                        "channel": data["channel"]["id"],
-                        "text": "y'all got matched! pls find a time to meet up with each other! maybe try zoom?",
-                    }
-                    r = requests.post(
-                        "https://slack.com/api/chat.postMessage", data=welcome_params
-                    )
+                if not data["ok"]:
+                    raise Exception
+
+                welcome_params = {
+                    "token": os.getenv("SLACK_TOKEN"),
+                    "channel": data["channel"]["id"],
+                    "text": "y'all got matched! pls find a time to meet up with each other! maybe try zoom?",
+                }
+                r = requests.post(
+                    "https://slack.com/api/chat.postMessage", data=welcome_params
+                )
+
                 pairs_list.append(json.dumps(copy.copy(tmp)))
                 tmp.clear()
 
