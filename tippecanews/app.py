@@ -18,7 +18,7 @@ from tippecanews.utils.retrievers import (
     # crime_scrape,
 )
 
-from tippecanews.utils.matches import send_matches, match_people
+from tippecanews.utils.matches import send_matches, match_people, get_match_data
 
 import logging
 
@@ -206,6 +206,11 @@ def match_route():
     match_people()
     return "matched with people"
 
+
+@app.route("/matchdata")
+def match_data_route():
+    data = request.get_json()
+    return get_match_data(data["user"], data["token"])
 
 @app.route("/newsfetch")
 def newsfetch():

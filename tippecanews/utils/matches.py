@@ -174,6 +174,45 @@ def check_matches():
             f"{today.month}_{today.day}_{today.year}"
         ).update({"pairs": pairs_list})
 
+def get_match_data(user, token):
+    db = firestore.Client()
+
+    docs = db.collection("meetings").stream()
+
+    ret_dict = {matches: []}
+
+    for doc in docs:
+        data = doc.to_dict()
+        print(doc.id)
+
+        if "pairs" in data:
+            pair = [pair for pair in data["pairs"] if user in pair]
+            if len(pair) > 0:
+                for partner in json.loads(pair[0]):
+                    if partner != user:
+                        params = {
+                                "token": token,
+                                "user": partner
+                        }
+                        response = requests.get("https://slack.com/api/users.info", params=params)
+
+                        response_json = response.json()
+
+                        if response_json["ok"]:
+                            ret_dict["matches"].append(
+                                {
+                                        "name": response_json["user"]["real_name"],
+                                        "week": doc.id,
+                                        "profilePicUrl": response_json["user"]["profile"]["image_original"]
+                                }
+                            )
+
+                        else:
+                            print(response_json["error"])
+
+    return ret_dict
+
+
 
 if __name__ == "__main__":
-    match_people()
+    get_match_data(os.getenv("test_user"), os.getenv("SLACK_TOKEN"))
