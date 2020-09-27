@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 import os
 
@@ -65,14 +66,23 @@ def test_make_matches():
         ],
     }
 
+    firestore = MockFirestore()
+
+    today = datetime.now() - timedelta(days=datetime.now().weekday() + 1)
+
+    firestore.collection(f"{today.month}_{today.day}_{today.year}")
+    firestore.collection("meetings").document(f"{today.month}_{today.day}_{today.year}").set({
+        "uids": [member["id"] for member in list_members_response_data["members"]],
+    })
+
     os.environ["SLACK_TOKEN"] = "TEST_TOKEN"
 
-    test_url = f"https://slack.com/api/users.list?token={os.environ['SLACK_TOKEN']}"
+    test_url = f"https://slack.com/api/conversations.open"
 
     responses.add(
-        responses.GET,
+        responses.POST,
         test_url,
-        body=json.dumps(list_members_response_data),
+        body=json.dumps({"ok": True}),
         status=200,
         content_type="application/json",
     )
@@ -91,8 +101,6 @@ def test_make_matches():
         content_type="application/json",
     )
 
-    matches = send_matches()
+    matches = make_matches(firestore_db_client=firestore)
 
-    assert matches == len(
-        [user for user in list_members_response_data["members"] if not user["is_bot"]]
-    )
+    assert matches == 2
