@@ -17,11 +17,7 @@ from tippecanews.utils.retrievers import (
     get_quote,
 )
 
-from tippecanews.utils.matches import (
-    send_matches,
-    make_matches,
-    check_matches
-)
+from tippecanews.utils.matches import send_matches, make_matches, check_matches
 
 import logging
 
@@ -207,6 +203,7 @@ def send_match_route():
 def make_match_route():
     return make_matches()
 
+
 @app.route("/checkmatches")
 def check_match_route():
     return check_matches()
@@ -293,24 +290,25 @@ def newsfetch():
 
     return "Done"
 
+
 @app.route("/stats")
 def stats_route():
     code = request.args.get("code")
-    
+
     params = {
-            "client_id": os.getenv("SLACK_CLIENT_ID"),
-            "client_secret": os.getenv("SLACK_CLIENT_SECRET"),
-            "code": code,
-            "redirect_uri": os.getenv("REDIRECT_URI")
+        "client_id": os.getenv("SLACK_CLIENT_ID"),
+        "client_secret": os.getenv("SLACK_CLIENT_SECRET"),
+        "code": code,
+        "redirect_uri": os.getenv("REDIRECT_URI"),
     }
 
     r = requests.get("https://slack.com/api/oauth.v2.access", params=params)
 
-    user_identity_params = {
-            "token": r.json()["authed_user"]["access_token"]
-    }
+    user_identity_params = {"token": r.json()["authed_user"]["access_token"]}
 
-    identity_response = requests.get("https://slack.com/api/users.identity", params=user_identity_params)
+    identity_response = requests.get(
+        "https://slack.com/api/users.identity", params=user_identity_params
+    )
 
     return identity_response.json()["user"]["name"]
 
