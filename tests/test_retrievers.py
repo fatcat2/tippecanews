@@ -1,5 +1,3 @@
-# import json
-
 import responses
 
 from tippecanews.utils.retrievers import get_pngs, send_slack
