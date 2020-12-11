@@ -1,6 +1,7 @@
 import pytest
 
 from tippecanews.app import app
+from unittest.mock import patch
 
 
 @pytest.fixture
@@ -10,8 +11,10 @@ def client():
 
 
 def test_tcms(client):
-    resp = client.post("/tcms")
-    assert resp.status == "200 OK"
+    with patch("tippecanews.utils.influxdb_logger.log_request") as mock_log:
+        mock_log.return_value = True
+        resp = client.post("/tcms")
+        assert resp.status == "200 OK"
 
 
 def test_email(client):
