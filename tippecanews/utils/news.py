@@ -17,7 +17,7 @@ def newsfeed():
 
     data = r.json()
     payload = {
-        "channel": os.getenv("SLACK_CHANNEL"),
+        "channel": os.getenv("SLACK_RANDOM"),
         "text": "Welcome to your daily news digest! Here are some of the top headlines at the Associate Press",
         "token": os.getenv("SLACK_TOKEN"),
         "blocks": [],
