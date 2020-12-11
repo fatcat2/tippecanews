@@ -220,7 +220,7 @@ def newsfetch():
     * PUPD logs
     * Some of the RSS feeds from Purdue news
     """
-    logging.debug("Fetching news")
+    # logging.debug("Fetching news")
     db = firestore.Client()
     news_ref = db.collection("news_releases_test")
     requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
@@ -234,7 +234,7 @@ def newsfetch():
 
     status_log = ""
 
-    logging.debug("Going through XML urls")
+    # logging.debug("Going through XML urls")
 
     for url in xml_urls:
         response = requests.get(url)
@@ -259,7 +259,7 @@ def newsfetch():
                     is_pr=True,
                 )
                 status_log = status_log + f"<p>Added: {post.title}</p>"
-                logging.debug(f"Added: {post.title}</p>")
+                # logging.debug(f"Added: {post.title}</p>")
 
     png_ref = db.collection("png")
     for row in get_pngs():
