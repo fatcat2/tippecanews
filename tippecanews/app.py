@@ -20,7 +20,7 @@ from tippecanews.utils.retrievers import (
 
 from tippecanews.utils.matches import send_matches, match_people
 
-from .utils.logging import log_request
+from .utils.logging import log_request, log_agree_to_match
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
 # logging.basicConfig(level=10)
@@ -158,6 +158,8 @@ def interactive():
             db.collection(os.getenv("MEETINGS_DB")).document(
                 f"{today.month}_{today.day}_{today.year}"
             ).update(week_data)
+            log_agree_to_match()
+
         else:
             payload = {"text": "ok ! maybe next week ..."}
 

@@ -37,5 +37,20 @@ def log_error(function: str):
     ]
     client.write_points(json_body)
 
+def log_agree_to_match():
+    client = InfluxDBClient('localhost', 8086, 'root', 'root', 'tippecanews')
+    json_body = [
+        {
+            "measurement": "match_response",
+            "tags": {
+            },
+            "time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "fields": {
+                "value": 1
+            }
+        }
+    ]
+    client.write_points(json_body)
+
 if __name__ == "__main__":
     log("Hello")
