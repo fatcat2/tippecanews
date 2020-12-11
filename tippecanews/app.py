@@ -20,7 +20,7 @@ from tippecanews.utils.retrievers import (
 
 from tippecanews.utils.matches import send_matches, match_people
 
-import logging
+from .utils.logging import log_request
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
 logging.basicConfig(level=10)
@@ -33,6 +33,7 @@ def serve():
     Returns:
         The template for the instruction page.
     """
+    log_request(endpoint="/")
     return render_template("index.html")
 
 
@@ -53,6 +54,7 @@ def directory_search_route():
     Returns:
         Information found by querying the Purdue Directory in JSON form.
     """
+    log_request(endpoint="/directory")
     return jsonify(directory_search(request.form["text"]))
 
 
@@ -63,6 +65,7 @@ def byline_route():
     Returns:
         Bylines in a Slack-compatible format
     """
+    log_request(endpoint="/bylines")
     return jsonify(get_bylines(request.form["text"]))
 
 
@@ -73,6 +76,7 @@ def cms():
     Returns:
         CMS in a Slack-compatible format
     """
+    log_request(endpoint="/cms")
     return jsonify("https://admin-newyork1.bloxcms.com/")
 
 
@@ -83,6 +87,7 @@ def tcms():
     Returns:
         TCMS in a Slack-compatible format
     """
+    log_request(endpoint="/tcms")
     return jsonify("https://192.168.168.128/desktop/#/purdueexponent.local")
 
 
@@ -93,6 +98,7 @@ def email():
     Returns:
         Email link in a Slack-compatible format
     """
+    log_request(endpoint="/email")
     return jsonify("https://webmail.tn-cloud.net/src/login.php")
 
 
