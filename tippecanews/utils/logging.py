@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 from influxdb import InfluxDBClient
 
@@ -6,7 +7,7 @@ def log(message: str):
     print(f"{datetime.now()}: {message}")
 
 def log_request(endpoint: str="/"):
-    client = InfluxDBClient('localhost', 8086, 'root', 'root', 'tippecanews')
+    client = InfluxDBClient('localhost', 8086, 'root', 'root', os.getenv("INFLUX_DB"))
     json_body = [
         {
             "measurement": "requests",
@@ -22,7 +23,7 @@ def log_request(endpoint: str="/"):
     client.write_points(json_body)
 
 def log_error(function: str):
-    client = InfluxDBClient('localhost', 8086, 'root', 'root', 'tippecanews')
+    client = InfluxDBClient('localhost', 8086, 'root', 'root', os.getenv("INFLUX_DB"))
     json_body = [
         {
             "measurement": "errors",
@@ -38,7 +39,7 @@ def log_error(function: str):
     client.write_points(json_body)
 
 def log_agree_to_match():
-    client = InfluxDBClient('localhost', 8086, 'root', 'root', 'tippecanews')
+    client = InfluxDBClient('localhost', 8086, 'root', 'root', os.getenv("INFLUX_DB"))
     json_body = [
         {
             "measurement": "match_response",
