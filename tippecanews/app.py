@@ -23,7 +23,7 @@ from tippecanews.utils.matches import send_matches, match_people
 from .utils.logging import log_request
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
-logging.basicConfig(level=10)
+# logging.basicConfig(level=10)
 
 
 @app.route("/")
