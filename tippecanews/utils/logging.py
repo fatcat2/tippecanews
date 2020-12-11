@@ -19,6 +19,7 @@ def log_request(endpoint: str="/"):
             }
         }
     ]
+    client.write_points(json_body)
 
 if __name__ == "__main__":
     log("Hello")
