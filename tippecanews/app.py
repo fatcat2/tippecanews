@@ -18,9 +18,11 @@ from tippecanews.utils.retrievers import (
     # crime_scrape,
 )
 
+from tippecanews.utils.news import newsfeed
+
 from tippecanews.utils.matches import send_matches, match_people
 
-from .utils.logging import log_request, log_agree_to_match
+from .utils.influxdb_logger import log_request, log_agree_to_match
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
 # logging.basicConfig(level=10)
@@ -200,7 +202,10 @@ def daily_route():
     if datetime.now().weekday() == 6:
         send_matches()
 
-    return jsonify(get_quote())
+    get_quote_result = get_quote()
+    newsfeed_result = newsfeed()
+
+    return jsonify([get_quote_result, newsfeed_result])
 
 
 @app.route("/sendmatches")
