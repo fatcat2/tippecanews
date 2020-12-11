@@ -20,10 +20,10 @@ from tippecanews.utils.retrievers import (
 
 from tippecanews.utils.matches import send_matches, match_people
 
-import logging
+from .utils.logging import log_request, log_agree_to_match
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
-logging.basicConfig(level=10)
+# logging.basicConfig(level=10)
 
 
 @app.route("/")
@@ -33,6 +33,7 @@ def serve():
     Returns:
         The template for the instruction page.
     """
+    log_request(endpoint="/")
     return render_template("index.html")
 
 
@@ -53,6 +54,7 @@ def directory_search_route():
     Returns:
         Information found by querying the Purdue Directory in JSON form.
     """
+    log_request(endpoint="/directory")
     return jsonify(directory_search(request.form["text"]))
 
 
@@ -63,6 +65,7 @@ def byline_route():
     Returns:
         Bylines in a Slack-compatible format
     """
+    log_request(endpoint="/bylines")
     return jsonify(get_bylines(request.form["text"]))
 
 
@@ -73,6 +76,7 @@ def cms():
     Returns:
         CMS in a Slack-compatible format
     """
+    log_request(endpoint="/cms")
     return jsonify("https://admin-newyork1.bloxcms.com/")
 
 
@@ -83,6 +87,7 @@ def tcms():
     Returns:
         TCMS in a Slack-compatible format
     """
+    log_request(endpoint="/tcms")
     return jsonify("https://192.168.168.128/desktop/#/purdueexponent.local")
 
 
@@ -93,6 +98,7 @@ def email():
     Returns:
         Email link in a Slack-compatible format
     """
+    log_request(endpoint="/email")
     return jsonify("https://webmail.tn-cloud.net/src/login.php")
 
 
@@ -152,6 +158,8 @@ def interactive():
             db.collection(os.getenv("MEETINGS_DB")).document(
                 f"{today.month}_{today.day}_{today.year}"
             ).update(week_data)
+            log_agree_to_match()
+
         else:
             payload = {"text": "ok ! maybe next week ..."}
 
@@ -214,7 +222,7 @@ def newsfetch():
     * PUPD logs
     * Some of the RSS feeds from Purdue news
     """
-    logging.debug("Fetching news")
+    # logging.debug("Fetching news")
     db = firestore.Client()
     news_ref = db.collection("news_releases_test")
     requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
@@ -228,7 +236,7 @@ def newsfetch():
 
     status_log = ""
 
-    logging.debug("Going through XML urls")
+    # logging.debug("Going through XML urls")
 
     for url in xml_urls:
         response = requests.get(url)
@@ -253,7 +261,7 @@ def newsfetch():
                     is_pr=True,
                 )
                 status_log = status_log + f"<p>Added: {post.title}</p>"
-                logging.debug(f"Added: {post.title}</p>")
+                # logging.debug(f"Added: {post.title}</p>")
 
     png_ref = db.collection("png")
     for row in get_pngs():
