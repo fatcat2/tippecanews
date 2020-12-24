@@ -7,6 +7,8 @@ import random
 from google.cloud import firestore
 import requests
 
+from .influxdb_logger import log
+
 
 def send_matches():
     # get list of all users
@@ -63,11 +65,13 @@ def send_matches():
 
         send_msg_params["blocks"] = json.dumps(blocks["blocks"])
 
-        r = requests.post(
-            "https://slack.com/api/chat.postMessage", params=send_msg_params
-        )
-
-        print(r.json())
+        try:
+            r = requests.post(
+                "https://slack.com/api/chat.postMessage", params=send_msg_params
+            )
+            r.raise_for_status()
+        except Exception as e:
+            log(e)
 
 
 def match_people():
@@ -112,6 +116,10 @@ def match_people():
         db.collection("meetings").document(
             f"{today.month}_{today.day}_{today.year}"
         ).update({"pairs": pairs_list})
+
+        log(f"Matched {len(pairs_list)} people in this matching session.")
+    else:
+        log(f"ERROR: Could not find the document in the database.")
 
 
 if __name__ == "__main__":

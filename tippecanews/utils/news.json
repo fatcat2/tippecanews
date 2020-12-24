@@ -1,0 +1,266 @@
+{
+    "status": "ok",
+    "totalResults": 38,
+    "articles": [
+        {
+            "source": {
+                "id": null,
+                "name": "YouTube"
+            },
+            "author": null,
+            "title": "Biggest 2021 PS5 & Series X Games - Next-Gen Console Watch - IGN",
+            "description": "Welcome back to Next-Gen Console Watch, our show following everything PlayStation 5 and Xbox Series. This week we discuss some of the biggest next-gen games ...",
+            "url": "https://www.youtube.com/watch?v=gWq4wgM5qeA",
+            "urlToImage": "https://i.ytimg.com/vi/gWq4wgM5qeA/hqdefault.jpg",
+            "publishedAt": "2020-12-11T14:00:08Z",
+            "content": null
+        },
+        {
+            "source": {
+                "id": "usa-today",
+                "name": "USA Today"
+            },
+            "author": "Chris Persaud",
+            "title": "Former Florida COVID-19 data scientist Rebekah Jones pushes back after raid on home - USA TODAY",
+            "description": "Former Florida coronavirus data chief Rebekah Jones hit back on Thursday against state police claims that bodycam footage shows officers acted appropriately when they raided her home.",
+            "url": "https://www.usatoday.com/story/news/nation/2020/12/11/rebekah-jones-fired-florida-covid-19-data-chief-speaks-out-after-raid/3893165001/",
+            "urlToImage": "https://www.gannett-cdn.com/presto/2020/12/10/PBRE/9fe3d92d-267c-4374-baf8-ecff7db9c9f0-JONES.png?crop=1911,1075,x8,y0&width=1600&height=800&fit=bounds",
+            "publishedAt": "2020-12-11T13:28:55Z",
+            "content": "PALM BEACH, Fla.   Former Florida coronavirus data chief Rebekah Jones hit back on Thursday against state police claims that bodycam footage shows officers acted appropriately when they raided her ho… [+6260 chars]"
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "Sports Illustrated"
+            },
+            "author": "Chris Mannix",
+            "title": "Kevin Durant, Kyrie Irving and What to Expect From the Nets - Sports Illustrated",
+            "description": "The Nets have assembled a basketball juggernaut with Kevin Durant and Kyrie Irving leading the way. Now we see how it comes together.",
+            "url": "https://www.si.com/nba/2020/12/11/nets-kevin-durant-kyrie-irving-season-outlook",
+            "urlToImage": "https://www.si.com/.image/t_share/MTczMjkyMzY3OTE3NzUzNzgw/kyrie-irving-nets-cba.jpg",
+            "publishedAt": "2020-12-11T13:13:00Z",
+            "content": "During the reporting of a recent story on John Wall, another player repeatedly worked his way into conversations: Kevin Durant. Over the last few months, as Wall continued his recovery from an Achill… [+5314 chars]"
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "CNET"
+            },
+            "author": "Joan E. Solsman",
+            "title": "Disney Plus to hike US price by $1, reveals new Marvel, Star Wars originals - CNET",
+            "description": "Raya and the Last Dragon will stream (for a price) the same day it hits big screens March 12. But the streaming release dates for Marvel movies like Black Widow remain a mystery.",
+            "url": "https://www.cnet.com/news/disney-plus-price-to-hike-price-reveals-new-marvel-star-wars-shows-movies-bundle/",
+            "urlToImage": "https://cnet1.cbsistatic.com/img/nJJZWnoKcA-mWbc1EHH0C2udjl4=/1200x630/2020/09/01/2f046cfb-5d3c-472f-8faf-a66b52e42374/disney-plus-logo-phone-6872.jpg",
+            "publishedAt": "2020-12-11T13:10:00Z",
+            "content": "Angela Lang/CNET\r\nDisney Plus will raise its US subscription price by $1 to $8 a month in the US in March, Disney said Thursday as it unleashed a flood of news about its streaming services at a four-… [+7563 chars]"
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "New York Times"
+            },
+            "author": "Andrew Ross Sorkin, Jason Karaian, Michael J. de la Merced, Lauren Hirsch, Ephrat Livni",
+            "title": "Airbnb's Huge I.P.O. Pop Stuns Its C.E.O. - The New York Times",
+            "description": "The home-rental company’s stock debut briefly left its own chief speechless.",
+            "url": "https://www.nytimes.com/2020/12/11/business/dealbook/airbnb-ipo-chesky.html",
+            "urlToImage": "https://static01.nyt.com/images/2020/12/11/business/11db-newsletter-airbnb1/merlin_173400330_a68d7adb-f857-42df-b7be-9aa2bb43f8d5-facebookJumbo.jpg",
+            "publishedAt": "2020-12-11T12:52:00Z",
+            "content": "Treasury Secretary Steven Mnuchin recently received a letter from members of Congress responding to rumors of burdensome disclosure rules for cryptocurrency operators. Crypto execs (see above) and ot… [+3550 chars]"
+        },
+        {
+            "source": {
+                "id": "the-hill",
+                "name": "The Hill"
+            },
+            "author": "Jordan Williams",
+            "title": "Sanofi, Glaxo announces setback in coronavirus vaccine project | TheHill - The Hill",
+            "description": "Sanofi and GlaxoSmithKline (GSK) on Friday announced a setback in the...",
+            "url": "https://thehill.com/policy/healthcare/529780-sanofi-glaxo-announces-setback-in-coronavirus-vaccine-project",
+            "urlToImage": "https://thehill.com/sites/default/files/coronavirus_vaccine_sample_size_121020pool2_lead.jpg",
+            "publishedAt": "2020-12-11T12:37:58Z",
+            "content": "Sanofi and GlaxoSmithKline (GSK) on Friday announced a setback in their coronavirus vaccine project, saying they now expect their vaccine to be available next year.\r\nThe companies said in a joint sta… [+1705 chars]"
+        },
+        {
+            "source": {
+                "id": "engadget",
+                "name": "Engadget"
+            },
+            "author": "",
+            "title": "‘Cyberpunk 2077’ sets a Steam record with one million concurrent players - Engadget",
+            "description": "Cyberpunk 2077 has set a new record for the largest number of simultaneous players in a single player game, with a record 1,003,262 playing just hours after the launch.",
+            "url": "https://www.engadget.com/cyberpunk-2077-beats-steam-record-for-concurrent-players-121942545.html",
+            "urlToImage": "https://o.aolcdn.com/images/dims?resize=1200%2C630&crop=1200%2C630%2C0%2C0&quality=95&image_uri=https%3A%2F%2Fs.yimg.com%2Fos%2Fcreatr-uploaded-images%2F2020-12%2F238e9990-3ba6-11eb-9bb7-8ed86d161347&client=amp-blogside-v2&signature=4b94e3944538089feb7523f70a895de32b4d8e6a",
+            "publishedAt": "2020-12-11T12:31:43Z",
+            "content": "Cyberpunk 2077 had some interesting glitches on launch, but those haven’t dissuaded anyone from playing it. The title set a new record for the largest number of simultaneous players in a single playe… [+632 chars]"
+        },
+        {
+            "source": {
+                "id": "ars-technica",
+                "name": "Ars Technica"
+            },
+            "author": "Chris Wilkinson",
+            "title": "It (still) runs on your imagination—Passing 2020 time with a Macintosh Quadra 700 - Ars Technica",
+            "description": "Famously, Apple's Quadra 700 once helped track dinosaurs. Is it stuck in amber nowadays?",
+            "url": "https://arstechnica.com/information-technology/2020/12/it-still-runs-on-your-imagination-passing-2020-time-with-a-macintosh-quadra-700/",
+            "urlToImage": "https://cdn.arstechnica.net/wp-content/uploads/2020/12/SuperMatch-20-T-Monitor-and-Macintosh-Quadra-700-Personal-Computer-in-Jurassic-Park-3-800x433-760x380.jpg",
+            "publishedAt": "2020-12-11T12:30:00Z",
+            "content": "Enlarge/ Be a shame if anything happened to those dinosaur paddock gates, so it's a good thing Sam Jackson can monitor this situation with his Quadra 700. \r\n6 with 5 posters participating\r\nThe crop o… [+5719 chars]"
+        },
+        {
+            "source": {
+                "id": "cnn",
+                "name": "CNN"
+            },
+            "author": "Ariane de Vogue and Dan Berman, CNN",
+            "title": "What's next in the states' fight over the election at the Supreme Court - CNN",
+            "description": "State attorneys general went to battle at the Supreme Court on Thursday, taking sides on President Donald Trump's bid to pull off an unprecedented legal victory that would bring the election to a screeching halt.",
+            "url": "https://www.cnn.com/2020/12/11/politics/election-texas-trump-states-supreme-court/index.html",
+            "urlToImage": "https://cdn.cnn.com/cnnnext/dam/assets/201210172440-06-scotus-super-tease.jpg",
+            "publishedAt": "2020-12-11T12:15:00Z",
+            "content": "(CNN)State attorneys general went to battle at the Supreme Court on Thursday, taking sides on President Donald Trump's bid to pull off an unprecedented legal victory that would bring the election to … [+10110 chars]"
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "PlanetF1"
+            },
+            "author": "",
+            "title": "Valtteri Bottas will 'try to prevent' driver change | F1 News by PlanetF1 - PlanetF1",
+            "description": "With George Russell banging on Toto Wolff's door, Valtteri Bottas is determined to \"try to prevent\" a driver change at Mercedes.",
+            "url": "https://www.planetf1.com/news/valtteri-bottas-prevent-driver-change/",
+            "urlToImage": "https://d3cm515ijfiu6w.cloudfront.net/wp-content/uploads/2020/12/11071110/Valtteri-Bottas-2.jpg",
+            "publishedAt": "2020-12-11T12:07:40Z",
+            "content": "With George Russell banging on Toto Wolff’s door, Valtteri Bottas is determined to “try to prevent” a driver change at Mercedes.\r\nBottas went head-to-head with Russell at the recent Sakhir Grand Prix… [+2026 chars]"
+        },
+        {
+            "source": {
+                "id": "cnn",
+                "name": "CNN"
+            },
+            "author": "Rob Picheta, CNN",
+            "title": "'Evermore,' Taylor Swift's second surprise album of 2020, is a hit (again) - CNN",
+            "description": "If your productivity fell off a cliff in 2020, Taylor Swift's \"Evermore\" may not be the album for you.",
+            "url": "https://www.cnn.com/2020/12/11/entertainment/taylor-swift-evermore-reaction-scli-intl/index.html",
+            "urlToImage": "https://cdn.cnn.com/cnnnext/dam/assets/201210112651-taylor-swift-evermore-super-tease.jpg",
+            "publishedAt": "2020-12-11T12:00:00Z",
+            "content": "(CNN)If your productivity fell off a cliff in 2020, Taylor Swift's \"Evermore\" may not be the album for you.\r\nWhile the rest of us were playing virtual quizzes on Zoom, pop's biggest star reinvented h… [+3228 chars]"
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "FDA.gov"
+            },
+            "author": "Office of the Commissioner",
+            "title": "FDA Statement on Vaccines and Related Biological Products Advisory Committee Meeting - FDA.gov",
+            "description": "FDA Statement on Vaccines and Related Biological Products Advisory Committee Meeting",
+            "url": "https://www.fda.gov/news-events/press-announcements/fda-statement-vaccines-and-related-biological-products-advisory-committee-meeting",
+            "urlToImage": "https://www.fda.gov/themes/custom/preview/img/FDA-Social-Graphic.png",
+            "publishedAt": "2020-12-11T11:48:00Z",
+            "content": "For Immediate Release:\r\nDecember 11, 2020\r\nStatement From:\r\nCommissioner of Food and Drugs - Food and Drug Administration\r\nStephen M. Hahn \r\n M.D.\r\nDirector - Center for Biologics Evaluation and Rese… [+969 chars]"
+        },
+        {
+            "source": {
+                "id": "cbs-news",
+                "name": "CBS News"
+            },
+            "author": "CBS News",
+            "title": "5 dead after truck hits group of bicyclists on Nevada highway - CBS News",
+            "description": "\"It's the worst thing I could ever see in my life,\" surviving cyclist said after the crash.",
+            "url": "https://www.cbsnews.com/news/bicyclists-killed-crash-nevada-highway/",
+            "urlToImage": "https://cbsnews2.cbsistatic.com/hub/i/r/2020/12/11/648298c4-f72c-49a9-9c69-57ed0f1344c9/thumbnail/1200x630/f4fa6323f8c14c14b2645152ea51673e/nevada-bikes.jpg",
+            "publishedAt": "2020-12-11T11:35:00Z",
+            "content": "Five bicyclists were killed and three others injured in a crash Thursday involving a box truck on U.S. Highway 95 south of Boulder City, Nevada Highway Patrol officials said. Authorities said the tru… [+2369 chars]"
+        },
+        {
+            "source": {
+                "id": "engadget",
+                "name": "Engadget"
+            },
+            "author": "",
+            "title": "Hyundai confirms its $1.1 billion acquisition of Boston Dynamics - Engadget",
+            "description": "Boston Dynamics is now officially part of Hyundai Motor Group.  The Korean conglomerate has struck a deal with Softbank to acquire a controlling interest — an 80 percent stake — in the robotics company for $1.1 billion.  According to their announcement, Hyund…",
+            "url": "https://www.engadget.com/hyundai-acquires-boston-dynamics-1-1-billion-110901223.html",
+            "urlToImage": "https://o.aolcdn.com/images/dims?resize=1200%2C630&crop=1200%2C630%2C0%2C0&quality=95&image_uri=https%3A%2F%2Fs.yimg.com%2Fos%2Fcreatr-uploaded-images%2F2020-12%2F97dfeca0-3b96-11eb-afbf-23138aa19f12&client=amp-blogside-v2&signature=f520d0199b25b7f2c4a2811d03b7d049241d4bbc",
+            "publishedAt": "2020-12-11T11:31:39Z",
+            "content": "The acquisition gives Hyundai access to a wider range of technologies it can use to expand its logistics robot offerings. While Spot may have a reputation for being a rather terrifying robotic dog, f… [+1471 chars]"
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "New York Times"
+            },
+            "author": "Eshe Nelson",
+            "title": "British Pound Tumbles as Prospects Dim in Brexit Talks: Live Business Updates - The New York Times",
+            "description": "",
+            "url": "https://www.nytimes.com/live/2020/12/11/business/us-economy-coronavirus",
+            "urlToImage": "https://static01.nyt.com/images/2020/12/11/business/11economy-briefing-brexit/merlin_181094490_b1fe6ecb-604a-4c78-9692-0c43f85167d6-facebookJumbo.jpg",
+            "publishedAt": "2020-12-11T11:28:34Z",
+            "content": "LiveUpdated Dec. 11, 2020, 7:52 a.m. ET\r\nDec. 11, 2020, 7:52 a.m. ET\r\nHeres what you need to know:\r\nAs Britain approaches yet another new deadline to strike a trade deal with the European Union on Su… [+10498 chars]"
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "NPR"
+            },
+            "author": "Jaclyn Diaz",
+            "title": "'Time' Picks Biden and Harris For 2020 Person Of The Year - NPR",
+            "description": "The two made the cut after topping Time's shortlist that included President Trump, the movement for racial justice, Dr. Anthony Fauci and medical workers on the frontline of COVID-19.",
+            "url": "https://www.npr.org/2020/12/11/945335705/joe-biden-kamala-harris-named-time-person-of-the-year",
+            "urlToImage": "https://media.npr.org/assets/img/2020/12/11/ap_20313064617669_wide-5f65fc195ce9ef17757a67a76e383a39b532cfb8.jpg?s=1400",
+            "publishedAt": "2020-12-11T11:22:20Z",
+            "content": "President-elect Joe Biden, and Vice President-elect Kamala Harris, were named Person of the Year for 2020 byTime. \r\nAndrew Harnik/AP\r\nPresident-elect Joe Biden and Vice President-elect Kamala Harris … [+1580 chars]"
+        },
+        {
+            "source": {
+                "id": "cnn",
+                "name": "CNN"
+            },
+            "author": "Clare Foran, CNN",
+            "title": "Senate must pass stopgap funding bill Friday to avert shutdown at midnight - CNN",
+            "description": "Congress is running out of time with just hours to go until a shutdown is triggered by the expiration of government funding at midnight Friday.",
+            "url": "https://www.cnn.com/2020/12/11/politics/senate-vote-government-funding-deadline-shutdown/index.html",
+            "urlToImage": "https://cdn.cnn.com/cnnnext/dam/assets/201023120254-35d-mitch-mcconnell-play-button-super-tease.jpg",
+            "publishedAt": "2020-12-11T11:03:00Z",
+            "content": null
+        },
+        {
+            "source": {
+                "id": null,
+                "name": "Gizmodo.com"
+            },
+            "author": "Matt Novak",
+            "title": "Australia Scraps Homegrown Covid-19 Vaccine After Trial Participants Get 'False Positive' Test Results For HIV - Gizmodo",
+            "description": "The Australian government canceled its homegrown covid-19 vaccine development plans with the University of Queensland on Friday after vaccine trial participants showed “false positives” in tests for HIV. The Australian vaccine was developed using a protein fr…",
+            "url": "https://gizmodo.com/australia-scraps-homegrown-covid-19-vaccine-after-trial-1845858451",
+            "urlToImage": "https://i.kinja-img.com/gawker-media/image/upload/c_fill,f_auto,fl_progressive,g_center,h_675,pg_1,q_80,w_1200/mkj5lexewh3lbrhnbk0e.jpg",
+            "publishedAt": "2020-12-11T11:00:00Z",
+            "content": "The Australian government canceled its homegrown covid-19 vaccine development plans with the University of Queensland on Friday after vaccine trial participants showed false positives in tests for HI… [+3934 chars]"
+        },
+        {
+            "source": {
+                "id": "google-news",
+                "name": "Google News"
+            },
+            "author": null,
+            "title": "Is today the day Rochester becomes a COVID red zone? Latest updates - Democrat & Chronicle",
+            "description": null,
+            "url": "https://news.google.com/__i/rss/rd/articles/CBMigwFodHRwczovL3d3dy5kZW1vY3JhdGFuZGNocm9uaWNsZS5jb20vc3RvcnkvbmV3cy8yMDIwLzEyLzExL2NvdmlkLXJvY2hlc3Rlci1ueS1tb25yb2UtY291bnR5LXpvbmVzLXZhY2NpbmVzLWRlYXRocy1jYXNlcy8zODg1NTAxMDAxL9IBM2h0dHBzOi8vYW1wLmRlbW9jcmF0YW5kY2hyb25pY2xlLmNvbS9hbXAvMzg4NTUwMTAwMQ?oc=5",
+            "urlToImage": null,
+            "publishedAt": "2020-12-11T10:53:40Z",
+            "content": null
+        },
+        {
+            "source": {
+                "id": "cnn",
+                "name": "CNN"
+            },
+            "author": "Jadyn Sham and Helen Regan, CNN",
+            "title": "Hong Kong media tycoon Jimmy Lai charged under national security law - CNN",
+            "description": "Hong Kong media tycoon Jimmy Lai was charged under a controversial national security law on Friday, police said, amid a crackdown on democracy activists in the city.",
+            "url": "https://www.cnn.com/2020/12/11/asia/jimmy-lai-charged-national-security-law-intl-hnk/index.html",
+            "urlToImage": "https://cdn.cnn.com/cnnnext/dam/assets/201211020651-jimmy-lai-1015-file-super-tease.jpg",
+            "publishedAt": "2020-12-11T10:04:00Z",
+            "content": "Hong Kong (CNN)Hong Kong media tycoon Jimmy Lai was charged under a controversial national security law on Friday, police said, amid a crackdown on democracy activists in the city. \r\nLai, 73, who is … [+3461 chars]"
+        }
+    ]
+}
