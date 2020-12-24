@@ -40,7 +40,7 @@ def newsfeed():
 
     for article in data["articles"]:
         counter += 1
-        if counter > 5:
+        if counter > int(os.getenv("DAILY_ARTICLE_COUNT")):
             break
         payload["blocks"].append(
             {
