@@ -130,7 +130,6 @@ def interactive():
 
     if response["type"] == "block_actions":
         process_match_request(response)
-
         return ""
 
     resp_url = response["response_url"]
