@@ -20,39 +20,17 @@ class User:
         return {"slack_uid": self.slack_uid}
 
 def process_match_request(response: Dict):
-        value = response["actions"][0]["value"]
-        user = response["user"]
-        db = firestore.Client()
-        today = datetime.now()
-        week_doc = (
-            db.collection("meetings")
-            .document(f"{today.month}_{today.day}_{today.year}")
-            .get()
-        )
+        meet_request = True if response["actions"][0]["value"] == "yes" else False
+        slack_uid = response["user"]
+        conn = get_database_connection()
 
-        if not week_doc.exists:
-            set_data = {"uids": []}
-            db.collection("meetings").document(
-                f"{today.month}_{today.day}_{today.year}"
-            ).set(set_data)
-            week_doc = (
-                db.collection("meetings")
-                .document(f"{today.month}_{today.day}_{today.year}")
-                .get()
-            )
+        if meet_request:
+            conn.run("insert into meeting_requests values (:slack_uid, current_date)", slack_uid=slack_uid)
+            conn.close()
 
-        week_data = week_doc.to_dict()
-
-        if value == "yes":
             payload = {
                 "text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."
             }
-            week_data["uids"].append(user["id"])
-            db.collection(os.getenv("MEETINGS_DB")).document(
-                f"{today.month}_{today.day}_{today.year}"
-            ).update(week_data)
-            log_agree_to_match()
-
         else:
             payload = {"text": "ok ! maybe next week ..."}
 
