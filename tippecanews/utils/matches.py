@@ -10,6 +10,7 @@ import requests
 
 from .influxdb_logger import log
 from .database import get_database_connection
+from .influxdb_logger import log_agree_to_match
 
 class User:
     def __init__(self, slack_uid: str):
