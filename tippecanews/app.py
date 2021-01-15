@@ -19,8 +19,8 @@ from tippecanews.utils.retrievers import (
 )
 
 from tippecanews.utils.news import newsfeed
+from tippecanews.utils.matches import send_matches, match_people, process_match_request
 
-from tippecanews.utils.matches import send_matches, match_people
 
 from .utils.influxdb_logger import log_request, log_agree_to_match
 
@@ -129,44 +129,7 @@ def interactive():
     response = json.loads(request.form.get("payload"))
 
     if response["type"] == "block_actions":
-        value = response["actions"][0]["value"]
-        user = response["user"]
-        db = firestore.Client()
-        today = datetime.now()
-        week_doc = (
-            db.collection("meetings")
-            .document(f"{today.month}_{today.day}_{today.year}")
-            .get()
-        )
-
-        if not week_doc.exists:
-            set_data = {"uids": []}
-            db.collection("meetings").document(
-                f"{today.month}_{today.day}_{today.year}"
-            ).set(set_data)
-            week_doc = (
-                db.collection("meetings")
-                .document(f"{today.month}_{today.day}_{today.year}")
-                .get()
-            )
-
-        week_data = week_doc.to_dict()
-
-        if value == "yes":
-            payload = {
-                "text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."
-            }
-            week_data["uids"].append(user["id"])
-            db.collection(os.getenv("MEETINGS_DB")).document(
-                f"{today.month}_{today.day}_{today.year}"
-            ).update(week_data)
-            log_agree_to_match()
-
-        else:
-            payload = {"text": "ok ! maybe next week ..."}
-
-        r = requests.post(response["response_url"], json=payload)
-        r.raise_for_status()
+        process_match_request(response)
 
         return ""
 
