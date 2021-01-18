@@ -2,6 +2,7 @@ import os
 
 import atoma
 from datetime import datetime
+from atoma import rss
 from flask import Flask, request, jsonify, render_template, send_from_directory
 
 
@@ -10,7 +11,7 @@ from google.cloud import firestore
 import requests
 from tippecanews.utils.retrievers import (
     directory_search,
-    get_pngs,
+    get_pngs, rss_reader,
     send_slack,
     xml_urls,
     get_bylines,
@@ -35,7 +36,7 @@ def serve():
     Returns:
         The template for the instruction page.
     """
-    log_request(endpoint="/")
+    # log_request(endpoint="/")
     return render_template("index.html")
 
 
@@ -107,17 +108,7 @@ def email():
 @app.route("/test")
 def test_me():
     """ Test function to ensure things are working. """
-    send_slack(
-        f"This is a test message. It is currently {datetime.now()}",
-        "github.com/fatcat2/tippecanews",
-        "asdf",
-    )
-    send_slack(
-        f"This is an interactive test message. It is currently {datetime.now()}",
-        "github.com/fatcat2/tippecanews",
-        "asdf",
-        is_pr=True,
-    )
+    rss_reader()
 
     # get_quote()
     return jsonify(200)
@@ -191,60 +182,9 @@ def newsfetch():
     * PUPD logs
     * Some of the RSS feeds from Purdue news
     """
+    print("fetching news")
     # logging.debug("Fetching news")
-    db = firestore.Client()
-    news_ref = db.collection("news_releases_test")
-    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
-    try:
-        requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
-            "HIGH:!DH:!aNULL"
-        )
-    except AttributeError:
-        # no pyopenssl support used / needed / available
-        pass
-
-    status_log = ""
-
-    # logging.debug("Going through XML urls")
-
-    for url in xml_urls:
-        response = requests.get(url)
-        if response.status_code == 404:
-            continue
-        feed = atoma.parse_rss_bytes(response.content)
-        for post in feed.items:
-            docs = (
-                news_ref.where("title", "==", "{}".format(post.title))
-                .where("link", "==", "{}".format(post.link))
-                .get()
-            )
-            docs_list = [doc for doc in docs]
-            if len(docs_list) == 0:
-                news_ref.add(
-                    {"title": "{}".format(post.title), "link": "{}".format(post.link)}
-                )
-                send_slack(
-                    post.title,
-                    post.link,
-                    post.pub_date.strftime("(%Y/%m/%d)"),
-                    is_pr=True,
-                )
-                status_log = status_log + f"<p>Added: {post.title}</p>"
-                # logging.debug(f"Added: {post.title}</p>")
-
-    png_ref = db.collection("png")
-    for row in get_pngs():
-        doc_id = row[0] + row[2]
-        try:
-            png_ref.add(
-                {"name": row[0], "location": row[1], "date issued": row[2]},
-                document_id=doc_id,
-            )
-            send_slack(
-                f"PNG issued to {row[0]} on {row[2]}. Banned from {row[1]}", "", ""
-            )
-        except Exception:
-            pass
+    rss_reader()
 
     # crimes = crime_scrape()
     # crime_ref = db.collection("crimes")
