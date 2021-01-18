@@ -19,6 +19,7 @@ from tippecanews.utils.retrievers import (
     # crime_scrape,
 )
 
+from tippecanews.utils.crime import crime_scrape
 from tippecanews.utils.news import newsfeed
 from tippecanews.utils.matches import send_matches, match_people, process_match_request
 
@@ -184,26 +185,11 @@ def newsfetch():
     * PUPD logs
     * Some of the RSS feeds from Purdue news
     """
-    print("fetching news")
+    print("Fetching news")
     # logging.debug("Fetching news")
     rss_reader()
-
-    # crimes = crime_scrape()
-    # crime_ref = db.collection("crimes")
-
-    # for day in crimes.keys():
-    #     docs = (
-    #             crime_ref.where("date", "==", "{}".format(day))
-    #             .get()
-    #         )
-
-    #     if len(docs) == 0:
-    #         insert_obj = {
-    #             "date": day,
-    #             "crimes": crimes[day]
-    #         }
-
-    #         crime_ref.add(insert_obj)
+    print("Fetching crimes")
+    crime_scrape()
 
     return "Done"
 
