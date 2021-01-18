@@ -462,12 +462,12 @@ def rss_reader():
                 date=post.pub_date
             )
 
-            # send_slack(
-            #     post.title,
-            #     post.link,
-            #     post.pub_date.strftime("(%Y/%m/%d)"),
-            #     is_pr=True,
-            #     )
+            send_slack(
+                post.title,
+                post.link,
+                post.pub_date.strftime("(%Y/%m/%d)"),
+                is_pr=True,
+                )
     
     conn.commit()
 
