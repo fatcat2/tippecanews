@@ -121,7 +121,7 @@ def interactive():
 
     print(response)
 
-    if response["type"] == "block_actions":
+    if response["channel"]["name"] != "tippecanews":
         process_match_request(response)
         return ""
 
