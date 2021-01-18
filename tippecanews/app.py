@@ -119,6 +119,8 @@ def interactive():
     """A route to handle interactions with press release messages."""
     response = json.loads(request.form.get("payload"))
 
+    print(response)
+
     if response["type"] == "block_actions":
         process_match_request(response)
         return ""
