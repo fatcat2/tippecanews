@@ -395,7 +395,6 @@ def rss_reader():
             )
 
             if len(query_result) > 0:
-                print("skip")
                 continue
 
             query_result = conn.run(
@@ -404,6 +403,8 @@ def rss_reader():
                 link=post.link,
                 date=post.pub_date
             )
+
+            print(post.title)
 
             send_slack(
                 post.title,
@@ -426,7 +427,6 @@ def rss_reader():
         )
 
         if len(query_result) > 0:
-            print("dupe")
             continue
 
         query_result = conn.run(
@@ -435,7 +435,7 @@ def rss_reader():
             location=row[1],
             expiration=row[2],
         )
-
+        print(f"PNG issued to {row[0]} expiring on {row[2]}. Banned from {row[1]}")
         send_slack(
             f"PNG issued to {row[0]} expiring on {row[2]}. Banned from {row[1]}",
             "",

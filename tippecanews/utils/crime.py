@@ -31,9 +31,7 @@ def crime_scrape():
             contents = [item.strip() for item in p.contents if isinstance(item, str)]
             if len(contents) < 3:
                 continue
-            
 
-            print((contents[0] == "CSA REPORT"))
             crime = Crime(*contents, is_csa=(contents[0] == "CSA REPORT"))
 
             query_results = conn.run("select count(*) from crimes where id=:id", id=crime.id)
@@ -50,6 +48,7 @@ def crime_scrape():
             send_slack(
                 f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}","",""
             )
+            print(f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}")
         except:
             continue
     
