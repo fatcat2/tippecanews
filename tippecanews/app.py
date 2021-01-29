@@ -11,7 +11,8 @@ from google.cloud import firestore
 import requests
 from tippecanews.utils.retrievers import (
     directory_search,
-    get_pngs, rss_reader,
+    get_pngs,
+    rss_reader,
     send_slack,
     xml_urls,
     get_bylines,

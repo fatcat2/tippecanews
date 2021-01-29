@@ -268,6 +268,7 @@ def get_bylines(query: str) -> List[Dict[str, Any]]:
 
     return ret_blocks
 
+
 def get_quote() -> Dict[str, Any]:
     """Helper function to get and process daily quotes."""
 
@@ -387,7 +388,7 @@ def rss_reader():
                 "select true from press_releases where title=:title and link=:link",
                 title=post.title,
                 link=post.link,
-                date=post.pub_date
+                date=post.pub_date,
             )
 
             if len(query_result) > 0:
@@ -397,7 +398,7 @@ def rss_reader():
                 "insert into press_releases values (:title, :link, :date)",
                 title=post.title,
                 link=post.link,
-                date=post.pub_date
+                date=post.pub_date,
             )
 
             send_slack(
@@ -405,12 +406,12 @@ def rss_reader():
                 post.link,
                 post.pub_date.strftime("(%Y/%m/%d)"),
                 is_pr=True,
-                )
-    
+            )
+
     conn.commit()
 
     for row in get_pngs():
-        if (len(row[0]) == 0):
+        if len(row[0]) == 0:
             continue
 
         query_result = conn.run(
@@ -435,9 +436,10 @@ def rss_reader():
             "",
             "",
         )
-    
+
     conn.commit()
     conn.close()
+
 
 if __name__ == "__main__":
     crime_scrape()
