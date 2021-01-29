@@ -1,28 +1,24 @@
 import os
 
-import atoma
 from datetime import datetime
 from flask import Flask, request, jsonify, render_template, send_from_directory
 
 
 import json
-from google.cloud import firestore
 import requests
 from tippecanews.utils.retrievers import (
     directory_search,
-    get_pngs,
-    send_slack,
-    xml_urls,
+    rss_reader,
     get_bylines,
     get_quote,
-    # crime_scrape,
 )
 
+from tippecanews.utils.crime import crime_scrape
 from tippecanews.utils.news import newsfeed
+from tippecanews.utils.matches import send_matches, match_people, process_match_request
 
-from tippecanews.utils.matches import send_matches, match_people
 
-from .utils.influxdb_logger import log_request, log_agree_to_match
+from .utils.influxdb_logger import log_request
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
 # logging.basicConfig(level=10)
@@ -35,7 +31,7 @@ def serve():
     Returns:
         The template for the instruction page.
     """
-    log_request(endpoint="/")
+    # log_request(endpoint="/")
     return render_template("index.html")
 
 
@@ -107,17 +103,7 @@ def email():
 @app.route("/test")
 def test_me():
     """ Test function to ensure things are working. """
-    send_slack(
-        f"This is a test message. It is currently {datetime.now()}",
-        "github.com/fatcat2/tippecanews",
-        "asdf",
-    )
-    send_slack(
-        f"This is an interactive test message. It is currently {datetime.now()}",
-        "github.com/fatcat2/tippecanews",
-        "asdf",
-        is_pr=True,
-    )
+    rss_reader()
 
     # get_quote()
     return jsonify(200)
@@ -128,46 +114,8 @@ def interactive():
     """A route to handle interactions with press release messages."""
     response = json.loads(request.form.get("payload"))
 
-    if response["type"] == "block_actions":
-        value = response["actions"][0]["value"]
-        user = response["user"]
-        db = firestore.Client()
-        today = datetime.now()
-        week_doc = (
-            db.collection("meetings")
-            .document(f"{today.month}_{today.day}_{today.year}")
-            .get()
-        )
-
-        if not week_doc.exists:
-            set_data = {"uids": []}
-            db.collection("meetings").document(
-                f"{today.month}_{today.day}_{today.year}"
-            ).set(set_data)
-            week_doc = (
-                db.collection("meetings")
-                .document(f"{today.month}_{today.day}_{today.year}")
-                .get()
-            )
-
-        week_data = week_doc.to_dict()
-
-        if value == "yes":
-            payload = {
-                "text": "ok ! thanks for responding. you will be matched with someone tomorrow morning."
-            }
-            week_data["uids"].append(user["id"])
-            db.collection(os.getenv("MEETINGS_DB")).document(
-                f"{today.month}_{today.day}_{today.year}"
-            ).update(week_data)
-            log_agree_to_match()
-
-        else:
-            payload = {"text": "ok ! maybe next week ..."}
-
-        r = requests.post(response["response_url"], json=payload)
-        r.raise_for_status()
-
+    if response["channel"]["name"] != "tippecanews":
+        process_match_request(response)
         return ""
 
     resp_url = response["response_url"]
@@ -229,77 +177,11 @@ def newsfetch():
     * PUPD logs
     * Some of the RSS feeds from Purdue news
     """
+    print("Fetching news")
     # logging.debug("Fetching news")
-    db = firestore.Client()
-    news_ref = db.collection("news_releases_test")
-    requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += "HIGH:!DH:!aNULL"
-    try:
-        requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += (
-            "HIGH:!DH:!aNULL"
-        )
-    except AttributeError:
-        # no pyopenssl support used / needed / available
-        pass
-
-    status_log = ""
-
-    # logging.debug("Going through XML urls")
-
-    for url in xml_urls:
-        response = requests.get(url)
-        if response.status_code == 404:
-            continue
-        feed = atoma.parse_rss_bytes(response.content)
-        for post in feed.items:
-            docs = (
-                news_ref.where("title", "==", "{}".format(post.title))
-                .where("link", "==", "{}".format(post.link))
-                .get()
-            )
-            docs_list = [doc for doc in docs]
-            if len(docs_list) == 0:
-                news_ref.add(
-                    {"title": "{}".format(post.title), "link": "{}".format(post.link)}
-                )
-                send_slack(
-                    post.title,
-                    post.link,
-                    post.pub_date.strftime("(%Y/%m/%d)"),
-                    is_pr=True,
-                )
-                status_log = status_log + f"<p>Added: {post.title}</p>"
-                # logging.debug(f"Added: {post.title}</p>")
-
-    png_ref = db.collection("png")
-    for row in get_pngs():
-        doc_id = row[0] + row[2]
-        try:
-            png_ref.add(
-                {"name": row[0], "location": row[1], "date issued": row[2]},
-                document_id=doc_id,
-            )
-            send_slack(
-                f"PNG issued to {row[0]} on {row[2]}. Banned from {row[1]}", "", ""
-            )
-        except Exception:
-            pass
-
-    # crimes = crime_scrape()
-    # crime_ref = db.collection("crimes")
-
-    # for day in crimes.keys():
-    #     docs = (
-    #             crime_ref.where("date", "==", "{}".format(day))
-    #             .get()
-    #         )
-
-    #     if len(docs) == 0:
-    #         insert_obj = {
-    #             "date": day,
-    #             "crimes": crimes[day]
-    #         }
-
-    #         crime_ref.add(insert_obj)
+    rss_reader()
+    print("Fetching crimes")
+    crime_scrape()
 
     return "Done"
 

@@ -2,16 +2,16 @@ import os
 from typing import Any, Dict, List
 import re
 from datetime import datetime
-from collections import defaultdict
 
+import atoma
 import json
 import feedparser
 
-from bs4 import BeautifulSoup, element
+from bs4 import BeautifulSoup
 import requests
 
 from .processors import process_bylines
-
+from .database import get_database_connection
 from matplotlib import pyplot as plt
 
 import numpy as np
@@ -234,8 +234,6 @@ def get_bylines(query: str) -> List[Dict[str, Any]]:
 
     entry_list = campus_feed.entries + city_feed.entries + sports_feed.entries
 
-    print(entry_list)
-
     bylines = process_bylines(entry_list)
 
     ret_blocks = {"blocks": []}
@@ -268,62 +266,6 @@ def get_bylines(query: str) -> List[Dict[str, Any]]:
         )
 
     return ret_blocks
-
-
-def crime_scrape():
-    r = requests.get(
-        "https://www.purdue.edu/ehps/police/assistance/stats/statsdaily.html"
-    )
-    soup = BeautifulSoup(r.text, features="html.parser")
-
-    crime_div = soup.find("article", {"class": "post clearfix"})
-
-    # print(crime_div)
-
-    ret_dict = defaultdict(lambda: [])
-    key = ""
-    is_key = False
-    for p in crime_div.find_all("p"):
-        # print(p.contents)
-        cleaned_result = ""
-        if len(p.contents) == 1:
-            # check for tag
-            if isinstance(p.contents[0], element.Tag):
-                cleaned_list = [
-                    c for c in p.contents[0].contents if not isinstance(c, element.Tag)
-                ]
-                cleaned_result = " ".join(cleaned_list).strip()
-            else:
-                # regex search
-                match = re.findall(
-                    r"([A-Z]+DAY [0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", p.contents[0]
-                )
-                print(match)
-                if len(match) > 0:
-                    cleaned_result = match[0]
-                    is_key = True
-        else:
-            cleaned_list = [c for c in p.contents if not isinstance(c, element.Tag)]
-            cleaned_result = " ".join(cleaned_list)
-
-        if len(cleaned_result) < 1:
-            continue
-
-        match = re.findall(
-            r"([A-Z]+DAY [0-9]*[0-9]-[0-9]*[0-9]-[0-9][0-9])", cleaned_result
-        )
-        print(match)
-        if len(match) == 1 or is_key:
-            key = cleaned_result
-        else:
-            ret_dict[key].append(cleaned_result)
-
-        is_key = False
-
-    for key in ret_dict:
-        ret_dict[key] = list(ret_dict[key])
-
-    return ret_dict
 
 
 def get_quote() -> Dict[str, Any]:
@@ -429,3 +371,70 @@ def get_quote() -> Dict[str, Any]:
     r.raise_for_status()
 
     return ret_blocks
+
+
+def rss_reader():
+    conn = get_database_connection()
+
+    for url in xml_urls:
+        response = requests.get(url)
+        if response.status_code == 404:
+            continue
+        feed = atoma.parse_rss_bytes(response.content)
+        for post in feed.items:
+
+            query_result = conn.run(
+                "select true from press_releases where title=:title and link=:link",
+                title=post.title,
+                link=post.link,
+                date=post.pub_date,
+            )
+
+            if len(query_result) > 0:
+                continue
+
+            query_result = conn.run(
+                "insert into press_releases values (:title, :link, :date)",
+                title=post.title,
+                link=post.link,
+                date=post.pub_date,
+            )
+
+            send_slack(
+                post.title,
+                post.link,
+                post.pub_date.strftime("(%Y/%m/%d)"),
+                is_pr=True,
+            )
+
+    conn.commit()
+
+    for row in get_pngs():
+        if len(row[0]) == 0:
+            continue
+
+        query_result = conn.run(
+            "select true from pngs where name=:name and location=:location and expiration=:expiration",
+            name=row[0],
+            location=row[1],
+            expiration=row[2],
+        )
+
+        if len(query_result) > 0:
+            continue
+
+        query_result = conn.run(
+            "insert into pngs (name, location, expiration) values (:name, :location, :expiration)",
+            name=row[0],
+            location=row[1],
+            expiration=row[2],
+        )
+        print(f"PNG issued to {row[0]} expiring on {row[2]}. Banned from {row[1]}")
+        send_slack(
+            f"PNG issued to {row[0]} expiring on {row[2]}. Banned from {row[1]}",
+            "",
+            "",
+        )
+
+    conn.commit()
+    conn.close()
