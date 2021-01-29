@@ -33,8 +33,9 @@ def crime_scrape():
             contents = [item.strip() for item in p.contents if isinstance(item, str)]
             if len(contents) < 3:
                 continue
-
-            crime = Crime(*contents, is_csa=(contents[0] == "CSA REPORT"))
+            
+            csa_bool = True if contents[0] == "CSA REPORT" else False
+            crime = Crime(*contents, is_csa=csa_bool)
 
             query_results = conn.run(
                 "select count(*) from crimes where id=:id", id=crime.id
@@ -58,6 +59,7 @@ def crime_scrape():
             print(
                 f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}"
             )
+            print(f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}")
         except Exception as e:
             print(e)
             continue
