@@ -7,7 +7,7 @@ BLACK_PATHS = [
 ]
 
 
-@nox.session(python="3.7")
+@nox.session(python="3.8")
 def lint(session):
     """Run linters.
     Returns a failure if the linters find linting errors or sufficiently
@@ -19,7 +19,7 @@ def lint(session):
     session.run("flake8", *BLACK_PATHS)
 
 
-@nox.session(python="3.7")
+@nox.session(python="3.8")
 def blacken(session):
     """Run black.
     """
@@ -46,6 +46,6 @@ def default(session):
     )
 
 
-@nox.session(python=["3.7"])
+@nox.session(python=["3.8"])
 def unit(session):
     default(session)
