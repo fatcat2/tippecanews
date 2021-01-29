@@ -1,5 +1,4 @@
 import os
-import traceback
 
 from pg8000 import Connection, connect
 
@@ -22,6 +21,6 @@ def get_database_connection() -> Connection:
         )
 
         return conn
-    except:
-        traceback.print_exc()
+    except Exception as e:
+        print(e)
         return None

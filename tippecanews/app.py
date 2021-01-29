@@ -1,23 +1,16 @@
 import os
 
-import atoma
 from datetime import datetime
-from atoma import rss
 from flask import Flask, request, jsonify, render_template, send_from_directory
 
 
 import json
-from google.cloud import firestore
 import requests
 from tippecanews.utils.retrievers import (
     directory_search,
-    get_pngs,
     rss_reader,
-    send_slack,
-    xml_urls,
     get_bylines,
     get_quote,
-    # crime_scrape,
 )
 
 from tippecanews.utils.crime import crime_scrape
@@ -25,7 +18,7 @@ from tippecanews.utils.news import newsfeed
 from tippecanews.utils.matches import send_matches, match_people, process_match_request
 
 
-from .utils.influxdb_logger import log_request, log_agree_to_match
+from .utils.influxdb_logger import log_request
 
 app = Flask(__name__, template_folder="build", static_folder="build/static")
 # logging.basicConfig(level=10)

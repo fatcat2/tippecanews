@@ -1,5 +1,4 @@
-from collections import defaultdict
-from bs4 import BeautifulSoup, element
+from bs4 import BeautifulSoup
 import requests
 
 from .database import get_database_connection
@@ -33,7 +32,7 @@ def crime_scrape():
             contents = [item.strip() for item in p.contents if isinstance(item, str)]
             if len(contents) < 3:
                 continue
-            
+
             csa_bool = True if contents[0] == "CSA REPORT" else False
             crime = Crime(*contents, is_csa=csa_bool)
 
@@ -59,7 +58,9 @@ def crime_scrape():
             print(
                 f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}"
             )
-            print(f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}")
+            print(
+                f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}"
+            )
         except Exception as e:
             print(e)
             continue

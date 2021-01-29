@@ -7,12 +7,14 @@ from .influxdb_logger import log_error
 
 
 def newsfeed():
+    r = None
     try:
         r = requests.get(
             f"https://newsapi.org/v2/top-headlines?sources=associated-press&apiKey={os.getenv('NEWS_API_KEY')}"
         )
         r.raise_for_status()
     except Exception as e:
+        print(e)
         log_error("newsfeed_get_news")
 
     data = r.json()
@@ -57,5 +59,6 @@ def newsfeed():
     try:
         r = requests.post("https://slack.com/api/chat.postMessage", params=payload)
         r.raise_for_status
-    except:
+    except Exception as e:
+        print(e)
         log_error("newsfeed_post_slack")

@@ -2,13 +2,12 @@ import os
 from typing import Any, Dict, List
 import re
 from datetime import datetime
-from collections import defaultdict
 
 import atoma
 import json
 import feedparser
 
-from bs4 import BeautifulSoup, element
+from bs4 import BeautifulSoup
 import requests
 
 from .processors import process_bylines
@@ -439,7 +438,3 @@ def rss_reader():
 
     conn.commit()
     conn.close()
-
-
-if __name__ == "__main__":
-    crime_scrape()
