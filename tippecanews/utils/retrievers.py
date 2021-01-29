@@ -198,8 +198,6 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     # logging.debug(payload)
     r = requests.post("https://slack.com/api/chat.postMessage", params=payload)
 
-    print(r.text)
-
     r.raise_for_status()
 
 
@@ -236,8 +234,6 @@ def get_bylines(query: str) -> List[Dict[str, Any]]:
     sports_feed = feedparser.parse(sports_search_string)
 
     entry_list = campus_feed.entries + city_feed.entries + sports_feed.entries
-
-    print(entry_list)
 
     bylines = process_bylines(entry_list)
 
@@ -403,8 +399,6 @@ def rss_reader():
                 link=post.link,
                 date=post.pub_date
             )
-
-            print(post.title)
 
             send_slack(
                 post.title,

@@ -49,7 +49,8 @@ def crime_scrape():
                 f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}","",""
             )
             print(f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}")
-        except:
+        except Exception as e:
+            print(e)
             continue
     
     conn.commit()
