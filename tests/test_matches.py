@@ -1,9 +1,5 @@
-import pytest
-
 from tippecanews.utils.matches import (
     process_match_request,
-    send_matches,
-    match_people,
     User,
 )
 from tippecanews.utils.database import get_database_connection

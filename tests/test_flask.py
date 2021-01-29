@@ -1,7 +1,6 @@
 import pytest
 
 from tippecanews.app import app
-from unittest.mock import patch
 
 
 @pytest.fixture
