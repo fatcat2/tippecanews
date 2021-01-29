@@ -52,7 +52,7 @@ def directory_search_route():
     Returns:
         Information found by querying the Purdue Directory in JSON form.
     """
-    log_request(endpoint="/directory")
+    # log_request(endpoint="/directory")
     return jsonify(directory_search(request.form["text"]))
 
 
@@ -63,7 +63,7 @@ def byline_route():
     Returns:
         Bylines in a Slack-compatible format
     """
-    log_request(endpoint="/bylines")
+    # log_request(endpoint="/bylines")
     return jsonify(get_bylines(request.form["text"]))
 
 
@@ -74,7 +74,7 @@ def cms():
     Returns:
         CMS in a Slack-compatible format
     """
-    log_request(endpoint="/cms")
+    # log_request(endpoint="/cms")
     return jsonify("https://admin-newyork1.bloxcms.com/")
 
 
@@ -85,7 +85,7 @@ def tcms():
     Returns:
         TCMS in a Slack-compatible format
     """
-    log_request(endpoint="/tcms")
+    # log_request(endpoint="/tcms")
     return jsonify("https://192.168.168.128/desktop/#/purdueexponent.local")
 
 
@@ -96,7 +96,7 @@ def email():
     Returns:
         Email link in a Slack-compatible format
     """
-    log_request(endpoint="/email")
+    # log_request(endpoint="/email")
     return jsonify("https://webmail.tn-cloud.net/src/login.php")
 
 
