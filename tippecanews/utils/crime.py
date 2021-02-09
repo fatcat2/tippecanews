@@ -50,14 +50,11 @@ def crime_scrape():
                 description=crime.description,
             )
 
-            send_slack(
-                f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}",
-                "",
-                "",
-            )
-            print(
-                f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}"
-            )
+            # send_slack(
+            #     f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}",
+            #     "",
+            #     "",
+            # )
             print(
                 f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}"
             )

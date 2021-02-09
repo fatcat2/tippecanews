@@ -400,7 +400,7 @@ def rss_reader():
                 date=post.pub_date,
             )
 
-            send_slack(
+            print(
                 post.title,
                 post.link,
                 post.pub_date.strftime("(%Y/%m/%d)"),
@@ -430,11 +430,11 @@ def rss_reader():
             expiration=row[2],
         )
         print(f"PNG issued to {row[0]} expiring on {row[2]}. Banned from {row[1]}")
-        send_slack(
-            f"PNG issued to {row[0]} expiring on {row[2]}. Banned from {row[1]}",
-            "",
-            "",
-        )
+        # send_slack(
+        #     f"PNG issued to {row[0]} expiring on {row[2]}. Banned from {row[1]}",
+        #     "",
+        #     "",
+        # )
 
     conn.commit()
     conn.close()
