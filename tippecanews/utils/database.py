@@ -18,6 +18,7 @@ def get_database_connection() -> Connection:
             host=os.getenv("POSTGRES_HOST"),
             database=os.getenv("POSTGRES_DATABASE"),
             password=os.getenv("POSTGRES_PASSWORD"),
+            port=os.getenv("POSTGRES_PORT")
         )
 
         return conn
