@@ -404,7 +404,7 @@ def rss_reader():
                 post.title,
                 post.link,
                 post.pub_date.strftime("(%Y/%m/%d)"),
-                is_pr=True,
+                # is_pr=True,
             )
 
     conn.commit()
