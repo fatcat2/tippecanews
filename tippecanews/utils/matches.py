@@ -20,7 +20,6 @@ class User:
 def process_match_request(response: Dict):
     meet_request = True if response["actions"][0]["value"] == "yes" else False
     slack_uid = response["user"]["id"]
-    print(slack_uid)
     conn = get_database_connection()
 
     if meet_request:
