@@ -149,7 +149,7 @@ def interactive():
 def daily_route():
     if datetime.now().weekday() == 6:
         send_matches()
-    elif datetime.now().weekday() == 6:
+    elif datetime.now().weekday() == 0:
         match_people()
 
     get_quote_result = get_quote()

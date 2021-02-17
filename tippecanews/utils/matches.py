@@ -109,7 +109,7 @@ def match_people():
     conn = get_database_connection()
 
     rows = conn.run(
-        "select slack_uid, day from meeting_requests where day = current_date"
+        "select slack_uid, day from meeting_requests where day = current_date - 1"
     )
 
     members = [User(*row) for row in rows]
