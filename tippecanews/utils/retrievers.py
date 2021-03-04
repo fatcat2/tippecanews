@@ -374,6 +374,7 @@ def get_quote() -> Dict[str, Any]:
 
 
 def rss_reader():
+    """Helper function to access XML files specifed in `xml_urls`."""
     conn = get_database_connection()
 
     for url in xml_urls:
@@ -413,12 +414,16 @@ def rss_reader():
         if len(row[0]) == 0:
             continue
 
-        query_result = conn.run(
-            "select true from pngs where name=:name and location=:location and expiration=:expiration",
-            name=row[0],
-            location=row[1],
-            expiration=row[2],
-        )
+        try:
+            query_result = conn.run(
+                "select true from pngs where name=:name and location=:location and expiration=:expiration",
+                name=row[0],
+                location=row[1],
+                expiration=row[2],
+            )
+        except Exception as e:
+            print(e)
+            continue
 
         if len(query_result) > 0:
             continue
