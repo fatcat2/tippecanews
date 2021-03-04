@@ -1,7 +1,7 @@
 import json
 import os
 import random
-from typing import Dict
+from typing import Any, Dict
 
 import requests
 
@@ -17,7 +17,13 @@ class User:
         return {"slack_uid": self.slack_uid}
 
 
-def process_match_request(response: Dict):
+def process_match_request(response: Dict[str, Any]):
+    """Process responses to the weekly match request.
+    
+    Params:
+        response (Dict[str, Any]): A dictionary with the response to the
+            weekly match request.
+    """
     meet_request = True if response["actions"][0]["value"] == "yes" else False
     slack_uid = response["user"]["id"]
     conn = get_database_connection()
@@ -41,6 +47,7 @@ def process_match_request(response: Dict):
 
 
 def send_matches():
+    """Sends the weekly match request to users using the Slack API."""
     # get list of all users
     list_users_url = "https://slack.com/api/users.list"
 
@@ -105,7 +112,11 @@ def send_matches():
 
 
 def match_people():
-    """Helper function to match people, send the messages and store the results in the DB."""
+    """Helper function to match users and send the matches to the users.
+    
+    Grabs a list of all users who agreed to match this week, matches them, then
+    uses the Slack API to generate a conversation with the two users.
+    """
     conn = get_database_connection()
 
     rows = conn.run(
