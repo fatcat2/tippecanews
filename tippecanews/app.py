@@ -49,6 +49,15 @@ def favicon():
 def directory_search_route():
     """Takes in a username and searches it through the Purdue Directory.
 
+    This is used as a Slack slash command.
+
+    JSON form body should look like the following:
+    ```
+    {
+        "text": <TEXT TO BE INSERTED>
+    }
+    ```
+
     Returns:
         Information found by querying the Purdue Directory in JSON form.
     """
@@ -59,6 +68,8 @@ def directory_search_route():
 @app.route("/bylines", methods=["POST"])
 def byline_route():
     """Returns the bylines in a Slack-compatible format.
+
+    This is used as a Slack slash command.
 
     Returns:
         Bylines in a Slack-compatible format
@@ -71,6 +82,8 @@ def byline_route():
 def cms():
     """Returns the link to CMS in a Slack-compatible format.
 
+    This is used as a Slack slash command.
+
     Returns:
         CMS in a Slack-compatible format
     """
@@ -82,6 +95,8 @@ def cms():
 def tcms():
     """Returns the TCMS link in a Slack-compatible format.
 
+    This is used as a Slack slash command.
+
     Returns:
         TCMS in a Slack-compatible format
     """
@@ -92,6 +107,8 @@ def tcms():
 @app.route("/email", methods=["GET", "POST"])
 def email():
     """Returns the email link in a Slack-compatible format.
+
+    This is used as a Slack slash command.
 
     Returns:
         Email link in a Slack-compatible format
@@ -111,7 +128,9 @@ def test_me():
 
 @app.route("/interactive", methods=["POST"])
 def interactive():
-    """A route to handle interactions with press release messages."""
+    """A route to handle interactions with press release messages and 
+        the weekly match request.
+    """
     response = json.loads(request.form.get("payload"))
 
     if response["channel"]["name"] != "tippecanews":
@@ -147,6 +166,11 @@ def interactive():
 
 @app.route("/daily")
 def daily_route():
+    """A route that sends the daily good morning message when pinged.
+
+    Depending on the day, it will also send the message to ask whether
+    people want to be matched or their new match.
+    """
     if datetime.now().weekday() == 6:
         send_matches()
     elif datetime.now().weekday() == 0:
