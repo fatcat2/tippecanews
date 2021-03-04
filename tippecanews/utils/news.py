@@ -7,6 +7,10 @@ from .influxdb_logger import log_error
 
 
 def newsfeed():
+    """Fetches news from NewsAPI.org and formats them into a Slack-friendly format.
+
+    Uses the Slack and NewsAPI API to fetch news and send messages.
+    """
     r = None
     try:
         r = requests.get(
