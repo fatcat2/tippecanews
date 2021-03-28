@@ -1,5 +1,3 @@
-
-
 name: Publish Docs
 
 on:
@@ -11,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         # Put your action repo here
-        - uses: stephend017/ghapd@v0.1.0
+        - uses: stephend017/pencil-pusher@v1
           with:
-            owner_name: 'fatcat2'
-            repository_name: 'tippecanews'
-            personal_access_token: ${{ secrets.GITHUB_TOKEN }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}

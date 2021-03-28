@@ -1,0 +1,13 @@
+{
+    "sources": [
+        "tippecanews/app.py",
+        "tippecanews/utils/"
+    ],
+    "titles": [
+        {
+            "source": "tippecanews/app.py",
+            "title": "endpoints"
+        }
+    ],
+    "python": {}
+}
