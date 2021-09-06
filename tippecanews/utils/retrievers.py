@@ -165,6 +165,10 @@ def send_slack(title: str, link: str, date: str, is_pr: bool = False) -> None:
     Returns:
         None
     """
+
+    if os.getenv("SEND_SLACK") != "True":
+        return
+
     if "http" not in link:
         link = "http://{}".format(link)
 
