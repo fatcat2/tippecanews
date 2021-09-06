@@ -5,8 +5,8 @@ import responses
 from tippecanews.utils.retrievers import get_pngs, send_slack
 
 
-def test_get_pngs():
-    assert len(get_pngs()) >= 0
+#def test_get_pngs():
+#    assert len(get_pngs()) >= 0
 
 
 @responses.activate
