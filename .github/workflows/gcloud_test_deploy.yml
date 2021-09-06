@@ -15,9 +15,6 @@
 name: Deploy to tippecanews-test
 
 on:
-  pull_request:
-    branches:
-    - master
 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
