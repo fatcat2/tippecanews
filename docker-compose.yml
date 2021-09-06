@@ -1,0 +1,16 @@
+version: '2'
+services:
+  tippecanews:
+    image: rchen42/tippecanews:latest
+    restart: always
+    environment:
+      - NEWS_API_KEY=<NEWS_API_KEY>
+      - DAILY_ARTICLE_COUNT=1
+      - POSTGRES_USERNAME=USERNAME
+      - POSTGRES_HOST=HOST
+      - POSTGRES_PASSWORD=PASWORD
+      - POSTGRES_PORT=PORt
+      - POSTGRES_DATABASE=POSTGRES_DATABASE
+      - PORT=PORT
+    ports:
+      - "8888:8888"

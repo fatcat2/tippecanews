@@ -15,6 +15,14 @@ RUN pip install gunicorn
 # webserver, with one worker process and 8 threads.
 # For environments with multiple CPU cores, increase the number of workers
 # to be equal to the cores available.
-CMD exec export GOOGLE_APPLICATION_CREDENTAILS=auth.json
-CMD exec source envfile
+
+ENV PORT=PORT
+ENV NEWS_API_KEY=KEY
+ENV DAILY_ARTICLE_COUNT=1
+ENV POSTGRES_USERNAME=USER
+ENV POSTGRES_HOST=HOST
+ENV POSTGRES_PASSWORD=POSTGRES_PASSWORD
+ENV POSTGRES_DATABASE=POSTGRES_DATABASE
+ENV POSTGRES_PORT=5432
+
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 main:tippecanews
