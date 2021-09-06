@@ -1,4 +1,6 @@
+import itertools
 from bs4 import BeautifulSoup
+from flask import jsonify
 import requests
 
 from .database import get_database_connection
@@ -6,63 +8,52 @@ from .retrievers import send_slack
 
 
 class Crime:
-    def __init__(self, id: str, reported: str, description: str, is_csa: bool = False):
-        self.is_csa = is_csa
-        if is_csa:
-            self.id = str(hash(reported + description))
-        else:
-            self.id = id
-
+    """Helper class to organize web results"""
+    def __init__(self, nature: str, case_number: str, reported: str, occurred: str, general_location: str, disposition: str):
+        self.case_number = case_number
+        self.nature = nature
         self.reported = reported
-        self.description = description
+        self.occurred = occurred
+        self.general_location = general_location
+        self.disposition = disposition
 
 
 def crime_scrape():
-    r = requests.get(
-        "https://www.purdue.edu/ehps/police/assistance/stats/statsdaily.html"
-    )
-    soup = BeautifulSoup(r.text, features="html.parser")
+    """Helper function to scrape crime information"""
+    r = requests.get("https://www.purdue.edu/ehps/police/statistics-policies/daily-crime-log.php")
 
-    crime_div = soup.find("article", {"class": "post clearfix"})
+    soup = BeautifulSoup(r.text)
+
+    sections = soup.find_all("section", "content__group")
+
+    rows = [tr.find_all("td") for tr in list(itertools.chain(*[section.find_all("tr") for section in sections]))]
+    rows = [[td.string for td in row] for row in rows]
+    
+    crimes = [Crime(*row) for row in rows if len(row) == 6 and row[0] != "Nature" and row[0] is not None]
+
+    for crime in crimes:
+        print(crime)
 
     conn = get_database_connection()
 
-    for p in crime_div.find_all("p"):
-        try:
-            contents = [item.strip() for item in p.contents if isinstance(item, str)]
-            if len(contents) < 3:
-                continue
-
-            csa_bool = True if contents[0] == "CSA REPORT" else False
-            crime = Crime(*contents, is_csa=csa_bool)
-
-            query_results = conn.run(
-                "select count(*) from crimes where id=:id", id=crime.id
-            )
-
-            if query_results[0][0] > 0:
-                continue
-
-            query_results = conn.run(
-                "insert into crimes (id, reported, description) values (:id, :reported, :description) returning id",
-                id=crime.id,
-                reported=crime.reported,
-                description=crime.description,
-            )
-
-            conn.commit()
-
-            send_slack(
-                f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}",
-                "",
-                "",
-            )
-            print(
-                f"{crime.description}\nCrime ID: {'CSA REPORT' if crime.is_csa else crime.id}\t{crime.reported}"
-            )
-        except Exception as e:
-            print(e)
-            continue
+    for crime in crimes:
+        count = conn.run("select count(*) from new_crime where case_number=:case_number", case_number=crime.case_number)
+        if count[0][0] == 0:
+            conn.run("insert into new_crime values (:nature, :case_number, :reported, :occurred, :general_location, :disposition)",
+                    nature=crime.nature,
+                    case_number=crime.case_number,
+                    reported=crime.reported,
+                    occurred=crime.occurred,
+                    general_location=crime.general_location,
+                    disposition=crime.disposition)
+            send_slack(f"{crime.case_number}: {crime.nature} at {crime.general_location} at {crime.occurred}. Reported at {crime.reported}. Status: {crime.disposition}", "", "")
 
     conn.commit()
     conn.close()
+    return jsonify(rows)
+
+
+
+
+if __name__ == "__main__":
+    crime_scrape()
